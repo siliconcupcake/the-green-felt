@@ -2,7 +2,11 @@
   "extends": "../../tsconfig.json",
   "compilerOptions": {
     "outDir": "./dist",
-    "rootDir": "./src"
+    "rootDir": "./src",
+    "paths": {
+      "@the-green-felt/shared": ["../shared/src/index.ts"],
+      "@the-green-felt/engine": ["../engine/src/index.ts"]
+    }
   },
   "include": ["src"],
   "references": [{ "path": "../shared" }, { "path": "../engine" }]

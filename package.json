@@ -16,6 +16,14 @@
     "typescript": "^5.7.0",
     "vitest": "^3.0.0"
   },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "@prisma/client",
+      "@prisma/engines",
+      "esbuild",
+      "prisma"
+    ]
+  },
   "engines": {
     "node": ">=22.0.0",
     "pnpm": ">=9.0.0"
