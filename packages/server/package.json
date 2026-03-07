@@ -1,0 +1,29 @@
+{
+  "name": "@the-green-felt/server",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "tsc --build",
+    "dev": "tsx watch src/index.ts",
+    "start": "node dist/index.js",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit",
+    "db:generate": "prisma generate",
+    "db:push": "prisma db push"
+  },
+  "dependencies": {
+    "@the-green-felt/shared": "workspace:*",
+    "@the-green-felt/engine": "workspace:*",
+    "@trpc/server": "^11.0.0",
+    "@prisma/client": "^6.0.0",
+    "fastify": "^5.0.0",
+    "ws": "^8.18.0",
+    "zod": "^3.24.0"
+  },
+  "devDependencies": {
+    "@types/ws": "^8.5.0",
+    "prisma": "^6.0.0",
+    "tsx": "^4.0.0"
+  }
+}
