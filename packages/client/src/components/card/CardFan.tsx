@@ -1,5 +1,6 @@
 import type { AnyCard } from '@the-green-felt/shared';
 import { Card } from './Card.js';
+import './card.css';
 
 interface CardFanProps {
   cards: AnyCard[];
@@ -9,6 +10,8 @@ interface CardFanProps {
 
 /**
  * Renders a hand of cards in a fan layout using CSS transforms.
+ * Per-card left, rotation, and z-index remain as inline styles
+ * since they are computed dynamically at render time.
  */
 export function CardFan({ cards, selectedIds, onCardClick }: CardFanProps) {
   const totalCards = cards.length;
@@ -16,8 +19,8 @@ export function CardFan({ cards, selectedIds, onCardClick }: CardFanProps) {
   const spreadAngle = Math.min(maxSpread, totalCards * 5);
 
   return (
-    <div style={{ display: 'flex', justifyContent: 'center', padding: '20px 0' }}>
-      <div style={{ position: 'relative', width: `${totalCards * 30 + 70}px`, height: '120px' }}>
+    <div className="card-fan">
+      <div className="card-fan-inner" style={{ width: `${totalCards * 30 + 70}px` }}>
         {cards.map((card, i) => {
           const angle = totalCards > 1
             ? -spreadAngle / 2 + (spreadAngle / (totalCards - 1)) * i
@@ -25,11 +28,10 @@ export function CardFan({ cards, selectedIds, onCardClick }: CardFanProps) {
           return (
             <div
               key={card.id}
+              className="card-fan-slot"
               style={{
-                position: 'absolute',
                 left: `${i * 30}px`,
                 transform: `rotate(${angle}deg)`,
-                transformOrigin: 'bottom center',
                 zIndex: i,
               }}
             >

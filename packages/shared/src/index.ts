@@ -1,5 +1,5 @@
 // Card primitives
-export { Suit, Rank, isJoker, makeCardId, makeJokerId, createCard, createJoker } from './card.js';
+export { Suit, Rank, Color, isJoker, makeCardId, makeJokerId, createCard, createJoker } from './card.js';
 export type { Card, JokerCard, AnyCard, CardId } from './card.js';
 
 // Deck configuration

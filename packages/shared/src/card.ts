@@ -5,6 +5,11 @@ export enum Suit {
   Spades = 'S',
 }
 
+export enum Color {
+  Red = 'red',
+  Black = 'black',
+}
+
 export enum Rank {
   Two = '2',
   Three = '3',
@@ -32,7 +37,7 @@ export interface Card {
 
 export interface JokerCard {
   readonly isJoker: true;
-  readonly color: 'red' | 'black';
+  readonly color: Color;
   readonly id: CardId;
 }
 
@@ -46,14 +51,16 @@ export function makeCardId(rank: Rank, suit: Suit): CardId {
   return `${rank}${suit}` as CardId;
 }
 
-export function makeJokerId(color: 'red' | 'black'): CardId {
-  return `JOKER_${color.toUpperCase()}` as CardId;
+export function makeJokerId(color: Color): CardId {
+  const suffix = `_${color.toUpperCase()}`;
+  // TODO: Add support for colored jokers
+  return `JKR` as CardId;
 }
 
 export function createCard(rank: Rank, suit: Suit): Card {
   return { rank, suit, id: makeCardId(rank, suit) };
 }
 
-export function createJoker(color: 'red' | 'black'): JokerCard {
+export function createJoker(color: Color): JokerCard {
   return { isJoker: true, color, id: makeJokerId(color) };
 }
