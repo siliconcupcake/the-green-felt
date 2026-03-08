@@ -13,10 +13,11 @@
     "db:push": "prisma db push"
   },
   "dependencies": {
-    "@the-green-felt/shared": "workspace:*",
-    "@the-green-felt/engine": "workspace:*",
-    "@trpc/server": "^11.0.0",
+    "@fastify/cors": "^11.2.0",
     "@prisma/client": "^6.0.0",
+    "@the-green-felt/engine": "workspace:*",
+    "@the-green-felt/shared": "workspace:*",
+    "@trpc/server": "^11.0.0",
     "fastify": "^5.0.0",
     "ws": "^8.18.0",
     "zod": "^3.24.0"

@@ -9,6 +9,10 @@ export type { DeckConfig } from './deck-config.js';
 // Game plugin contract
 export type { GamePlugin, GameMetadata, GameResult } from './game-plugin.js';
 
+// Game catalog
+export { GAME_CATALOG } from './game-catalog.js';
+export type { GameCatalogEntry } from './game-catalog.js';
+
 // Persisted game state
 export type { PersistedGameState, ActionLogEntry } from './game-state.js';
 

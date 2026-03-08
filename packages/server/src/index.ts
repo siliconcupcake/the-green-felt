@@ -1,22 +1,49 @@
 import Fastify from 'fastify';
-// import { gameRegistry } from './games/registry.js';
-// import { literaturePlugin } from './games/literature/index.js';
+import cors from '@fastify/cors';
+import { WebSocketServer } from 'ws';
+import { fastifyTRPCPlugin } from '@trpc/server/adapters/fastify';
+import { applyWSSHandler } from '@trpc/server/adapters/ws';
+import { appRouter } from './router/index.js';
+import type { Context } from './trpc.js';
+import { gameRegistry } from './games/registry.js';
+import { literaturePlugin } from './games/literature/index.js';
 
 // Register game plugins
-// gameRegistry.register(literaturePlugin);
+gameRegistry.register(literaturePlugin);
 
 const server = Fastify({ logger: true });
 
-// TODO: Set up tRPC with Fastify adapter
-// TODO: Set up WebSocket server for tRPC subscriptions
-// TODO: Set up Prisma client
+await server.register(cors, { origin: true });
+
+// HTTP tRPC handler (queries + mutations)
+await server.register(fastifyTRPCPlugin, {
+  prefix: '/trpc',
+  trpcOptions: {
+    router: appRouter,
+    createContext: (): Context => ({
+      userId: null, // TODO: extract from auth header/session
+    }),
+  },
+});
 
 const PORT = Number(process.env.PORT ?? 3001);
 
 async function start() {
   try {
     await server.listen({ port: PORT, host: '0.0.0.0' });
-    console.log(`Server listening on port ${PORT}`);
+
+    // WebSocket tRPC handler (subscriptions)
+    // Attach to Fastify's underlying HTTP server after it starts listening
+    const wss = new WebSocketServer({ server: server.server });
+    applyWSSHandler({
+      wss,
+      router: appRouter,
+      createContext: (): Context => ({
+        userId: null,
+      }),
+    });
+
+    console.log(`Server listening on port ${PORT} (HTTP + WebSocket)`);
   } catch (err) {
     server.log.error(err);
     process.exit(1);

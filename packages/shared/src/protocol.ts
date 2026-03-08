@@ -13,7 +13,7 @@ export type ServerEvent<TPlayerView = unknown> =
 /** Lobby-related types */
 export interface LobbyRoom {
   id: string;
-  gameId: string;
+  gameTypeId: string;
   hostPlayerId: string;
   players: LobbyPlayer[];
   maxPlayers: number;

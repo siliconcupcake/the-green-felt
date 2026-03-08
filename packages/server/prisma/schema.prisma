@@ -30,11 +30,13 @@ model Game {
 
 model Lobby {
   id           String   @id @default(auto()) @map("_id") @db.ObjectId
-  gamePluginId String
+  roomCode     String   @unique
+  gameTypeId   String
   hostPlayerId String
   players      Json[]
   maxPlayers   Int
   status       String   @default("waiting") // waiting | in_progress | finished
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
+  expiresAt    DateTime // TTL — MongoDB auto-deletes documents after this time
 }
