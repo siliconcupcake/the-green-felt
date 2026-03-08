@@ -1,4 +1,3 @@
-import type { GamePlugin, GameResult } from '@the-green-felt/shared';
 import type { ServerEvent } from '@the-green-felt/shared';
 import { GameStateMachine } from '@the-green-felt/engine';
 import { gameRegistry } from '../games/registry.js';
@@ -20,12 +19,7 @@ export class GameManager {
   private readonly activeGames = new Map<string, ActiveGame>();
 
   /** Start a new game from a lobby room. Returns the game ID. */
-  async startGame(
-    gameId: string,
-    pluginId: string,
-    players: string[],
-    seed?: number,
-  ): Promise<string> {
+  async startGame(gameId: string, pluginId: string, players: string[], seed?: number): Promise<string> {
     const plugin = gameRegistry.get(pluginId);
     if (!plugin) {
       throw new Error(`Unknown game plugin: ${pluginId}`);
@@ -49,11 +43,7 @@ export class GameManager {
   }
 
   /** Process a player action. */
-  async handleAction(
-    gameId: string,
-    playerId: string,
-    action: { type: string },
-  ): Promise<void> {
+  async handleAction(gameId: string, playerId: string, action: { type: string }): Promise<void> {
     const game = this.activeGames.get(gameId);
     if (!game) throw new Error(`Game ${gameId} not found`);
 

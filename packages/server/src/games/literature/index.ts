@@ -9,11 +9,7 @@ import type { GamePlugin, AnyCard } from '@the-green-felt/shared';
 import { STANDARD_52 } from '@the-green-felt/shared';
 import type { LiteratureState, LiteraturePlayerView, LiteratureAction } from './types.js';
 
-export const literaturePlugin: GamePlugin<
-  LiteratureState,
-  LiteraturePlayerView,
-  LiteratureAction
-> = {
+export const literaturePlugin: GamePlugin<LiteratureState, LiteraturePlayerView, LiteratureAction> = {
   metadata: {
     id: 'literature',
     displayName: 'Literature',
@@ -23,8 +19,7 @@ export const literaturePlugin: GamePlugin<
       ...STANDARD_52,
       // Literature excludes 8s — will be configured in full implementation
     },
-    description:
-      'A team-based card game where players ask opponents for cards and declare complete sets.',
+    description: 'A team-based card game where players ask opponents for cards and declare complete sets.',
   },
 
   setup(_players: string[], _deck: AnyCard[]): LiteratureState {
@@ -37,11 +32,7 @@ export const literaturePlugin: GamePlugin<
     throw new Error('Not yet implemented');
   },
 
-  reduce(
-    _state: LiteratureState,
-    _playerId: string,
-    _action: LiteratureAction,
-  ): LiteratureState {
+  reduce(_state: LiteratureState, _playerId: string, _action: LiteratureAction): LiteratureState {
     // TODO: Implement — apply action and return new state
     throw new Error('Not yet implemented');
   },

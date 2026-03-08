@@ -15,6 +15,7 @@ export interface DeckConfig {
 export const STANDARD_52: DeckConfig = {
   suits: [Suit.Clubs, Suit.Diamonds, Suit.Hearts, Suit.Spades],
   ranks: [
+    Rank.Ace,
     Rank.Two,
     Rank.Three,
     Rank.Four,
@@ -27,7 +28,6 @@ export const STANDARD_52: DeckConfig = {
     Rank.Jack,
     Rank.Queen,
     Rank.King,
-    Rank.Ace,
   ],
   jokerCount: 0,
   deckCount: 1,

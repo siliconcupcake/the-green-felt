@@ -1,5 +1,6 @@
 import {
   type AnyCard,
+  Color,
   type DeckConfig,
   type Rank,
   type Suit,
@@ -27,7 +28,7 @@ export class Deck {
       }
     }
 
-    const jokerColors: Array<'red' | 'black'> = ['red', 'black'];
+    const jokerColors: Array<Color> = [Color.Red, Color.Black];
     for (let j = 0; j < config.jokerCount; j++) {
       cards.push(createJoker(jokerColors[j % 2]));
     }

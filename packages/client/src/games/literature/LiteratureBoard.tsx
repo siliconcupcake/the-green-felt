@@ -3,15 +3,10 @@
  * Will receive the LiteraturePlayerView and an action dispatcher.
  */
 
+// TODO: Add props when implementing the game board
 // import type { LiteraturePlayerView, LiteratureAction } from '@the-green-felt/shared';
 
-interface LiteratureBoardProps {
-  // view: LiteraturePlayerView;
-  // myPlayerId: string;
-  // dispatch: (action: LiteratureAction) => void;
-}
-
-export function LiteratureBoard(_props: LiteratureBoardProps) {
+export function LiteratureBoard() {
   return (
     <div>
       <h2>Literature</h2>

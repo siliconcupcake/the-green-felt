@@ -72,11 +72,7 @@ export class GameStateMachine<TState, TPlayerView, TAction extends { type: strin
     players: string[],
     state: TState,
   ): GameStateMachine<TState, TPlayerView, TAction> {
-    const machine = Object.create(GameStateMachine.prototype) as GameStateMachine<
-      TState,
-      TPlayerView,
-      TAction
-    >;
+    const machine = Object.create(GameStateMachine.prototype) as GameStateMachine<TState, TPlayerView, TAction>;
     Object.assign(machine, { plugin, players, state: structuredClone(state) });
     return machine;
   }

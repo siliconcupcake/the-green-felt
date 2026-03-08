@@ -51,8 +51,7 @@ export function makeCardId(rank: Rank, suit: Suit): CardId {
   return `${rank}${suit}` as CardId;
 }
 
-export function makeJokerId(color: Color): CardId {
-  const suffix = `_${color.toUpperCase()}`;
+export function makeJokerId(_color: Color): CardId {
   // TODO: Add support for colored jokers
   return `JKR` as CardId;
 }

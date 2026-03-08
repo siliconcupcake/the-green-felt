@@ -17,20 +17,16 @@ export const gameRouter = router({
     }),
 
   /** Get current game state for the requesting player */
-  getState: publicProcedure
-    .input(z.object({ gameId: z.string() }))
-    .query(({ input }) => {
-      // TODO: Implement — return player-specific view
-      void input;
-      throw new Error('Not yet implemented');
-    }),
+  getState: publicProcedure.input(z.object({ gameId: z.string() })).query(({ input }) => {
+    // TODO: Implement — return player-specific view
+    void input;
+    throw new Error('Not yet implemented');
+  }),
 
   /** Subscribe to real-time game updates */
-  onGameUpdate: publicProcedure
-    .input(z.object({ gameId: z.string() }))
-    .subscription(({ input }) => {
-      // TODO: Implement — return observable of ServerEvent
-      void input;
-      throw new Error('Not yet implemented');
-    }),
+  onGameUpdate: publicProcedure.input(z.object({ gameId: z.string() })).subscription(({ input }) => {
+    // TODO: Implement — return observable of ServerEvent
+    void input;
+    throw new Error('Not yet implemented');
+  }),
 });
