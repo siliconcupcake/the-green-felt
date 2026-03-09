@@ -1,6 +1,4 @@
-import { useState } from 'react';
 import type { AnyCard } from '@the-green-felt/shared';
-import { CSSCard } from './CSSCard';
 import './card.css';
 
 interface CardProps {
@@ -16,10 +14,10 @@ interface CardProps {
  */
 export function Card({ card, faceDown = false, selected = false, onClick }: CardProps) {
   const svgPath = `/cards/${faceDown ? 'back' : card.id}.svg`;
-  const className = `card ${faceDown ? 'card-back' : 'card-svg'} ${selected ? 'card-selected' : ''}`;
+  const className = `playing-card ${faceDown ? 'playing-card-back' : 'playing-card-svg'} ${selected ? 'playing-card-selected' : ''}`;
   return (
     <button type="button" className={className} onClick={onClick} aria-label={card.id}>
-      <img src={svgPath} alt={card.id} className="card-svg-img" draggable={false} />
+      <img src={svgPath} alt={card.id} className="playing-card-svg-img" draggable={false} />
     </button>
   );
 }

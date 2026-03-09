@@ -1,31 +1,25 @@
-import { Suit, Color, createCard, type AnyCard, createJoker, STANDARD_54 } from '@the-green-felt/shared';
-import { CardFan } from './components/card/CardFan';
-import './App.css';
+import { StrictMode } from 'react';
+import { createRoot } from 'react-dom/client';
+import { BrowserRouter, Routes, Route } from 'react-router';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
-const COLORS: Color[] = [Color.Red, Color.Black];
-
-function buildDeck(): Record<Suit, AnyCard[]> {
-  const bySuit = {} as Record<Suit, AnyCard[]>;
-  const { suits, ranks } = STANDARD_54;
-  for (const suit of suits) {
-    const cards: AnyCard[] = ranks.map((rank) => createCard(rank, suit));
-    cards.push(createJoker(suit == Suit.Clubs || suit == Suit.Spades ? Color.Black : Color.Red)); // Assign jokers to suits for demo
-    bySuit[suit] = cards;
-  }
-  return bySuit;
-}
-
-const deck = buildDeck();
+import { LobbyPage } from './pages/LobbyPage.js';
+import { GamePage } from './pages/GamePage.js';
 
 export function App() {
   return (
-    <div className="app">
-      <h1 className="app-title">The Green Felt</h1>
-      {(Object.keys(deck) as Suit[]).map((suit) => (
-        <div key={suit} className="suit-group">
-          <CardFan cards={deck[suit]} />
-        </div>
-      ))}
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<LobbyPage />} />
+        <Route path="/join/:roomCode" element={<LobbyPage />} />
+        <Route path="/game" element={<GamePage />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
+
+createRoot(document.getElementById('root')!).render(
+  <StrictMode>
+    <App />
+  </StrictMode>,
+);

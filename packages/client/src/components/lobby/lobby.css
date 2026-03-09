@@ -1,0 +1,115 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+
+.lobby {
+  min-height: 100vh;
+  padding: 2rem 0;
+  font-family: 'Poppins', sans-serif;
+  display: flex;
+  flex-direction: column;
+}
+
+.lobby::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url('/img/background.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  filter: blur(0.25rem);
+  z-index: -1;
+}
+
+.lobby-title {
+  text-align: center;
+  font-size: 3rem;
+  font-weight: 700;
+  border-radius: 0.25rem;
+  background: rgba(255, 255, 255, 0.6);
+}
+
+.lobby-card {
+  max-width: 48rem;
+  margin: 0 auto;
+  border-radius: 1rem;
+  border: none;
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.lobby-name-input {
+  max-width: 16rem;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 500;
+}
+
+/* Game type cards — override Bootstrap .card defaults */
+.game-type-card {
+  cursor: pointer;
+  border: 0.1875rem solid #ccc;
+  background: #fff;
+  transition:
+    border-color 0.15s,
+    background-color 0.15s;
+}
+
+.game-type-card:hover {
+  border-color: #888;
+}
+
+.game-type-card.selected {
+  border-color: #2e7d32;
+  background-color: #e8f5e9;
+}
+
+.game-type-card.disabled {
+  opacity: 0.5;
+  cursor: default;
+  pointer-events: none;
+}
+
+/* Player slots */
+.player-slot.available {
+  cursor: pointer;
+}
+
+.player-slot.occupied {
+  opacity: 0.7;
+}
+
+.player-slot-number {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 0.25rem;
+  font-weight: 700;
+  font-size: 0.85rem;
+  color: #fff;
+}
+
+.player-slot-number.available {
+  background: #4caf50;
+}
+
+.player-slot-number.occupied {
+  background: #d32f2f;
+}
+
+.player-slot.selected {
+  border-color: #1565c0;
+  background-color: #e3f2fd;
+}
+
+.player-slot-number.selected {
+  background: #1565c0;
+}
+
+/* Footer */
+.lobby-footer {
+  font-weight: 600;
+  padding: 0.375rem 0.75rem;
+  border-radius: 0.25rem;
+  background: rgba(255, 255, 255, 0.6);
+  color: #333;
+}

@@ -2,13 +2,13 @@
   "extends": "../../tsconfig.json",
   "compilerOptions": {
     "outDir": "./dist",
-    "rootDir": "./src",
     "module": "ESNext",
     "moduleResolution": "bundler",
     "jsx": "react-jsx",
     "noEmit": true,
     "paths": {
-      "@the-green-felt/shared": ["../shared/src/index.ts"]
+      "@the-green-felt/shared": ["../shared/src/index.ts"],
+      "@the-green-felt/server/*": ["../server/src/*"]
     }
   },
   "include": ["src"],

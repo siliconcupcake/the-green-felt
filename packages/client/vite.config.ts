@@ -8,6 +8,7 @@ export default defineConfig({
   resolve: {
     alias: {
       '@the-green-felt/shared': path.resolve(__dirname, '../shared/src'),
+      '@the-green-felt/server': path.resolve(__dirname, '../server/src'),
     },
   },
   server: {
@@ -18,6 +19,10 @@ export default defineConfig({
     },
     proxy: {
       '/api': {
+        target: 'http://localhost:3001',
+        changeOrigin: true,
+      },
+      '/trpc': {
         target: 'http://localhost:3001',
         changeOrigin: true,
       },
