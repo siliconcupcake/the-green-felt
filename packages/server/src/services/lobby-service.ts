@@ -153,6 +153,21 @@ class LobbyService implements ILobbyService {
     await prisma.lobby.delete({ where: { roomCode: code } }).catch(() => {});
   }
 
+  async startGame(roomCode: string, hostPlayerId: string): Promise<void> {
+    const code = roomCode.toUpperCase();
+    const doc = await prisma.lobby.findUnique({ where: { roomCode: code } });
+    if (!doc) throw new Error('Room not found');
+    if (doc.hostPlayerId !== hostPlayerId) {
+      throw new Error('Only the host can start the game');
+    }
+    if (doc.status !== 'waiting') {
+      throw new Error('Game has already started');
+    }
+
+    await prisma.lobby.update({ where: { roomCode: code }, data: { status: 'in_progress' } });
+    this.emitter.emit(`room:${code}`, { type: 'GAME_STARTED' } satisfies LobbyEvent);
+  }
+
   async removeRoom(roomCode: string): Promise<void> {
     await prisma.lobby.delete({ where: { roomCode: roomCode.toUpperCase() } }).catch(() => {
       // Ignore if already deleted or expired

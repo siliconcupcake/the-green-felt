@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router';
+import { useNavigate, useParams } from 'react-router';
 import { useLobbyStore } from '../stores/lobby-store';
 import { trpc } from '../trpc';
 import { CreateGameForm } from '../components/lobby/CreateGameForm';
@@ -16,9 +16,11 @@ import '../components/lobby/lobby.css';
 
 const STORAGE_KEY_NAME = 'tgf:playerName';
 const STORAGE_KEY_PLAYER_ID = 'tgf:playerId';
+const STORAGE_KEY_ROOM_CODE = 'tgf:roomCode';
 
 export function LobbyPage() {
   const { roomCode: routeRoomCode } = useParams<{ roomCode?: string }>();
+  const navigate = useNavigate();
   const { activeTab, setActiveTab, isHost, setRoom, reset, error, setError } = useLobbyStore();
   const [playerName, setPlayerName] = useState(() => localStorage.getItem(STORAGE_KEY_NAME) ?? '');
   const [nameError, setNameError] = useState(false);
@@ -33,9 +35,10 @@ export function LobbyPage() {
     }
   }, [routeRoomCode, setActiveTab]);
 
-  const savePlayerDetails = (name: string, id: string) => {
+  const saveLocalData = (name: string, id: string, roomCode: string) => {
     localStorage.setItem(STORAGE_KEY_NAME, name.trim());
     localStorage.setItem(STORAGE_KEY_PLAYER_ID, id);
+    localStorage.setItem(STORAGE_KEY_ROOM_CODE, roomCode);
   };
 
   const handleCreateGame = async (gameTypeId: string) => {
@@ -54,7 +57,7 @@ export function LobbyPage() {
       });
 
       setRoom(result.roomCode, true);
-      savePlayerDetails(playerName, result.playerId);
+      saveLocalData(playerName, result.playerId, result.roomCode);
       setCreatedRoomCode(result.roomCode);
       setActiveTab('join');
     } catch (err) {
@@ -81,7 +84,7 @@ export function LobbyPage() {
         playerId: existingPlayerId,
       });
 
-      savePlayerDetails(playerName, result.playerId);
+      saveLocalData(playerName, result.playerId, gameCode);
       setRoom(gameCode, false);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to join room');
@@ -92,9 +95,29 @@ export function LobbyPage() {
 
   const handleLeaveRoom = () => {
     setCreatedRoomCode('');
-    localStorage.removeItem(STORAGE_KEY_PLAYER_ID);
+    localStorage.removeItem(STORAGE_KEY_ROOM_CODE);
     reset();
     setActiveTab('create');
+  };
+
+  const handleStartGame = async (gameCode: string) => {
+    const hostPlayerId = localStorage.getItem(STORAGE_KEY_PLAYER_ID);
+    if (!hostPlayerId) return;
+    setLoading(true);
+    setError(null);
+
+    try {
+      await trpc.lobby.startGame.mutate({ roomCode: gameCode, hostPlayerId });
+      navigate('/game');
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to start game');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleGameStarted = () => {
+    navigate('/game');
   };
 
   return (
@@ -148,6 +171,8 @@ export function LobbyPage() {
                               isHost={isHost}
                               onJoinGame={handleJoinGame}
                               onLeaveRoom={handleLeaveRoom}
+                              onStartGame={handleStartGame}
+                              onGameStarted={handleGameStarted}
                               disabled={loading}
                             />
                           </Col>

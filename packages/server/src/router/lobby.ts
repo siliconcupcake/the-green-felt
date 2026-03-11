@@ -77,6 +77,18 @@ export const lobbyRouter = router({
       }
     }),
 
+  /** Start the game (host only — notifies all players to transition to game page) */
+  startGame: publicProcedure
+    .input(z.object({ roomCode: z.string().min(1), hostPlayerId: z.string().min(1) }))
+    .mutation(async ({ input }) => {
+      try {
+        await lobbyService.startGame(input.roomCode, input.hostPlayerId);
+      } catch (err) {
+        const message = err instanceof Error ? err.message : 'Failed to start game';
+        throw new TRPCError({ code: 'BAD_REQUEST', message });
+      }
+    }),
+
   /** Subscribe to real-time lobby updates (player joins/leaves) */
   onLobbyUpdate: publicProcedure
     .input(z.object({ roomCode: z.string().min(1) }))

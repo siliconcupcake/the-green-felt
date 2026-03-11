@@ -29,7 +29,8 @@
       "@prisma/client",
       "@prisma/engines",
       "esbuild",
-      "prisma"
+      "prisma",
+      "unrs-resolver"
     ]
   },
   "engines": {

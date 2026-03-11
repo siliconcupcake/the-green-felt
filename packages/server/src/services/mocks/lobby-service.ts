@@ -100,6 +100,21 @@ export class MockLobbyService implements ILobbyService {
     this.rooms.delete(code);
   }
 
+  async startGame(roomCode: string, hostPlayerId: string): Promise<void> {
+    const code = roomCode.toUpperCase();
+    const room = this.rooms.get(code);
+    if (!room) throw new Error('Room not found');
+    if (room.hostPlayerId !== hostPlayerId) {
+      throw new Error('Only the host can start the game');
+    }
+    if (room.status !== 'waiting') {
+      throw new Error('Game has already started');
+    }
+
+    room.status = 'in_progress';
+    this.emitter.emit(`room:${code}`, { type: 'GAME_STARTED' } satisfies LobbyEvent);
+  }
+
   async removeRoom(roomCode: string): Promise<void> {
     this.rooms.delete(roomCode.toUpperCase());
   }
