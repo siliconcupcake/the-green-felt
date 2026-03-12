@@ -13,7 +13,8 @@ interface CardProps {
  * Uses SVG assets when available, falls back to CSSCard.
  */
 export function Card({ card, faceDown = false, selected = false, onClick }: CardProps) {
-  const svgPath = `/cards/${faceDown ? 'back' : card.id}.svg`;
+  const svgPath = faceDown ? '/cards/BCK.svg' : `/cards/${card.id}.svg`;
+
   const className = `playing-card ${faceDown ? 'playing-card-back' : 'playing-card-svg'} ${selected ? 'playing-card-selected' : ''}`;
   return (
     <button type="button" className={className} onClick={onClick} aria-label={card.id}>

@@ -6,19 +6,28 @@ interface CardFanProps {
   cards: AnyCard[];
   selectedIds?: Set<string>;
   onCardClick?: (card: AnyCard) => void;
+  compact?: boolean;
+  faceDown?: boolean;
 }
 
 /**
- * Renders a hand of cards in a fan layout using CSS transforms.
- * Per-card left, rotation, and z-index remain as inline styles
- * since they are computed dynamically at render time.
+ * Renders a hand of cards in a fan layout.
+ * - `compact`: tighter overlap for opponent hands
+ * - `faceDown`: render all cards face-down
  */
-export function CardFan({ cards, selectedIds, onCardClick }: CardFanProps) {
+export function CardFan({ cards, selectedIds, onCardClick, compact = false, faceDown = false }: CardFanProps) {
+  const className = `card-fan ${compact ? 'card-fan--compact' : ''}`;
+
   return (
-    <div className="card-fan">
+    <div className={className}>
       {cards.map((card, i) => (
         <div key={card.id} className="card-fan-slot" style={{ zIndex: i }}>
-          <Card card={card} selected={selectedIds?.has(card.id)} onClick={() => onCardClick?.(card)} />
+          <Card
+            card={card}
+            faceDown={faceDown}
+            selected={selectedIds?.has(card.id)}
+            onClick={() => onCardClick?.(card)}
+          />
         </div>
       ))}
     </div>

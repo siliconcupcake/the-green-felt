@@ -1,6 +1,6 @@
 .playing-card {
-  width: 7.2rem;
-  height: 10rem;
+  width: 8.28rem;
+  height: 11.5rem;
   border: none;
   border-radius: 0.5rem;
   padding: 0;
@@ -52,9 +52,29 @@
 }
 
 .card-fan-slot {
-  margin-right: -5rem;
+  margin-right: -5.75rem;
 }
 
 .card-fan-slot:last-child {
   margin-right: 0;
+}
+
+/* Compact fan for opponent hands — tighter overlap, smaller cards */
+.card-fan--compact .card-fan-slot {
+  margin-right: -3.5rem;
+}
+
+.card-fan--compact .card-fan-slot:last-child {
+  margin-right: 0;
+}
+
+.card-fan--compact .playing-card {
+  width: 5.76rem;
+  height: 8rem;
+  cursor: default;
+}
+
+.card-fan--compact .playing-card:hover {
+  transform: none;
+  box-shadow: none;
 }
