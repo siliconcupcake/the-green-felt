@@ -61,6 +61,12 @@ export interface GameMetadata {
   readonly deckConfig: DeckConfig;
   /** Brief description for the lobby */
   readonly description: string;
+  /** Number of teams to split players into. Undefined = free-for-all. */
+  readonly teamsCount?: number;
+  /** Cards to deal per player during setup. Undefined = deal all cards evenly. */
+  readonly cardsPerPlayer?: number;
+  /** Whether to flip the top card to the discard pile after dealing. */
+  readonly discardOnStart?: boolean;
 }
 
 export interface GameResult {

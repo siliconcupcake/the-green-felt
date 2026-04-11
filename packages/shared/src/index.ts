@@ -1,6 +1,18 @@
 // Card primitives
-export { Suit, Rank, Color, isJoker, makeCardId, makeJokerId, createCard, createJoker } from './card.js';
-export type { Card, JokerCard, AnyCard, CardId } from './card.js';
+export {
+  Suit,
+  Rank,
+  Color,
+  isJoker,
+  isHidden,
+  makeCardId,
+  makeJokerId,
+  createCard,
+  cardFromId,
+  createJoker,
+  createHidden,
+} from './card.js';
+export type { Card, JokerCard, HiddenCard, AnyCard, CardId } from './card.js';
 
 // Deck configuration
 export { STANDARD_52, STANDARD_54, PINOCHLE_48, EUCHRE_24 } from './deck-config.js';

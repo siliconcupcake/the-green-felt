@@ -3,6 +3,7 @@ import { TRPCError } from '@trpc/server';
 import { publicProcedure, router } from '../trpc.js';
 import { gameRegistry } from '../games/registry.js';
 import { lobbyService } from '../services/mocks/lobby-service.js';
+import { gameManager } from '../services/game-manager.js';
 import type { LobbyEvent } from '../services/interfaces/lobby-service.js';
 
 export const lobbyRouter = router({
@@ -53,6 +54,17 @@ export const lobbyRouter = router({
     return room;
   }),
 
+  /** Resolve player IDs to display names */
+  getPlayerNames: publicProcedure
+    .input(z.object({ playerIds: z.array(z.string()) }))
+    .query(async ({ input }) => {
+      // Use the mock service's getPlayerNames if available, otherwise return empty
+      if ('getPlayerNames' in lobbyService) {
+        return (lobbyService as { getPlayerNames: (ids: string[]) => Record<string, string> }).getPlayerNames(input.playerIds);
+      }
+      return {} as Record<string, string>;
+    }),
+
   /** Leave a room (non-host players only) */
   leaveRoom: publicProcedure
     .input(z.object({ roomCode: z.string().min(1), playerId: z.string().min(1) }))
@@ -83,6 +95,13 @@ export const lobbyRouter = router({
     .mutation(async ({ input }) => {
       try {
         await lobbyService.startGame(input.roomCode, input.hostPlayerId);
+
+        // Initialize game engine after lobby transition
+        const room = await lobbyService.getRoom(input.roomCode);
+        if (room) {
+          const playerIds = room.players.map((p) => p.id);
+          await gameManager.startGame(room.roomCode, room.gameTypeId, playerIds);
+        }
       } catch (err) {
         const message = err instanceof Error ? err.message : 'Failed to start game';
         throw new TRPCError({ code: 'BAD_REQUEST', message });

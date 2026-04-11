@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import type { LobbyPlayer } from '@the-green-felt/shared';
 import { GAME_CATALOG } from '@the-green-felt/shared';
 import { trpc } from '../../trpc';
 import Row from 'react-bootstrap/Row';
@@ -39,7 +38,8 @@ export function JoinGameForm({
 }: JoinGameFormProps) {
   const [gameCode, setGameCode] = useState(initialGameCode ?? '');
   const [gameCodeError, setGameCodeError] = useState(false);
-  const [players, setPlayers] = useState<LobbyPlayer[]>([]);
+  const [players, setPlayers] = useState<string[]>([]);
+  const [playerNames, setPlayerNames] = useState<Record<string, string>>({});
   const [peekError, setPeekError] = useState<string | null>(null);
   const [peeking, setPeeking] = useState(false);
   const [copied, setCopied] = useState(false);
@@ -68,9 +68,10 @@ export function JoinGameForm({
         onData: (event) => {
           if (event.type === 'PLAYER_JOINED') {
             setPlayers((prev) => {
-              if (prev.some((p) => p.id === event.playerId)) return prev;
-              return [...prev, { id: event.playerId, name: event.playerName, isReady: false }];
+              if (prev.includes(event.playerId)) return prev;
+              return [...prev, event.playerId];
             });
+            setPlayerNames((prev) => ({ ...prev, [event.playerId]: event.playerName }));
           } else if (event.type === 'PLAYER_LEFT') {
             if (event.playerId === getPlayerId()) {
               // Current player was kicked by the host
@@ -79,7 +80,7 @@ export function JoinGameForm({
               onLeaveRoom?.();
               return;
             }
-            setPlayers((prev) => prev.filter((p) => p.id !== event.playerId));
+            setPlayers((prev) => prev.filter((p) => p !== event.playerId));
           } else if (event.type === 'ROOM_CLOSED') {
             setRoomClosed(true);
             setPlayers([]);
@@ -102,6 +103,9 @@ export function JoinGameForm({
       const room = await trpc.lobby.getRoom.query({ roomCode: code });
       setPlayers(room.players);
       setGameTypeId(room.gameTypeId);
+      // Fetch player names
+      const names = await trpc.lobby.getPlayerNames.query({ playerIds: room.players });
+      setPlayerNames(names);
     } catch (err) {
       setPlayers([]);
       setPeekError(err instanceof Error ? err.message : 'Room not found');
@@ -234,19 +238,20 @@ export function JoinGameForm({
 
       {players.length > 0 && (
         <Row xs={2} sm={3} className="g-2 mb-3">
-          {players.map((player) => {
-            const isMe = player.id === getPlayerId();
+          {players.map((playerId) => {
+            const isMe = playerId === getPlayerId();
             const canKick = isHost && !isMe;
+            const name = playerNames[playerId] ?? playerId.slice(0, 6);
             return (
-              <Col key={player.id}>
+              <Col key={playerId}>
                 <Card className={`player-slot ${isMe ? 'selected' : 'occupied'}`}>
                   <Card.Body className="d-flex align-items-center justify-content-between p-2">
                     <div className="d-flex align-items-center">
                       <span className={`player-slot-number ${isMe ? 'selected' : 'occupied'}`}>
-                        {player.id.slice(-2)}
+                        {playerId.slice(-2)}
                       </span>
                       <span className="ms-2 small">
-                        {player.name}
+                        {name}
                         {isMe && ' (you)'}
                       </span>
                     </div>
@@ -255,8 +260,8 @@ export function JoinGameForm({
                         variant="outline-danger"
                         size="sm"
                         className="py-0 px-1"
-                        onClick={() => handleKick(player.id)}
-                        aria-label={`Remove ${player.name}`}
+                        onClick={() => handleKick(playerId)}
+                        aria-label={`Remove ${name}`}
                       >
                         &times;
                       </Button>

@@ -73,7 +73,7 @@ function angleAtArcLength(target: number): number {
   return ARC_END;
 }
 
-function getOpponentPosition(index: number, total: number) {
+export function getOpponentPosition(index: number, total: number) {
   let rad: number;
   if (total === 1) {
     rad = Math.PI / 2;
@@ -86,6 +86,27 @@ function getOpponentPosition(index: number, total: number) {
   const y = 50 - Y_RADIUS * Math.sin(rad);
 
   return { position: 'absolute' as const, left: `${x}%`, top: `${y}%`, transform: 'translate(-50%, -50%)' };
+}
+
+/** Compute x/y positions (in %) for all players. Current player at bottom center. */
+export function computePlayerPositions(
+  currentPlayerId: string,
+  allPlayerIds: string[],
+): Map<string, { x: number; y: number }> {
+  const positions = new Map<string, { x: number; y: number }>();
+  const opponents = allPlayerIds.filter((id) => id !== currentPlayerId);
+
+  positions.set(currentPlayerId, { x: 50, y: 92 });
+
+  for (let i = 0; i < opponents.length; i++) {
+    const pos = getOpponentPosition(i, opponents.length);
+    positions.set(opponents[i], {
+      x: parseFloat(pos.left),
+      y: parseFloat(pos.top),
+    });
+  }
+
+  return positions;
 }
 
 export function GameTable({

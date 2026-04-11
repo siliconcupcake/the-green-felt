@@ -5,3 +5,4 @@ export { GameStateMachine } from './state-machine.js';
 export type { DispatchResult } from './state-machine.js';
 export { TestHarness } from './test-harness.js';
 export { shuffle, createRng } from './shuffle.js';
+export { assignTeams } from './teams.js';

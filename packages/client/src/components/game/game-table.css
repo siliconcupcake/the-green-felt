@@ -214,3 +214,27 @@
   text-transform: uppercase;
   letter-spacing: 0.05rem;
 }
+
+/* Dealing animation overlay */
+.dealing-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 50;
+  pointer-events: none;
+}
+
+.dealing-card {
+  position: absolute;
+  z-index: 100;
+  transform: translate(-50%, -50%);
+  transition: left 0.15s ease-out, top 0.15s ease-out;
+}
+
+.dealing-card .playing-card {
+  width: 4.5rem;
+  height: 6.25rem;
+}
+
+.dealing-card--flying {
+  opacity: 0.8;
+}

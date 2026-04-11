@@ -7,6 +7,7 @@ import { appRouter } from './router/index.js';
 import type { Context } from './trpc.js';
 import { gameRegistry } from './games/registry.js';
 import { literaturePlugin } from './games/literature/index.js';
+import { registerDebugRoutes } from './router/debug.js';
 
 // Register game plugins
 gameRegistry.register(literaturePlugin);
@@ -14,6 +15,9 @@ gameRegistry.register(literaturePlugin);
 const server = Fastify({ logger: true });
 
 await server.register(cors, { origin: true });
+
+// Debug controller (development only)
+await registerDebugRoutes(server);
 
 // HTTP tRPC handler (queries + mutations)
 await server.register(fastifyTRPCPlugin, {
