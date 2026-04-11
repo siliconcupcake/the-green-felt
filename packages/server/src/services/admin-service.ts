@@ -81,15 +81,14 @@ class AdminService {
     };
   }
 
-  /** Dispatch an action as any player. Returns result instead of throwing. */
+  /** Dispatch an action as any player. Returns structured result. */
   async dispatchAs(
     gameId: string,
     playerId: string,
     action: { type: string; [key: string]: unknown },
   ): Promise<{ success: boolean; error?: string }> {
     try {
-      await gameManager.handleAction(gameId, playerId, action);
-      return { success: true };
+      return await gameManager.handleAction(gameId, playerId, action);
     } catch (err) {
       return { success: false, error: err instanceof Error ? err.message : 'Unknown error' };
     }
@@ -168,14 +167,9 @@ class AdminService {
     game.actionLog = kept.map((entry, i) => ({ ...entry, index: i }));
 
     // Broadcast updated views to all subscribers
-    for (const pid of game.players) {
-      const view = replayMachine.getViewForPlayer(pid);
-      gameManager['broadcastToPlayer'](gameId, pid, {
-        type: 'GAME_STATE',
-        view,
-        activePlayer: replayMachine.getActivePlayer(),
-      });
-    }
+    gameManager.broadcastViewsToAll(gameId);
+
+    gameManager.emitEvent({ type: 'game:rewound', gameId, toActionIndex: actionIndex });
   }
 }
 

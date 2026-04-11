@@ -52,7 +52,7 @@ export function StateInspector() {
     <div className="admin-state-inspector">
       {isHistorical && (
         <div className="admin-banner admin-banner-warn">
-          Viewing historical state at action {timelineIndex} &mdash;{' '}
+          Viewing historical state at action {timelineIndex! + 1} &mdash;{' '}
           <button
             className="admin-btn-link"
             onClick={() => {

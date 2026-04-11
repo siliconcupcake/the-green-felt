@@ -8,9 +8,14 @@ import type { Context } from './trpc.js';
 import { gameRegistry } from './games/registry.js';
 import { literaturePlugin } from './games/literature/index.js';
 import { registerDebugRoutes } from './router/debug.js';
+import { registerMoveGenerator } from './services/admin-service.js';
+import { literatureMoveGenerator } from './games/literature/move-generator.js';
 
 // Register game plugins
 gameRegistry.register(literaturePlugin);
+
+// Register move generators for admin console
+registerMoveGenerator('literature', literatureMoveGenerator);
 
 const server = Fastify({ logger: true });
 

@@ -53,6 +53,11 @@ export class GameManager {
     this.events.emit('admin', { ...event, timestamp: Date.now() });
   }
 
+  /** Emit an admin event (for use by admin service). */
+  emitEvent(event: Omit<AdminEvent, 'timestamp'>): void {
+    this.emitAdminEvent(event);
+  }
+
   /** Get the internal ActiveGame record (for admin service). */
   getActiveGame(gameId: string): ActiveGame | undefined {
     return this.activeGames.get(gameId);
@@ -145,8 +150,12 @@ export class GameManager {
     return gameId;
   }
 
-  /** Process a player action. */
-  async handleAction(gameId: string, playerId: string, action: { type: string }): Promise<void> {
+  /** Process a player action. Returns structured result for callers that need it. */
+  async handleAction(
+    gameId: string,
+    playerId: string,
+    action: { type: string },
+  ): Promise<{ success: boolean; error?: string }> {
     const game = this.activeGames.get(gameId);
     if (!game) throw new Error(`Game ${gameId} not found`);
 
@@ -177,7 +186,7 @@ export class GameManager {
         type: 'ACTION_REJECTED',
         reason: result.error,
       });
-      return;
+      return { success: false, error: result.error };
     }
 
     this.emitAdminEvent({
@@ -217,6 +226,7 @@ export class GameManager {
     }
 
     // TODO: Persist updated state to database
+    return { success: true };
   }
 
   /** Get the player-specific view for a game. */
@@ -284,6 +294,19 @@ export class GameManager {
       }
     }
     return result;
+  }
+
+  /** Broadcast current views to all player subscribers (used by admin rewind). */
+  broadcastViewsToAll(gameId: string): void {
+    const game = this.activeGames.get(gameId);
+    if (!game?.machine) return;
+    for (const pid of game.players) {
+      this.broadcastToPlayer(gameId, pid, {
+        type: 'GAME_STATE',
+        view: game.machine.getViewForPlayer(pid),
+        activePlayer: game.machine.getActivePlayer(),
+      });
+    }
   }
 
   private broadcastToPlayer(gameId: string, playerId: string, event: ServerEvent): void {

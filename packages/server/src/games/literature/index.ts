@@ -84,9 +84,3 @@ export const literaturePlugin: GamePlugin<LiteratureState, LiteraturePlayerView,
     return state.currentTurn;
   },
 };
-
-// Register move generator for admin console
-import { registerMoveGenerator } from '../../services/admin-service.js';
-import { literatureMoveGenerator } from './move-generator.js';
-
-registerMoveGenerator('literature', literatureMoveGenerator);
