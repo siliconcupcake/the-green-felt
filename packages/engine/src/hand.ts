@@ -1,4 +1,4 @@
-import { type AnyCard, type CardId, isJoker } from '@the-green-felt/shared';
+import { type AnyCard, type CardId, isJoker, isHidden } from '@the-green-felt/shared';
 
 /**
  * Immutable Hand class — a managed collection of cards belonging to a player.
@@ -57,9 +57,11 @@ export class Hand {
   /** Sort cards by suit then rank. */
   sorted(): Hand {
     const sorted = [...this.cards].sort((a, b) => {
-      if (isJoker(a) && isJoker(b)) return 0;
-      if (isJoker(a)) return 1;
-      if (isJoker(b)) return -1;
+      const aSpecial = isJoker(a) || isHidden(a);
+      const bSpecial = isJoker(b) || isHidden(b);
+      if (aSpecial && bSpecial) return 0;
+      if (aSpecial) return 1;
+      if (bSpecial) return -1;
       if (a.suit !== b.suit) return a.suit.localeCompare(b.suit);
       return a.rank.localeCompare(b.rank);
     });
@@ -70,7 +72,7 @@ export class Hand {
   groupBySuit(): Map<string, AnyCard[]> {
     const groups = new Map<string, AnyCard[]>();
     for (const card of this.cards) {
-      const key = isJoker(card) ? 'JOKER' : card.suit;
+      const key = isJoker(card) ? 'JOKER' : isHidden(card) ? 'HIDDEN' : card.suit;
       const group = groups.get(key) ?? [];
       group.push(card);
       groups.set(key, group);
