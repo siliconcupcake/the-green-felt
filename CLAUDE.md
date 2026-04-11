@@ -141,6 +141,9 @@ Deterministic seeds produce known card distributions for reproducible tests.
 - **Immutable engine classes** — Deck, Hand, CardSet return new instances on mutation
 - **Branded types** — use `CardId` (branded string), construct via `makeCardId('AS')`
 
+ ## Commit Style
+- Do not include 'Co-Authored-By' lines in commit messages
+
 ## Knowledge Graph
 
 A graphify knowledge graph of the codebase lives in `graphify-out/`. Use it to explore architecture and cross-package relationships before making changes.
