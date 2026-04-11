@@ -1,0 +1,29 @@
+{
+  "mcpServers": {
+    "memory": {
+      "command": "agency",
+      "args": ["mcp", "npx", "--package", "@modelcontextprotocol/server-memory"],
+      "description": "Persistent memory across sessions"
+    },
+    "sequential-thinking": {
+      "command": "agency",
+      "args": ["mcp", "npx", "--package", "@modelcontextprotocol/server-sequential-thinking"],
+      "description": "Chain-of-thought reasoning"
+    },
+    "railway": {
+      "command": "agency",
+      "args": ["mcp", "npx", "--package", "@railway/mcp-server"],
+      "description": "Railway deployments"
+    },
+    "magic": {
+      "command": "agency",
+      "args": ["mcp", "npx", "--package", "@magicuidesign/mcp@latest"],
+      "description": "Magic UI components"
+    },
+    "playwright": {
+      "type": "stdio",
+      "command": "agency",
+      "args": ["mcp", "npx", "--package", "@playwright/mcp@latest"]
+    }
+  }
+}

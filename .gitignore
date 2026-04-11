@@ -1,9 +1,28 @@
+# Dependencies
 node_modules/
+
+# Build output
 dist/
+*.tsbuildinfo
+
+# Environment variables — contain secrets, database URLs, API keys
 .env
 .env.local
-*.tsbuildinfo
+
+# Tool caches
 .turbo/
+
+# Test coverage reports
 coverage/
+
+# OS-generated files
 .DS_Store
 Thumbs.db
+
+# Claude Code settings
+.claude/settings.local.json
+.claude/skills/*
+.agents/skills/*
+
+# Bruno API collections
+.bruno
