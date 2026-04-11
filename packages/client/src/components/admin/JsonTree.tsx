@@ -126,7 +126,14 @@ function TreeNode({ keyName, value, path, depth, maxDepth, searchTerm, forceExpa
             role="button"
             tabIndex={0}
             onClick={() => copyToClipboard(path)}
-            onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') copyToClipboard(path); }}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                copyToClipboard(path);
+              } else if (e.key === ' ') {
+                e.preventDefault();
+                copyToClipboard(path);
+              }
+            }}
             title={`Copy path: ${path}`}
           >
             {keyName}:&nbsp;
@@ -151,8 +158,16 @@ function TreeNode({ keyName, value, path, depth, maxDepth, searchTerm, forceExpa
           className="jt-toggle"
           role="button"
           tabIndex={0}
+          aria-expanded={isExpanded}
           onClick={handleToggle}
-          onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleToggle(); }}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') {
+              handleToggle();
+            } else if (e.key === ' ') {
+              e.preventDefault();
+              handleToggle();
+            }
+          }}
         >
           {isExpanded ? '\u25BC' : '\u25B6'}
         </span>
@@ -162,7 +177,14 @@ function TreeNode({ keyName, value, path, depth, maxDepth, searchTerm, forceExpa
             role="button"
             tabIndex={0}
             onClick={() => copyToClipboard(path)}
-            onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') copyToClipboard(path); }}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                copyToClipboard(path);
+              } else if (e.key === ' ') {
+                e.preventDefault();
+                copyToClipboard(path);
+              }
+            }}
             title={`Copy path: ${path}`}
           >
             {keyName}:&nbsp;
