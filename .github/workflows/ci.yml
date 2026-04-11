@@ -5,6 +5,7 @@ on:
     branches: [main]
   pull_request:
     branches: [main]
+  workflow_dispatch:
 
 # Cancel in-progress runs for the same PR/branch
 concurrency:
@@ -45,6 +46,8 @@ jobs:
       - run: pnpm install --frozen-lockfile
 
       - run: pnpm --filter @the-green-felt/server db:generate
+
+      - run: pnpm build
 
       - run: pnpm typecheck
 
