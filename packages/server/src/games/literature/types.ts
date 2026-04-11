@@ -1,19 +1,11 @@
-import type { AnyCard, CardId } from '@the-green-felt/shared';
+import type { AnyCard, CardId, LiteraturePlayerView } from '@the-green-felt/shared';
+
+// Re-export so existing imports from './types.js' keep working
+export type { LiteraturePlayerView };
 
 /** Full authoritative state for a Literature game */
 export interface LiteratureState {
   hands: Record<string, AnyCard[]>;
-  teams: { teamA: string[]; teamB: string[] };
-  currentTurn: string;
-  declaredSets: Array<{ set: string; declaredBy: string; team: 'A' | 'B'; correct: boolean }>;
-  scores: { teamA: number; teamB: number };
-  logs: string[];
-}
-
-/** What a single player can see */
-export interface LiteraturePlayerView {
-  myHand: AnyCard[];
-  otherPlayerCardCounts: Record<string, number>;
   teams: { teamA: string[]; teamB: string[] };
   currentTurn: string;
   declaredSets: Array<{ set: string; declaredBy: string; team: 'A' | 'B'; correct: boolean }>;

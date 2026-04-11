@@ -1,12 +1,12 @@
 /**
- * Literature game plugin — placeholder for full implementation.
+ * Literature game plugin.
  *
- * This file shows the structure a game plugin author would follow.
- * The full implementation will include setup, validate, reduce,
- * getPlayerView, checkGameOver, and getActivePlayer.
+ * A team-based card game where players ask opponents for cards
+ * and declare complete sets.
  */
 import type { GamePlugin, AnyCard } from '@the-green-felt/shared';
 import { STANDARD_52 } from '@the-green-felt/shared';
+import { Deck, assignTeams } from '@the-green-felt/engine';
 import type { LiteratureState, LiteraturePlayerView, LiteratureAction } from './types.js';
 
 export const literaturePlugin: GamePlugin<LiteratureState, LiteraturePlayerView, LiteratureAction> = {
@@ -20,11 +20,30 @@ export const literaturePlugin: GamePlugin<LiteratureState, LiteraturePlayerView,
       // Literature excludes 8s — will be configured in full implementation
     },
     description: 'A team-based card game where players ask opponents for cards and declare complete sets.',
+    teamsCount: 2,
+    cardsPerPlayer: 8,
+    discardOnStart: false,
   },
 
-  setup(_players: string[], _deck: AnyCard[]): LiteratureState {
-    // TODO: Implement — deal cards, assign teams, set first turn
-    throw new Error('Not yet implemented');
+  setup(players: string[], deck: AnyCard[]): LiteratureState {
+    const { seatOrder, teams } = assignTeams(players, 2);
+
+    const deckObj = Deck.fromArray(deck);
+    const [handArrays] = deckObj.deal(seatOrder.length, 8);
+
+    const hands: Record<string, AnyCard[]> = {};
+    for (let i = 0; i < seatOrder.length; i++) {
+      hands[seatOrder[i]] = handArrays[i];
+    }
+
+    return {
+      hands,
+      teams: { teamA: teams['A'], teamB: teams['B'] },
+      currentTurn: seatOrder[0],
+      declaredSets: [],
+      scores: { teamA: 0, teamB: 0 },
+      logs: [`Game started. Team A: ${teams['A'].length} players, Team B: ${teams['B'].length} players.`],
+    };
   },
 
   validate(_state: LiteratureState, _playerId: string, _action: LiteratureAction): string | null {
@@ -37,18 +56,31 @@ export const literaturePlugin: GamePlugin<LiteratureState, LiteraturePlayerView,
     throw new Error('Not yet implemented');
   },
 
-  getPlayerView(_state: LiteratureState, _playerId: string): LiteraturePlayerView {
-    // TODO: Implement — filter state for the requesting player
-    throw new Error('Not yet implemented');
+  getPlayerView(state: LiteratureState, playerId: string): LiteraturePlayerView {
+    const otherPlayerCardCounts: Record<string, number> = {};
+    for (const [pid, hand] of Object.entries(state.hands)) {
+      if (pid !== playerId) {
+        otherPlayerCardCounts[pid] = hand.length;
+      }
+    }
+
+    return {
+      myHand: state.hands[playerId] ?? [],
+      otherPlayerCardCounts,
+      teams: state.teams,
+      currentTurn: state.currentTurn,
+      declaredSets: state.declaredSets,
+      scores: state.scores,
+      logs: state.logs,
+    };
   },
 
   checkGameOver(_state: LiteratureState) {
     // TODO: Implement — check if all sets have been declared
-    throw new Error('Not yet implemented');
+    return null;
   },
 
-  getActivePlayer(_state: LiteratureState): string | null {
-    // TODO: Implement — return current turn player
-    throw new Error('Not yet implemented');
+  getActivePlayer(state: LiteratureState): string | null {
+    return state.currentTurn;
   },
 };
