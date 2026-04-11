@@ -1,14 +1,36 @@
+import { EventEmitter } from 'node:events';
 import type { AnyCard, ServerEvent } from '@the-green-felt/shared';
 import { GameStateMachine } from '@the-green-felt/engine';
 import { gameRegistry } from '../games/registry.js';
 
 type Subscriber = (event: ServerEvent) => void;
 
-interface ActiveGame {
+/** Admin event types emitted by the GameManager event bus. */
+export interface AdminEvent {
+  type: string;
+  gameId: string;
+  timestamp: number;
+  [key: string]: unknown;
+}
+
+/** Action log entry recorded for every dispatch attempt. */
+export interface AdminActionLogEntry {
+  index: number;
+  playerId: string;
+  action: { type: string; [key: string]: unknown };
+  timestamp: number;
+  result: 'success' | 'rejected';
+  error?: string;
+}
+
+export interface ActiveGame {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   machine: GameStateMachine<any, any, any>;
   players: string[];
   subscribers: Map<string, Set<Subscriber>>;
+  actionLog: AdminActionLogEntry[];
+  seed?: number;
+  gameTypeId: string;
 }
 
 /**
@@ -17,6 +39,30 @@ interface ActiveGame {
  */
 export class GameManager {
   private readonly activeGames = new Map<string, ActiveGame>();
+  private readonly events = new EventEmitter();
+
+  /** Subscribe to admin events. Returns unsubscribe function. */
+  onAdminEvent(listener: (event: AdminEvent) => void): () => void {
+    this.events.on('admin', listener);
+    return () => {
+      this.events.off('admin', listener);
+    };
+  }
+
+  private emitAdminEvent(event: Omit<AdminEvent, 'timestamp'>): void {
+    this.events.emit('admin', { ...event, timestamp: Date.now() });
+  }
+
+  /** Get the internal ActiveGame record (for admin service). */
+  getActiveGame(gameId: string): ActiveGame | undefined {
+    return this.activeGames.get(gameId);
+  }
+
+  /** Remove a game entirely (for admin destroy). */
+  destroyGame(gameId: string): void {
+    this.activeGames.delete(gameId);
+    this.emitAdminEvent({ type: 'game:destroyed', gameId });
+  }
 
   /** Start a new game from a lobby room. Returns the game ID. */
   async startGame(gameId: string, gameTypeId: string, players: string[], seed?: number): Promise<string> {
@@ -30,7 +76,14 @@ export class GameManager {
     // Preserve any subscribers that were registered before the game started
     const existing = this.activeGames.get(gameId);
     const subscribers = existing?.subscribers ?? new Map<string, Set<Subscriber>>();
-    this.activeGames.set(gameId, { machine, players, subscribers });
+    this.activeGames.set(gameId, {
+      machine,
+      players,
+      subscribers,
+      actionLog: [],
+      seed,
+      gameTypeId,
+    });
 
     const state = machine.serialize() as {
       hands?: Record<string, AnyCard[]>;
@@ -81,6 +134,14 @@ export class GameManager {
 
     // TODO: Persist initial state to database
 
+    this.emitAdminEvent({
+      type: 'game:created',
+      gameId,
+      gameTypeId,
+      players,
+      seed,
+    });
+
     return gameId;
   }
 
@@ -91,6 +152,26 @@ export class GameManager {
 
     const result = game.machine.dispatch(playerId, action as never);
 
+    // Record in action log
+    const logEntry: AdminActionLogEntry = {
+      index: game.actionLog.length,
+      playerId,
+      action: action as { type: string; [key: string]: unknown },
+      timestamp: Date.now(),
+      result: result.success ? 'success' : 'rejected',
+      error: !result.success ? result.error : undefined,
+    };
+    game.actionLog.push(logEntry);
+
+    this.emitAdminEvent({
+      type: 'action:dispatched',
+      gameId,
+      playerId,
+      action,
+      result: result.success ? 'success' : 'rejected',
+      error: !result.success ? result.error : undefined,
+    });
+
     if (!result.success) {
       this.broadcastToPlayer(gameId, playerId, {
         type: 'ACTION_REJECTED',
@@ -99,12 +180,24 @@ export class GameManager {
       return;
     }
 
+    this.emitAdminEvent({
+      type: 'state:updated',
+      gameId,
+      actionIndex: logEntry.index,
+    });
+
     // Broadcast updated views to all players
     for (const [pid, view] of result.views) {
       this.broadcastToPlayer(gameId, pid, {
         type: 'GAME_STATE',
         view,
         activePlayer: game.machine.getActivePlayer(),
+      });
+      this.emitAdminEvent({
+        type: 'view:broadcast',
+        gameId,
+        playerId: pid,
+        eventType: 'GAME_STATE',
       });
     }
 
@@ -116,6 +209,11 @@ export class GameManager {
           result: result.result,
         });
       }
+      this.emitAdminEvent({
+        type: 'game:over',
+        gameId,
+        result: result.result,
+      });
     }
 
     // TODO: Persist updated state to database
@@ -134,7 +232,7 @@ export class GameManager {
 
     // Allow subscribing before the game exists — create a placeholder
     if (!game) {
-      game = { machine: null as never, players: [], subscribers: new Map() };
+      game = { machine: null as never, players: [], subscribers: new Map(), actionLog: [], gameTypeId: '' };
       this.activeGames.set(gameId, game);
     }
 
@@ -143,8 +241,19 @@ export class GameManager {
     }
     game.subscribers.get(playerId)!.add(callback);
 
+    this.emitAdminEvent({
+      type: 'subscription:added',
+      gameId,
+      playerId,
+    });
+
     return () => {
       game.subscribers.get(playerId)?.delete(callback);
+      this.emitAdminEvent({
+        type: 'subscription:removed',
+        gameId,
+        playerId,
+      });
     };
   }
 
@@ -158,6 +267,7 @@ export class GameManager {
   resetGame(gameId: string): void {
     const game = this.activeGames.get(gameId);
     if (!game) return;
+    this.emitAdminEvent({ type: 'game:reset', gameId });
     // Keep subscribers, clear the machine and players
     game.machine = null as never;
     game.players = [];
