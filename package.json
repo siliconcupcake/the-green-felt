@@ -1,6 +1,7 @@
 {
   "name": "the-green-felt",
   "private": true,
+  "packageManager": "pnpm@10.33.0",
   "scripts": {
     "build": "pnpm -r build",
     "dev": "pnpm -r --parallel dev",
