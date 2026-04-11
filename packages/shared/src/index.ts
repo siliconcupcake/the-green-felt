@@ -18,7 +18,8 @@ export type { PersistedGameState, ActionLogEntry } from './game-state.js';
 
 // Protocol types
 export { ErrorCode } from './protocol.js';
-export type { ServerEvent, LobbyRoom, LobbyPlayer } from './protocol.js';
+export type { ServerEvent, DealSequenceData, LobbyRoom } from './protocol.js';
+export type { LiteraturePlayerView } from './protocol.js';
 
 // Error types
 export { GameError } from './errors.js';

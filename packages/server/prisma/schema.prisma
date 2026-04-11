@@ -16,27 +16,24 @@ model User {
   updatedAt    DateTime @updatedAt
 }
 
-model Game {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  pluginId  String
-  players   String[]
-  state     Json
-  actionLog Json[]
-  status    String   @default("active") // active | finished | abandoned
-  result    Json?
-  createdAt DateTime @default(now())
+model Player {
+  id        String   @id @map("_id")    // UUID, not ObjectId — matches playerId from lobby
+  name      String
   updatedAt DateTime @updatedAt
 }
 
-model Lobby {
-  id           String   @id @default(auto()) @map("_id") @db.ObjectId
-  roomCode     String   @unique
-  gameTypeId   String
-  hostPlayerId String
-  players      Json[]
-  maxPlayers   Int
-  status       String   @default("waiting") // waiting | in_progress | finished
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-  expiresAt    DateTime // TTL — MongoDB auto-deletes documents after this time
+model Game {
+  id             String   @id @default(auto()) @map("_id") @db.ObjectId
+  roomCode       String   @unique
+  gameTypeId     String
+  hostPlayerId   String
+  players        String[]         // Player IDs
+  status         String   @default("waiting") // waiting | in_progress | finished
+  inLobby        Boolean  @default(true)
+  state          Json?            // Full game state (null during lobby)
+  actionLog      Json[]   @default([])
+  result         Json?            // GameResult (null until finished)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  expiresAt      DateTime         // TTL for auto-cleanup
 }

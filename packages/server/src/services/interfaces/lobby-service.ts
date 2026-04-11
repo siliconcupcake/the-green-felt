@@ -24,6 +24,7 @@ export interface ILobbyService {
   closeRoom(roomCode: string, hostPlayerId: string): Promise<void>;
   startGame(roomCode: string, hostPlayerId: string): Promise<void>;
   getRoom(roomCode: string): Promise<LobbyRoom | undefined>;
+  listRooms(): Promise<LobbyRoom[]>;
   removeRoom(roomCode: string): Promise<void>;
   onRoomEvent(roomCode: string, callback: (event: LobbyEvent) => void): () => void;
 }

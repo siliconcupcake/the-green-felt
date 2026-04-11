@@ -19,8 +19,8 @@ class GameRegistry {
   }
 
   /** Get a plugin by its ID. */
-  get(pluginId: string): AnyGamePlugin | undefined {
-    return this.plugins.get(pluginId);
+  get(gameTypeId: string): AnyGamePlugin | undefined {
+    return this.plugins.get(gameTypeId);
   }
 
   /** Get all registered plugins (for listing in the lobby). */
@@ -29,8 +29,8 @@ class GameRegistry {
   }
 
   /** Check if a plugin is registered. */
-  has(pluginId: string): boolean {
-    return this.plugins.has(pluginId);
+  has(gameTypeId: string): boolean {
+    return this.plugins.has(gameTypeId);
   }
 }
 

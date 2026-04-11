@@ -13,18 +13,13 @@ export type ServerEvent<TPlayerView = unknown> =
 /** Lobby-related types */
 export interface LobbyRoom {
   id: string;
+  roomCode: string;
   gameTypeId: string;
   hostPlayerId: string;
-  players: LobbyPlayer[];
-  maxPlayers: number;
+  players: string[];
   status: 'waiting' | 'in_progress' | 'finished';
+  inLobby: boolean;
   createdAt: string;
-}
-
-export interface LobbyPlayer {
-  id: string;
-  name: string;
-  isReady: boolean;
 }
 
 export enum ErrorCode {

@@ -6,7 +6,7 @@ import type { GameResult } from './game-plugin.js';
  */
 export interface PersistedGameState<TState = unknown> {
   gameId: string;
-  pluginId: string;
+  gameTypeId: string;
   players: string[];
   state: TState;
   actionLog: ActionLogEntry[];

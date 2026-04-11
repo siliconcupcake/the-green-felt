@@ -1,6 +1,6 @@
 import crypto from 'node:crypto';
 import { EventEmitter } from 'node:events';
-import type { LobbyRoom, LobbyPlayer } from '@the-green-felt/shared';
+import type { LobbyRoom } from '@the-green-felt/shared';
 import type { ILobbyService, CreateRoomResult, JoinRoomResult, LobbyEvent } from './interfaces/lobby-service.js';
 import { gameRegistry } from '../games/registry.js';
 import { prisma } from '../db.js';
@@ -9,22 +9,24 @@ const ROOM_CODE_LENGTH = 6;
 const ROOM_CODE_CHARS = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // no I/O/0/1 to avoid confusion
 const TTL_DAYS = 14;
 
-function toLobbyRoom(doc: {
+function toRoom(doc: {
+  id: string;
   roomCode: string;
   gameTypeId: string;
   hostPlayerId: string;
-  players: unknown[];
-  maxPlayers: number;
+  players: string[];
   status: string;
+  inLobby: boolean;
   createdAt: Date;
 }): LobbyRoom {
   return {
-    id: doc.roomCode,
+    id: doc.id,
+    roomCode: doc.roomCode,
     gameTypeId: doc.gameTypeId,
     hostPlayerId: doc.hostPlayerId,
-    players: doc.players as LobbyPlayer[],
-    maxPlayers: doc.maxPlayers,
+    players: doc.players,
     status: doc.status as LobbyRoom['status'],
+    inLobby: doc.inLobby,
     createdAt: doc.createdAt.toISOString(),
   };
 }
@@ -37,13 +39,15 @@ export function generateRoomCode(): string {
 
 /**
  * Database-backed lobby service.
- * Rooms are persisted to MongoDB with a TTL index for auto-cleanup after 14 days.
+ * Uses the unified Game model with inLobby flag.
+ * Player names are stored in a separate Player model.
  *
- * To enable the TTL auto-deletion, run the following in mongosh after first deploy:
- *   db.Lobby.createIndex({ "expiresAt": 1 }, { expireAfterSeconds: 0 })
+ * To enable TTL auto-deletion, run in mongosh:
+ *   db.Game.createIndex({ "expiresAt": 1 }, { expireAfterSeconds: 0 })
  */
 class LobbyService implements ILobbyService {
   private readonly emitter = new EventEmitter();
+
   async createRoom(gameTypeId: string, playerName: string): Promise<CreateRoomResult> {
     const plugin = gameRegistry.get(gameTypeId);
     if (!plugin) {
@@ -51,13 +55,19 @@ class LobbyService implements ILobbyService {
     }
 
     const playerId = crypto.randomUUID();
-    const host: LobbyPlayer = { id: playerId, name: playerName, isReady: true };
+
+    // Upsert player name
+    await prisma.player.upsert({
+      where: { id: playerId },
+      update: { name: playerName },
+      create: { id: playerId, name: playerName },
+    });
 
     // Generate a unique room code with collision check
     let roomCode = '';
     for (let attempt = 0; attempt < 10; attempt++) {
       const candidate = generateRoomCode();
-      const existing = await prisma.lobby.findUnique({ where: { roomCode: candidate } });
+      const existing = await prisma.game.findUnique({ where: { roomCode: candidate } });
       if (!existing) {
         roomCode = candidate;
         break;
@@ -70,24 +80,24 @@ class LobbyService implements ILobbyService {
     const expiresAt = new Date();
     expiresAt.setDate(expiresAt.getDate() + TTL_DAYS);
 
-    const doc = await prisma.lobby.create({
+    const doc = await prisma.game.create({
       data: {
         roomCode,
-        gameTypeId: gameTypeId,
+        gameTypeId,
         hostPlayerId: playerId,
-        players: [host],
-        maxPlayers: plugin.metadata.maxPlayers,
+        players: [playerId],
         status: 'waiting',
+        inLobby: true,
         expiresAt,
       },
     });
 
-    return { roomCode, playerId, room: toLobbyRoom(doc) };
+    return { roomCode, playerId, room: toRoom(doc) };
   }
 
   async joinRoom(roomCode: string, playerName: string, existingPlayerId?: string): Promise<JoinRoomResult> {
     const code = roomCode.toUpperCase();
-    const doc = await prisma.lobby.findUnique({ where: { roomCode: code } });
+    const doc = await prisma.game.findUnique({ where: { roomCode: code } });
 
     if (!doc) {
       throw new Error('Room not found');
@@ -95,18 +105,23 @@ class LobbyService implements ILobbyService {
     if (doc.status !== 'waiting') {
       throw new Error('Game has already started');
     }
-    const players = doc.players as LobbyPlayer[];
-    if (players.length >= doc.maxPlayers) {
+    const plugin = gameRegistry.get(doc.gameTypeId);
+    if (plugin && doc.players.length >= plugin.metadata.maxPlayers) {
       throw new Error('Room is full');
     }
 
     const playerId = existingPlayerId ?? crypto.randomUUID();
-    const player: LobbyPlayer = { id: playerId, name: playerName, isReady: false };
-    players.push(player);
 
-    const updated = await prisma.lobby.update({
+    // Upsert player name
+    await prisma.player.upsert({
+      where: { id: playerId },
+      update: { name: playerName },
+      create: { id: playerId, name: playerName },
+    });
+
+    const updated = await prisma.game.update({
       where: { roomCode: code },
-      data: { players },
+      data: { players: { push: playerId } },
     });
 
     this.emitter.emit(`room:${code}`, {
@@ -115,24 +130,24 @@ class LobbyService implements ILobbyService {
       playerName,
     } satisfies LobbyEvent);
 
-    return { playerId, room: toLobbyRoom(updated) };
+    return { playerId, room: toRoom(updated) };
   }
 
   async getRoom(roomCode: string): Promise<LobbyRoom | undefined> {
-    const doc = await prisma.lobby.findUnique({ where: { roomCode: roomCode.toUpperCase() } });
-    return doc ? toLobbyRoom(doc) : undefined;
+    const doc = await prisma.game.findUnique({ where: { roomCode: roomCode.toUpperCase() } });
+    return doc ? toRoom(doc) : undefined;
   }
 
   async leaveRoom(roomCode: string, playerId: string): Promise<void> {
     const code = roomCode.toUpperCase();
-    const doc = await prisma.lobby.findUnique({ where: { roomCode: code } });
+    const doc = await prisma.game.findUnique({ where: { roomCode: code } });
     if (!doc) throw new Error('Room not found');
     if (doc.hostPlayerId === playerId) {
       throw new Error('Host cannot leave — use closeRoom instead');
     }
 
-    const players = (doc.players as LobbyPlayer[]).filter((p) => p.id !== playerId);
-    await prisma.lobby.update({ where: { roomCode: code }, data: { players } });
+    const players = doc.players.filter((p) => p !== playerId);
+    await prisma.game.update({ where: { roomCode: code }, data: { players } });
 
     this.emitter.emit(`room:${code}`, {
       type: 'PLAYER_LEFT',
@@ -142,7 +157,7 @@ class LobbyService implements ILobbyService {
 
   async closeRoom(roomCode: string, hostPlayerId: string): Promise<void> {
     const code = roomCode.toUpperCase();
-    const doc = await prisma.lobby.findUnique({ where: { roomCode: code } });
+    const doc = await prisma.game.findUnique({ where: { roomCode: code } });
     if (!doc) throw new Error('Room not found');
     if (doc.hostPlayerId !== hostPlayerId) {
       throw new Error('Only the host can close this room');
@@ -150,12 +165,12 @@ class LobbyService implements ILobbyService {
 
     this.emitter.emit(`room:${code}`, { type: 'ROOM_CLOSED' } satisfies LobbyEvent);
     this.emitter.removeAllListeners(`room:${code}`);
-    await prisma.lobby.delete({ where: { roomCode: code } }).catch(() => {});
+    await prisma.game.delete({ where: { roomCode: code } }).catch(() => {});
   }
 
   async startGame(roomCode: string, hostPlayerId: string): Promise<void> {
     const code = roomCode.toUpperCase();
-    const doc = await prisma.lobby.findUnique({ where: { roomCode: code } });
+    const doc = await prisma.game.findUnique({ where: { roomCode: code } });
     if (!doc) throw new Error('Room not found');
     if (doc.hostPlayerId !== hostPlayerId) {
       throw new Error('Only the host can start the game');
@@ -164,14 +179,17 @@ class LobbyService implements ILobbyService {
       throw new Error('Game has already started');
     }
 
-    await prisma.lobby.update({ where: { roomCode: code }, data: { status: 'in_progress' } });
+    await prisma.game.update({ where: { roomCode: code }, data: { status: 'in_progress', inLobby: false } });
     this.emitter.emit(`room:${code}`, { type: 'GAME_STARTED' } satisfies LobbyEvent);
   }
 
   async removeRoom(roomCode: string): Promise<void> {
-    await prisma.lobby.delete({ where: { roomCode: roomCode.toUpperCase() } }).catch(() => {
-      // Ignore if already deleted or expired
-    });
+    await prisma.game.delete({ where: { roomCode: roomCode.toUpperCase() } }).catch(() => {});
+  }
+
+  async listRooms(): Promise<LobbyRoom[]> {
+    const docs = await prisma.game.findMany();
+    return docs.map((doc) => toRoom(doc));
   }
 
   onRoomEvent(roomCode: string, callback: (event: LobbyEvent) => void): () => void {

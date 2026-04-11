@@ -1,16 +1,18 @@
 import crypto from 'node:crypto';
 import { EventEmitter } from 'node:events';
-import type { LobbyRoom, LobbyPlayer } from '@the-green-felt/shared';
+import type { LobbyRoom } from '@the-green-felt/shared';
 import type { ILobbyService, CreateRoomResult, JoinRoomResult, LobbyEvent } from '../interfaces/lobby-service.js';
 import { generateRoomCode } from '../lobby-service.js';
 import { gameRegistry } from '../../games/registry.js';
 
 /**
  * In-memory lobby service for testing.
- * No database required — all state lives in a Map.
+ * No database required — all state lives in Maps.
  */
 export class MockLobbyService implements ILobbyService {
   private readonly rooms = new Map<string, LobbyRoom>();
+  /** In-memory player name store (mirrors the Player DB model). */
+  private readonly playerNames = new Map<string, string>();
   private readonly emitter = new EventEmitter();
 
   async createRoom(gameTypeId: string, playerName: string): Promise<CreateRoomResult> {
@@ -25,15 +27,16 @@ export class MockLobbyService implements ILobbyService {
     } while (this.rooms.has(roomCode));
 
     const playerId = crypto.randomUUID();
-    const host: LobbyPlayer = { id: playerId, name: playerName, isReady: true };
+    this.playerNames.set(playerId, playerName);
 
     const room: LobbyRoom = {
-      id: roomCode,
+      id: crypto.randomUUID(),
+      roomCode,
       gameTypeId,
       hostPlayerId: playerId,
-      players: [host],
-      maxPlayers: plugin.metadata.maxPlayers,
+      players: [playerId],
       status: 'waiting',
+      inLobby: true,
       createdAt: new Date().toISOString(),
     };
 
@@ -50,13 +53,14 @@ export class MockLobbyService implements ILobbyService {
     if (room.status !== 'waiting') {
       throw new Error('Game has already started');
     }
-    if (room.players.length >= room.maxPlayers) {
+    const plugin = gameRegistry.get(room.gameTypeId);
+    if (plugin && room.players.length >= plugin.metadata.maxPlayers) {
       throw new Error('Room is full');
     }
 
     const playerId = existingPlayerId ?? crypto.randomUUID();
-    const player: LobbyPlayer = { id: playerId, name: playerName, isReady: false };
-    room.players.push(player);
+    this.playerNames.set(playerId, playerName);
+    room.players.push(playerId);
 
     this.emitter.emit(`room:${code}`, {
       type: 'PLAYER_JOINED',
@@ -71,6 +75,21 @@ export class MockLobbyService implements ILobbyService {
     return this.rooms.get(roomCode.toUpperCase());
   }
 
+  /** Look up a player's display name by ID. */
+  getPlayerName(playerId: string): string | undefined {
+    return this.playerNames.get(playerId);
+  }
+
+  /** Look up multiple player names by IDs. */
+  getPlayerNames(playerIds: string[]): Record<string, string> {
+    const result: Record<string, string> = {};
+    for (const id of playerIds) {
+      const name = this.playerNames.get(id);
+      if (name) result[id] = name;
+    }
+    return result;
+  }
+
   async leaveRoom(roomCode: string, playerId: string): Promise<void> {
     const code = roomCode.toUpperCase();
     const room = this.rooms.get(code);
@@ -79,7 +98,7 @@ export class MockLobbyService implements ILobbyService {
       throw new Error('Host cannot leave — use closeRoom instead');
     }
 
-    room.players = room.players.filter((p) => p.id !== playerId);
+    room.players = room.players.filter((p) => p !== playerId);
 
     this.emitter.emit(`room:${code}`, {
       type: 'PLAYER_LEFT',
@@ -112,11 +131,16 @@ export class MockLobbyService implements ILobbyService {
     }
 
     room.status = 'in_progress';
+    room.inLobby = false;
     this.emitter.emit(`room:${code}`, { type: 'GAME_STARTED' } satisfies LobbyEvent);
   }
 
   async removeRoom(roomCode: string): Promise<void> {
     this.rooms.delete(roomCode.toUpperCase());
+  }
+
+  async listRooms(): Promise<LobbyRoom[]> {
+    return [...this.rooms.values()];
   }
 
   onRoomEvent(roomCode: string, callback: (event: LobbyEvent) => void): () => void {
@@ -130,8 +154,9 @@ export class MockLobbyService implements ILobbyService {
   /** Test helper — clear all rooms */
   clear(): void {
     this.rooms.clear();
+    this.playerNames.clear();
     this.emitter.removeAllListeners();
   }
 }
 
-export const lobbyService: ILobbyService = new MockLobbyService();
+export const lobbyService = new MockLobbyService();
