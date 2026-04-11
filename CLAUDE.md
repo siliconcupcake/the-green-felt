@@ -6,14 +6,24 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 The Green Felt is an online card game platform built around a game-agnostic deck engine. Game authors implement a single `GamePlugin` interface — the platform handles networking, persistence, lobbies, and rendering. The reference game is Literature (a team-based card game for 6 players).
 
+## First-Time Setup
+
+```bash
+pnpm install
+cp packages/server/.env.example packages/server/.env   # set DATABASE_URL if needed
+pnpm --filter @the-green-felt/server db:generate        # generate Prisma client
+pnpm --filter @the-green-felt/server db:push             # push schema to MongoDB
+```
+
 ## Commands
 
 ```bash
-# Install
-pnpm install
-
 # Dev (all packages in parallel — server :3001, client :3000 with proxy)
 pnpm dev
+
+# Run a single package
+pnpm --filter @the-green-felt/server dev
+pnpm --filter @the-green-felt/client dev
 
 # Build all packages
 pnpm build
@@ -82,6 +92,8 @@ Client action → tRPC mutation → GameManager.handleAction()
   → broadcast via tRPC subscription → Zustand store → React re-render
 ```
 
+Server exposes tRPC over both HTTP (`fastifyTRPCPlugin`) and WebSocket (`applyWSSHandler`). The client currently uses `httpBatchLink` for queries/mutations and `httpSubscriptionLink` (SSE) for real-time subscriptions.
+
 ### Key Files
 
 | File | Role |
@@ -94,7 +106,7 @@ Client action → tRPC mutation → GameManager.handleAction()
 | `packages/server/src/games/registry.ts` | GameRegistry — plugin discovery by ID |
 | `packages/server/src/router/index.ts` | AppRouter — main tRPC router (exported type used by client) |
 | `packages/server/prisma/schema.prisma` | MongoDB models: User, Player, Game |
-| `packages/client/src/trpc.ts` | tRPC client + WebSocket link |
+| `packages/client/src/trpc.ts` | tRPC client (HTTP batch + SSE subscriptions) |
 | `packages/client/src/stores/` | Zustand stores (connection, game, lobby state) |
 
 ### Adding a New Game
@@ -113,7 +125,8 @@ Use `TestHarness` from `@the-green-felt/engine` to test plugins without a server
 ```typescript
 const harness = new TestHarness(plugin, ['p1', 'p2', 'p3', 'p4', 'p5', 'p6'], 42);
 const view = harness.viewFor('p1');
-const result = harness.tryAct('p1', { type: 'ASK_CARD', target: 'p3', card: 'AH' as CardId });
+// act() throws on validation failure; tryAct() returns { success, error? }
+const result = harness.tryAct('p1', { type: 'ASK_CARD', targetPlayer: 'p3', card: 'AH' as CardId });
 ```
 
 Deterministic seeds produce known card distributions for reproducible tests.
