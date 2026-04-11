@@ -1,9 +1,5 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router';
-import { useLobbyStore } from '../stores/lobby-store';
-import { trpc } from '../trpc';
-import { CreateGameForm } from '../components/lobby/CreateGameForm';
-import { JoinGameForm } from '../components/lobby/JoinGameForm';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
@@ -12,6 +8,10 @@ import Form from 'react-bootstrap/Form';
 import Tab from 'react-bootstrap/Tab';
 import Tabs from 'react-bootstrap/Tabs';
 import Alert from 'react-bootstrap/Alert';
+import { JoinGameForm } from '../components/lobby/JoinGameForm';
+import { CreateGameForm } from '../components/lobby/CreateGameForm';
+import { trpc } from '../trpc';
+import { useLobbyStore } from '../stores/lobby-store';
 import '../components/lobby/lobby.css';
 
 const STORAGE_KEY_NAME = 'tgf:playerName';

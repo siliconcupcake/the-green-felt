@@ -17,14 +17,22 @@ export function GameInfoPanel({
   turnTimeLimit = 30,
 }: GameInfoPanelProps) {
   const [timeLeft, setTimeLeft] = useState(turnTimeLimit);
+  const [prevTurnKey, setPrevTurnKey] = useState(`${currentTurnPlayer}-${turnTimeLimit}`);
+  const turnKey = `${currentTurnPlayer}-${turnTimeLimit}`;
+
+  // Reset the timer when the active player or time limit changes (no effect needed).
+  // This is the React-recommended pattern for "derived state reset".
+  if (prevTurnKey !== turnKey) {
+    setPrevTurnKey(turnKey);
+    setTimeLeft(turnTimeLimit);
+  }
 
   useEffect(() => {
-    setTimeLeft(turnTimeLimit);
     const interval = setInterval(() => {
       setTimeLeft((prev) => (prev > 0 ? prev - 1 : 0));
     }, 1000);
     return () => clearInterval(interval);
-  }, [currentTurnPlayer, turnTimeLimit]);
+  }, [turnKey]);
 
   const timeWarning = timeLeft <= 10;
 

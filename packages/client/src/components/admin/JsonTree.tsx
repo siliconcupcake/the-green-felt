@@ -121,7 +121,21 @@ function TreeNode({ keyName, value, path, depth, maxDepth, searchTerm, forceExpa
     return (
       <div className={nodeClass}>
         {keyName !== null && (
-          <span className="jt-key" onClick={() => copyToClipboard(path)} title={`Copy path: ${path}`}>
+          <span
+            className="jt-key"
+            role="button"
+            tabIndex={0}
+            onClick={() => copyToClipboard(path)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                copyToClipboard(path);
+              } else if (e.key === ' ') {
+                e.preventDefault();
+                copyToClipboard(path);
+              }
+            }}
+            title={`Copy path: ${path}`}
+          >
             {keyName}:&nbsp;
           </span>
         )}
@@ -140,11 +154,39 @@ function TreeNode({ keyName, value, path, depth, maxDepth, searchTerm, forceExpa
   return (
     <div className={nodeClass}>
       <div className="jt-row">
-        <span className="jt-toggle" onClick={handleToggle}>
+        <span
+          className="jt-toggle"
+          role="button"
+          tabIndex={0}
+          aria-expanded={isExpanded}
+          onClick={handleToggle}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') {
+              handleToggle();
+            } else if (e.key === ' ') {
+              e.preventDefault();
+              handleToggle();
+            }
+          }}
+        >
           {isExpanded ? '\u25BC' : '\u25B6'}
         </span>
         {keyName !== null && (
-          <span className="jt-key" onClick={() => copyToClipboard(path)} title={`Copy path: ${path}`}>
+          <span
+            className="jt-key"
+            role="button"
+            tabIndex={0}
+            onClick={() => copyToClipboard(path)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                copyToClipboard(path);
+              } else if (e.key === ' ') {
+                e.preventDefault();
+                copyToClipboard(path);
+              }
+            }}
+            title={`Copy path: ${path}`}
+          >
             {keyName}:&nbsp;
           </span>
         )}

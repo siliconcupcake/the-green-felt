@@ -1,6 +1,6 @@
 import { GameStateMachine } from '@the-green-felt/engine';
-import { gameManager } from './game-manager.js';
 import { gameRegistry } from '../games/registry.js';
+import { gameManager } from './game-manager.js';
 import type { AdminActionLogEntry } from './game-manager.js';
 
 export interface GameInfo {

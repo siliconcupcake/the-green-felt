@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { GAME_CATALOG } from '@the-green-felt/shared';
-import { trpc } from '../../trpc';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Card from 'react-bootstrap/Card';
@@ -9,6 +8,7 @@ import Button from 'react-bootstrap/Button';
 import InputGroup from 'react-bootstrap/InputGroup';
 import Alert from 'react-bootstrap/Alert';
 import Modal from 'react-bootstrap/Modal';
+import { trpc } from '../../trpc';
 import './lobby.css';
 
 const STORAGE_KEY_PLAYER_ID = 'tgf:playerId';
@@ -94,7 +94,8 @@ export function JoinGameForm({
     return () => {
       subscription.unsubscribe();
     };
-  }, [gameCode, players.length > 0]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [gameCode, players.length]);
 
   const fetchPlayers = async (code: string) => {
     setPeeking(true);
