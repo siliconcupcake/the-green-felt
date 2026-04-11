@@ -141,6 +141,18 @@ Deterministic seeds produce known card distributions for reproducible tests.
 - **Immutable engine classes** — Deck, Hand, CardSet return new instances on mutation
 - **Branded types** — use `CardId` (branded string), construct via `makeCardId('AS')`
 
+## Knowledge Graph
+
+A graphify knowledge graph of the codebase lives in `graphify-out/`. Use it to explore architecture and cross-package relationships before making changes.
+
+- `graphify-out/graph.html` — interactive visualization (open in browser)
+- `graphify-out/graph.json` — raw graph data (274 nodes, 288 edges, 50 communities)
+- `graphify-out/GRAPH_REPORT.md` — audit report with god nodes, community cohesion, surprising connections
+
+**God nodes** (highest connectivity): Hand (14), MockLobbyService (13), CardSet (10), Deck (10), LobbyService (10), TestHarness (9), GameManager (9), GameStateMachine (8).
+
+To query the graph: `/graphify query "<question>"`. To update after code changes: `/graphify . --update`.
+
 ## Tech Stack
 
 TypeScript 5.7+, Node.js 22+, pnpm 9+, Fastify 5, tRPC 11, Prisma 6 + MongoDB, React 19, Vite 6, Zustand 5, React Router 7, React Bootstrap, Vitest 3, Zod for validation. Card rendering uses CSS transforms (no canvas).

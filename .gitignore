@@ -24,5 +24,8 @@ Thumbs.db
 .claude/skills/*
 .agents/skills/*
 
+# Graphify Output files
+graphify-out/
+
 # Bruno API collections
 .bruno
