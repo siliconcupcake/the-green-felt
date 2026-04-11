@@ -1,7 +1,7 @@
-import { useState, useEffect, useCallback } from 'react';
-import { Card } from '../card/Card';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import type { AnyCard } from '@the-green-felt/shared';
 import { createHidden } from '@the-green-felt/shared';
+import { Card } from '../card/Card';
 import './game-table.css';
 
 const DEAL_INTERVAL_MS = 100;
@@ -64,29 +64,32 @@ export function DealingAnimation({
   const myPlayerId = seatOrder[0];
   const [dealOrder] = useState(() => buildClientDealOrder(seatOrder, myCards, cardsPerPlayer, myPlayerId));
   const [dealtCount, setDealtCount] = useState(0);
+  const dealtCountRef = useRef(0);
 
   const handleComplete = useCallback(() => {
     onComplete();
   }, [onComplete]);
 
   useEffect(() => {
-    if (dealtCount >= dealOrder.length) {
-      const timeout = setTimeout(handleComplete, SETTLE_DELAY_MS);
-      return () => clearTimeout(timeout);
-    }
+    dealtCountRef.current = 0;
 
     const interval = setInterval(() => {
-      setDealtCount((prev) => {
-        const next = prev + 1;
-        if (next >= dealOrder.length) {
-          clearInterval(interval);
-        }
-        return next;
-      });
+      dealtCountRef.current += 1;
+      const next = dealtCountRef.current;
+      setDealtCount(next);
+      if (next >= dealOrder.length) {
+        clearInterval(interval);
+      }
     }, DEAL_INTERVAL_MS);
 
     return () => clearInterval(interval);
-  }, [dealtCount >= dealOrder.length, dealOrder.length, handleComplete]);
+  }, [dealOrder.length, handleComplete]);
+
+  useEffect(() => {
+    if (dealtCount < dealOrder.length) return;
+    const timeout = setTimeout(handleComplete, SETTLE_DELAY_MS);
+    return () => clearTimeout(timeout);
+  }, [dealtCount, dealOrder.length, handleComplete]);
 
   return (
     <div className="dealing-overlay">

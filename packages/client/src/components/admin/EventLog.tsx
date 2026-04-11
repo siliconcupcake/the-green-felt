@@ -98,7 +98,10 @@ export function EventLog() {
             <div
               key={eventIdx}
               className={`admin-event-entry${isPlayerEvent ? ' admin-event-highlight' : ''}`}
+              role="button"
+              tabIndex={0}
               onClick={() => toggleExpand(eventIdx)}
+              onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') toggleExpand(eventIdx); }}
             >
               <span className="admin-event-time">{formatTime(event.timestamp)}</span>
               <span className={`admin-event-type admin-event-type-${event.type.split(':')[0]}`}>

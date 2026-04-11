@@ -1,9 +1,9 @@
 import crypto from 'node:crypto';
 import { EventEmitter } from 'node:events';
 import type { LobbyRoom } from '@the-green-felt/shared';
-import type { ILobbyService, CreateRoomResult, JoinRoomResult, LobbyEvent } from './interfaces/lobby-service.js';
 import { gameRegistry } from '../games/registry.js';
 import { prisma } from '../db.js';
+import type { ILobbyService, CreateRoomResult, JoinRoomResult, LobbyEvent } from './interfaces/lobby-service.js';
 
 const ROOM_CODE_LENGTH = 6;
 const ROOM_CODE_CHARS = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // no I/O/0/1 to avoid confusion

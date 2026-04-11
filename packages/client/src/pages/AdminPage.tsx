@@ -14,12 +14,12 @@ export function AdminPage() {
   const {
     gameId,
     appendEvent,
-    setFullState,
-    setActionLog,
-    setGameInfo,
-    selectedPlayerId,
-    setPlayerView,
-    timelineIndex,
+    setFullState: _setFullState,
+    setActionLog: _setActionLog,
+    setGameInfo: _setGameInfo,
+    selectedPlayerId: _selectedPlayerId,
+    setPlayerView: _setPlayerView,
+    timelineIndex: _timelineIndex,
   } = useAdminStore();
 
   // Subscribe to admin events when a game is active

@@ -1,8 +1,8 @@
 import { z } from 'zod';
 import type { ServerEvent } from '@the-green-felt/shared';
+import { TRPCError } from '@trpc/server';
 import { publicProcedure, router } from '../trpc.js';
 import { gameManager } from '../services/game-manager.js';
-import { TRPCError } from '@trpc/server';
 
 const MOCK_PLAYER_NAMES = ['Alice', 'Bob', 'Charlie', 'Diana', 'Eve'];
 

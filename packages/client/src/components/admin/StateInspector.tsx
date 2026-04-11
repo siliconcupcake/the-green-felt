@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
+import { trpc } from '../../trpc';
 import { useAdminStore } from '../../stores/admin-store';
 import { JsonTree } from './JsonTree';
-import { trpc } from '../../trpc';
 
 export function StateInspector() {
   const {
@@ -70,8 +70,9 @@ export function StateInspector() {
         </div>
         <div className="admin-state-panel">
           <div className="admin-player-picker">
-            <label>Player View:</label>
+            <label htmlFor="admin-player-select">Player View:</label>
             <select
+              id="admin-player-select"
               value={selectedPlayerId ?? ''}
               onChange={(e) => selectPlayer(e.target.value || null)}
             >
