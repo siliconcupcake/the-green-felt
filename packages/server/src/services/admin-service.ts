@@ -12,7 +12,7 @@ export interface GameInfo {
   seed: number | undefined;
 }
 
-interface TestGameResult {
+export interface TestGameResult {
   gameId: string;
   players: Array<{ id: string; name: string }>;
   seed: number | undefined;
