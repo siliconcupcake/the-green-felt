@@ -24,6 +24,10 @@ Thumbs.db
 .claude/skills/*
 .agents/skills/*
 
+# Claude Plugin outputs
+docs/superpowers
+
+
 # Graphify Output files
 graphify-out/
 

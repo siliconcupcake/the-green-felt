@@ -99,8 +99,7 @@ export const lobbyRouter = router({
         // Initialize game engine after lobby transition
         const room = await lobbyService.getRoom(input.roomCode);
         if (room) {
-          const playerIds = room.players.map((p) => p.id);
-          await gameManager.startGame(room.roomCode, room.gameTypeId, playerIds);
+          await gameManager.startGame(room.roomCode, room.gameTypeId, room.players);
         }
       } catch (err) {
         const message = err instanceof Error ? err.message : 'Failed to start game';

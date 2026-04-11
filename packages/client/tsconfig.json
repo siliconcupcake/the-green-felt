@@ -8,7 +8,7 @@
     "noEmit": true,
     "paths": {
       "@the-green-felt/shared": ["../shared/src/index.ts"],
-      "@the-green-felt/server/*": ["../server/src/*"]
+      "@the-green-felt/server/*": ["../server/dist/*"]
     }
   },
   "include": ["src"],
