@@ -17,8 +17,8 @@ export interface AnimationPreset {
   };
 
   /**
-   * Scales duration-based values (hold times, stagger intervals).
-   * Does NOT affect spring physics (stiffness/damping/mass).
+   * Preset-level timing multiplier for consumers that choose to apply it.
+   * Not automatically applied — hooks and components must opt in.
    * 1.0 = normal, <1.0 = faster, >1.0 = slower.
    */
   speed: number;

@@ -90,15 +90,17 @@ export function GamePage() {
     const myCards = dealSequence.myCardIds.map((id) => cardFromId(id));
 
     return (
-      <div className="game-table">
-        <DealingAnimation
-          seatOrder={dealSequence.seatOrder}
-          myCards={myCards}
-          cardsPerPlayer={cardsPerPlayer}
-          playerPositions={positions}
-          onComplete={handleDealingComplete}
-        />
-      </div>
+      <AnimationPresetProvider>
+        <div className="game-table">
+          <DealingAnimation
+            seatOrder={dealSequence.seatOrder}
+            myCards={myCards}
+            cardsPerPlayer={cardsPerPlayer}
+            playerPositions={positions}
+            onComplete={handleDealingComplete}
+          />
+        </div>
+      </AnimationPresetProvider>
     );
   }
 

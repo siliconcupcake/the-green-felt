@@ -1,3 +1,4 @@
+import type { CSSProperties } from 'react';
 import { useEffect, useRef } from 'react';
 import { useAnimate, stagger } from 'motion/react';
 import { Card } from '../card/Card';
@@ -102,7 +103,7 @@ export function SetDeclarationOverlay({ declaration, onComplete }: SetDeclaratio
                 '--center-offset-x': `${centerOffsetX}vw`,
                 '--center-offset-y': `${centerOffsetY}vh`,
                 '--score-offset-y': '-30vh',
-              } as React.CSSProperties
+              } as CSSProperties
             }
           >
             <Card

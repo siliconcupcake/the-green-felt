@@ -1,3 +1,4 @@
+import type { CSSProperties } from 'react';
 import { useEffect } from 'react';
 import { Card } from '../card/Card';
 import type { AnyCard } from '@the-green-felt/shared';
@@ -61,7 +62,7 @@ export function DealingAnimation({ seatOrder, myCards, cardsPerPlayer, playerPos
             key={`deal-${i}`}
             className="dealing-card"
             data-deal-card
-            style={{ '--target-x': `${offsetX}vw`, '--target-y': `${offsetY}vh`, opacity: 0 } as React.CSSProperties}
+            style={{ '--target-x': `${offsetX}vw`, '--target-y': `${offsetY}vh`, opacity: 0 } as CSSProperties}
           >
             <Card card={entry.card} faceDown={!entry.faceUp} disableHover />
           </div>
