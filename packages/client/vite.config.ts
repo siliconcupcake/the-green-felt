@@ -3,12 +3,12 @@ import react from '@vitejs/plugin-react';
 import path from 'path';
 
 export default defineConfig({
-  publicDir: path.resolve(__dirname, 'public'),
+  publicDir: path.resolve(import.meta.dirname, 'public'),
   plugins: [react()],
   resolve: {
     alias: {
-      '@the-green-felt/shared': path.resolve(__dirname, '../shared/src'),
-      '@the-green-felt/server': path.resolve(__dirname, '../server/src'),
+      '@the-green-felt/shared': path.resolve(import.meta.dirname, '../shared/src'),
+      '@the-green-felt/server': path.resolve(import.meta.dirname, '../server/src'),
     },
   },
   server: {
