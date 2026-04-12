@@ -5,7 +5,6 @@ import { useLobbyStore } from '../stores/lobby-store';
 import { GameCatalog } from '../components/lobby/GameCatalog';
 import { JoinField } from '../components/lobby/JoinField';
 import { WaitingRoom } from '../components/lobby/WaitingRoom';
-import '../components/lobby/lobby.css';
 
 const STORAGE_KEY_NAME = 'tgf:playerName';
 const STORAGE_KEY_PLAYER_ID = 'tgf:playerId';
@@ -143,21 +142,23 @@ export function LobbyPage() {
   }, [phase, navigate]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
-    <div className="lobby">
-      <div className="lobby-content">
+    <div className="lobby min-h-screen bg-base font-sans text-text-primary flex flex-col items-center justify-center py-8 px-4 relative">
+      <div className="w-full max-w-[30rem] -mt-[4vh] relative z-[1] md:max-w-[60rem]">
         {/* Brand — always visible */}
-        <div className="lobby-brand">
-          <h1 className="lobby-brand-title">The Green Felt</h1>
-          <div className="lobby-brand-tagline">Card Games Reimagined</div>
+        <div className="text-center mb-8">
+          <h1 className="text-[1.75rem] font-bold tracking-[-0.02em] text-text-primary m-0">The Green Felt</h1>
+          <div className="text-[0.6875rem] font-normal tracking-[0.3em] uppercase text-accent-green mt-1">
+            Card Games Reimagined
+          </div>
         </div>
 
         {/* Name Input — always visible */}
-        <div className="lobby-name-input-wrapper">
+        <div className="max-w-[20rem] mx-auto mb-8 max-md:max-w-full md:max-w-[25rem]">
           <input
             ref={nameInputRef}
             type="text"
             aria-label="Your name"
-            className={`lobby-name-input${nameError ? ' lobby-name-input--error' : ''}`}
+            className={`w-full bg-surface border rounded-card py-3 px-4 text-text-primary font-sans text-sm outline-none transition-[border-color] duration-150 placeholder:text-text-muted focus:border-accent-green ${nameError ? 'border-accent-red animate-shake' : 'border-border'}`}
             placeholder="Your name..."
             value={playerName}
             onChange={(e) => {
@@ -174,7 +175,7 @@ export function LobbyPage() {
             <>
               <GameCatalog onHost={handleHost} disabled={loading} />
 
-              {error && <div className="lobby-error">{error}</div>}
+              {error && <div className="text-accent-red text-xs mt-2 text-center">{error}</div>}
 
               <JoinField
                 initialCode={routeRoomCode ?? ''}
@@ -189,7 +190,9 @@ export function LobbyPage() {
         </div>
 
         {/* Footer — always visible */}
-        <div className="lobby-footer">Made with <span className="lobby-footer__heart">♥</span> by siliconcupcake</div>
+        <div className="fixed bottom-0 left-0 right-0 text-center py-3 text-text-disabled text-[0.6875rem]">
+          Made with <span className="text-accent-green">♥</span> by siliconcupcake
+        </div>
       </div>
     </div>
   );

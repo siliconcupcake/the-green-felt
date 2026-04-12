@@ -6,7 +6,6 @@ import { buildShakeKeyframes } from '../../hooks/useShake';
 import type { SetDeclarationState } from '../../hooks/useSetDeclaration';
 import { useAnimationPreset } from '../animation/AnimationPresetProvider';
 import { Card } from '../card/Card';
-import './game-table.css';
 
 interface SetDeclarationOverlayProps {
   declaration: SetDeclarationState | null;
@@ -83,7 +82,7 @@ export function SetDeclarationOverlay({ declaration, onComplete }: SetDeclaratio
   if (!declaration) return null;
 
   return (
-    <div className="dealing-overlay" ref={scope}>
+    <div className="absolute inset-0 z-50 pointer-events-none" ref={scope}>
       {declaration.cardIds.map((cardId) => {
         const ownerId = declaration.cardOwners[cardId];
         const ownerPos = declaration.cardOwnerPositions[ownerId] ?? declaration.center;
@@ -93,7 +92,7 @@ export function SetDeclarationOverlay({ declaration, onComplete }: SetDeclaratio
         return (
           <div
             key={cardId}
-            className="dealing-card"
+            className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-[100] will-change-transform"
             data-set-card
             style={
               {
@@ -110,6 +109,7 @@ export function SetDeclarationOverlay({ declaration, onComplete }: SetDeclaratio
               card={declaration.success ? cardFromId(cardId) : createHidden()}
               faceDown={!declaration.success}
               disableHover
+              size="deal"
             />
           </div>
         );

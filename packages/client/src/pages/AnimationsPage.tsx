@@ -17,7 +17,6 @@ import { GameToast } from '../components/game/GameToast';
 import { computePlayerPositions } from '../components/game/GameTable';
 import type { CardTransferState } from '../hooks/useCardTransfer';
 import type { SetDeclarationState } from '../hooks/useSetDeclaration';
-import './animations-page.css';
 
 // ---------------------------------------------------------------------------
 // Mock data
@@ -97,6 +96,24 @@ const TABS: TabDef[] = [
 ];
 
 // ---------------------------------------------------------------------------
+// Shared Tailwind class constants
+// ---------------------------------------------------------------------------
+
+const PLAY_BTN_BASE =
+  'py-[0.3rem] px-3.5 border-none rounded-md text-white cursor-pointer text-xs font-semibold disabled:opacity-50 disabled:cursor-not-allowed';
+const PLAY_BTN = `${PLAY_BTN_BASE} bg-myturn hover:bg-[#43a047]`;
+const PLAY_BTN_DANGER = `${PLAY_BTN_BASE} bg-[#e53935] hover:bg-[#c62828]`;
+const PLAY_BTN_MUTED = `${PLAY_BTN_BASE} bg-[#757575] hover:bg-[#616161]`;
+
+const SECTION = 'flex flex-col h-full';
+const SECTION_BAR = 'flex items-center gap-3 py-3 px-6 bg-black/20 shrink-0 flex-wrap';
+const SECTION_BAR_P = 'text-white/50 text-xs m-0 flex-1 min-w-[12rem]';
+const SECTION_CONTROLS = 'flex gap-2 items-center flex-wrap';
+const STAGE = 'flex-1 relative bg-felt overflow-hidden';
+const STAGE_CARDS = 'flex gap-4 p-6 items-center justify-center flex-wrap h-full';
+const STAGE_CENTERED = 'flex items-center justify-center h-full text-white/35 text-[0.85rem]';
+
+// ---------------------------------------------------------------------------
 // Preset selector
 // ---------------------------------------------------------------------------
 
@@ -104,12 +121,16 @@ const PRESET_NAMES: PresetName[] = ['physical', 'snappy', 'elegant'];
 
 function PresetSelector({ current, onChange }: { current: PresetName; onChange: (name: PresetName) => void }) {
   return (
-    <div className="preset-selector">
+    <div className="flex gap-1.5">
       {PRESET_NAMES.map((name) => (
         <button
           key={name}
           type="button"
-          className={`preset-btn ${current === name ? 'preset-btn--active' : ''}`}
+          className={`py-1 px-2.5 border rounded-md text-white cursor-pointer text-xs font-semibold capitalize ${
+            current === name
+              ? 'bg-white/20 border-white'
+              : 'bg-transparent border-white/30 hover:bg-white/10'
+          }`}
           onClick={() => onChange(name)}
         >
           {name}
@@ -125,12 +146,12 @@ function PresetSelector({ current, onChange }: { current: PresetName; onChange: 
 
 function CardHoverSection() {
   return (
-    <div className="animation-section">
-      <div className="animation-section-bar">
-        <p>Hover over cards to see the lift and shadow spring. Click to toggle selection.</p>
+    <div className={SECTION}>
+      <div className={SECTION_BAR}>
+        <p className={SECTION_BAR_P}>Hover over cards to see the lift and shadow spring. Click to toggle selection.</p>
       </div>
-      <div className="animation-stage">
-        <div className="animation-stage-cards">
+      <div className={STAGE}>
+        <div className={STAGE_CARDS}>
           {MOCK_CARDS.map((card) => (
             <Card key={card.id} card={card} />
           ))}
@@ -160,17 +181,17 @@ function HandLayoutSection() {
   }, []);
 
   return (
-    <div className="animation-section">
-      <div className="animation-section-bar">
-        <p>Add/remove cards to see the layout reflow animation.</p>
-        <div className="animation-section-controls">
-          <button type="button" className="play-btn" onClick={addCard}>Add Card</button>
-          <button type="button" className="play-btn" onClick={removeCard}>Remove Card</button>
-          <button type="button" className="play-btn play-btn--muted" onClick={reset}>Reset</button>
+    <div className={SECTION}>
+      <div className={SECTION_BAR}>
+        <p className={SECTION_BAR_P}>Add/remove cards to see the layout reflow animation.</p>
+        <div className={SECTION_CONTROLS}>
+          <button type="button" className={PLAY_BTN} onClick={addCard}>Add Card</button>
+          <button type="button" className={PLAY_BTN} onClick={removeCard}>Remove Card</button>
+          <button type="button" className={PLAY_BTN_MUTED} onClick={reset}>Reset</button>
         </div>
       </div>
-      <div className="animation-stage">
-        <div className="animation-stage-cards">
+      <div className={STAGE}>
+        <div className={STAGE_CARDS}>
           <CardFan cards={cards} />
         </div>
       </div>
@@ -196,16 +217,16 @@ function DealingSection() {
   }, []);
 
   return (
-    <div className="animation-section">
-      <div className="animation-section-bar">
-        <p>Cards fly from a central deck to each player seat in round-robin deal order.</p>
-        <div className="animation-section-controls">
-          <button type="button" className="play-btn" onClick={startDeal} disabled={isDealing}>
+    <div className={SECTION}>
+      <div className={SECTION_BAR}>
+        <p className={SECTION_BAR_P}>Cards fly from a central deck to each player seat in round-robin deal order.</p>
+        <div className={SECTION_CONTROLS}>
+          <button type="button" className={PLAY_BTN} onClick={startDeal} disabled={isDealing}>
             {isDealing ? 'Dealing\u2026' : 'Deal'}
           </button>
         </div>
       </div>
-      <div className="animation-stage">
+      <div className={STAGE}>
         {isDealing ? (
           <DealingAnimation
             key={dealKey}
@@ -216,7 +237,7 @@ function DealingSection() {
             onComplete={onComplete}
           />
         ) : (
-          <div className="animation-stage-centered">Press Deal to start</div>
+          <div className={STAGE_CENTERED}>Press Deal to start</div>
         )}
       </div>
     </div>
@@ -242,18 +263,18 @@ function CardTransferSection() {
   }, []);
 
   return (
-    <div className="animation-section">
-      <div className="animation-section-bar">
-        <p>A card slides from one player position to another, flipping face-up on arrival.</p>
-        <div className="animation-section-controls">
-          <button type="button" className="play-btn" onClick={trigger} disabled={isRunning}>
+    <div className={SECTION}>
+      <div className={SECTION_BAR}>
+        <p className={SECTION_BAR_P}>A card slides from one player position to another, flipping face-up on arrival.</p>
+        <div className={SECTION_CONTROLS}>
+          <button type="button" className={PLAY_BTN} onClick={trigger} disabled={isRunning}>
             {isRunning ? 'Transferring\u2026' : 'Transfer Card'}
           </button>
         </div>
       </div>
-      <div className="animation-stage">
+      <div className={STAGE}>
         <CardTransferOverlay transfer={transfer} onComplete={onComplete} />
-        {!isRunning && <div className="animation-stage-centered">Press Transfer Card to start</div>}
+        {!isRunning && <div className={STAGE_CENTERED}>Press Transfer Card to start</div>}
       </div>
     </div>
   );
@@ -271,15 +292,15 @@ function ShakeSection() {
   }, []);
 
   return (
-    <div className="animation-section">
-      <div className="animation-section-bar">
-        <p>Opponent seat shakes horizontally to signal a failed card ask.</p>
-        <div className="animation-section-controls">
-          <button type="button" className="play-btn" onClick={shake}>Shake</button>
+    <div className={SECTION}>
+      <div className={SECTION_BAR}>
+        <p className={SECTION_BAR_P}>Opponent seat shakes horizontally to signal a failed card ask.</p>
+        <div className={SECTION_CONTROLS}>
+          <button type="button" className={PLAY_BTN} onClick={shake}>Shake</button>
         </div>
       </div>
-      <div className="animation-stage">
-        <div className="shake-seat-wrapper">
+      <div className={STAGE}>
+        <div className="flex items-center justify-center h-full">
           <PlayerSeat
             ref={seatRef}
             name="Alice"
@@ -313,18 +334,18 @@ function DeclareSuccessSection() {
   }, []);
 
   return (
-    <div className="animation-section">
-      <div className="animation-section-bar">
-        <p>Cards gather to center, flip face-up to reveal the set, then fly to the score area.</p>
-        <div className="animation-section-controls">
-          <button type="button" className="play-btn" onClick={trigger} disabled={isRunning}>
+    <div className={SECTION}>
+      <div className={SECTION_BAR}>
+        <p className={SECTION_BAR_P}>Cards gather to center, flip face-up to reveal the set, then fly to the score area.</p>
+        <div className={SECTION_CONTROLS}>
+          <button type="button" className={PLAY_BTN} onClick={trigger} disabled={isRunning}>
             {isRunning ? 'Playing\u2026' : 'Declare (Success)'}
           </button>
         </div>
       </div>
-      <div className="animation-stage">
+      <div className={STAGE}>
         <SetDeclarationOverlay declaration={declaration} onComplete={onComplete} />
-        {!isRunning && <div className="animation-stage-centered">Press Declare to start</div>}
+        {!isRunning && <div className={STAGE_CENTERED}>Press Declare to start</div>}
       </div>
     </div>
   );
@@ -349,18 +370,18 @@ function DeclareFailSection() {
   }, []);
 
   return (
-    <div className="animation-section">
-      <div className="animation-section-bar">
-        <p>Cards gather to center, then shake and scatter back to original owners on failure.</p>
-        <div className="animation-section-controls">
-          <button type="button" className="play-btn play-btn--danger" onClick={trigger} disabled={isRunning}>
+    <div className={SECTION}>
+      <div className={SECTION_BAR}>
+        <p className={SECTION_BAR_P}>Cards gather to center, then shake and scatter back to original owners on failure.</p>
+        <div className={SECTION_CONTROLS}>
+          <button type="button" className={PLAY_BTN_DANGER} onClick={trigger} disabled={isRunning}>
             {isRunning ? 'Playing\u2026' : 'Declare (Fail)'}
           </button>
         </div>
       </div>
-      <div className="animation-stage">
+      <div className={STAGE}>
         <SetDeclarationOverlay declaration={declaration} onComplete={onComplete} />
-        {!isRunning && <div className="animation-stage-centered">Press Declare to start</div>}
+        {!isRunning && <div className={STAGE_CENTERED}>Press Declare to start</div>}
       </div>
     </div>
   );
@@ -390,16 +411,16 @@ function TurnIndicatorSection() {
   }, [isMyTurn, isTeammateTurn]);
 
   return (
-    <div className="animation-section">
-      <div className="animation-section-bar">
-        <p>Turn indicator dot and label animate when the active player changes.</p>
-        <div className="animation-section-controls">
-          <button type="button" className="play-btn" onClick={cyclePlayer}>Cycle Turn</button>
-          <span className="status-label">Current: <strong>{currentPlayer}</strong></span>
+    <div className={SECTION}>
+      <div className={SECTION_BAR}>
+        <p className={SECTION_BAR_P}>Turn indicator dot and label animate when the active player changes.</p>
+        <div className={SECTION_CONTROLS}>
+          <button type="button" className={PLAY_BTN} onClick={cyclePlayer}>Cycle Turn</button>
+          <span className="text-white/60 text-xs">Current: <strong className="text-white">{currentPlayer}</strong></span>
         </div>
       </div>
-      <div className="animation-stage">
-        <div className="turn-indicator-wrapper">
+      <div className={STAGE}>
+        <div className="p-8 h-full flex items-center justify-center">
           <GameInfoPanel
             roomCode="DEMO"
             currentTurnPlayer={currentPlayer}
@@ -429,16 +450,16 @@ function YourTurnBannerSection() {
   }, []);
 
   return (
-    <div className="animation-section">
-      <div className="animation-section-bar">
-        <p>Animated banner scales in when it becomes your turn, then auto-dismisses.</p>
-        <div className="animation-section-controls">
-          <button type="button" className="play-btn" onClick={trigger}>Show Banner</button>
+    <div className={SECTION}>
+      <div className={SECTION_BAR}>
+        <p className={SECTION_BAR_P}>Animated banner scales in when it becomes your turn, then auto-dismisses.</p>
+        <div className={SECTION_CONTROLS}>
+          <button type="button" className={PLAY_BTN} onClick={trigger}>Show Banner</button>
         </div>
       </div>
-      <div className="animation-stage">
+      <div className={STAGE}>
         <YourTurnBanner key={key} isMyTurn={isMyTurn} />
-        {!isMyTurn && <div className="animation-stage-centered">Press Show Banner to trigger</div>}
+        {!isMyTurn && <div className={STAGE_CENTERED}>Press Show Banner to trigger</div>}
       </div>
     </div>
   );
@@ -460,17 +481,17 @@ function ScoreCounterSection() {
   }, []);
 
   return (
-    <div className="animation-section">
-      <div className="animation-section-bar">
-        <p>Score value pops with a spring animation when incremented.</p>
-        <div className="animation-section-controls">
-          <button type="button" className="play-btn" onClick={incrementA}>+1 Team A</button>
-          <button type="button" className="play-btn" onClick={incrementB}>+1 Team B</button>
-          <button type="button" className="play-btn play-btn--muted" onClick={reset}>Reset</button>
+    <div className={SECTION}>
+      <div className={SECTION_BAR}>
+        <p className={SECTION_BAR_P}>Score value pops with a spring animation when incremented.</p>
+        <div className={SECTION_CONTROLS}>
+          <button type="button" className={PLAY_BTN} onClick={incrementA}>+1 Team A</button>
+          <button type="button" className={PLAY_BTN} onClick={incrementB}>+1 Team B</button>
+          <button type="button" className={PLAY_BTN_MUTED} onClick={reset}>Reset</button>
         </div>
       </div>
-      <div className="animation-stage">
-        <div className="score-counter-row">
+      <div className={STAGE}>
+        <div className="flex gap-12 items-center justify-center h-full">
           <ScoreCounter label="Team A" value={scoreA} />
           <ScoreCounter label="Team B" value={scoreB} />
         </div>
@@ -498,17 +519,17 @@ function GameToastSection() {
   const dismiss = useCallback(() => setMessage(null), []);
 
   return (
-    <div className="animation-section">
-      <div className="animation-section-bar">
-        <p>Slide-in notification that auto-dismisses after the preset hold duration.</p>
-        <div className="animation-section-controls">
-          <button type="button" className="play-btn" onClick={trigger}>Show Toast</button>
-          <button type="button" className="play-btn play-btn--muted" onClick={dismiss}>Dismiss</button>
+    <div className={SECTION}>
+      <div className={SECTION_BAR}>
+        <p className={SECTION_BAR_P}>Slide-in notification that auto-dismisses after the preset hold duration.</p>
+        <div className={SECTION_CONTROLS}>
+          <button type="button" className={PLAY_BTN} onClick={trigger}>Show Toast</button>
+          <button type="button" className={PLAY_BTN_MUTED} onClick={dismiss}>Dismiss</button>
         </div>
       </div>
-      <div className="animation-stage toast-stage">
+      <div className={`${STAGE} relative`}>
         <GameToast message={message} onDismiss={dismiss} />
-        {!message && <div className="animation-stage-centered">Press Show Toast to trigger</div>}
+        {!message && <div className={STAGE_CENTERED}>Press Show Toast to trigger</div>}
       </div>
     </div>
   );
@@ -543,20 +564,24 @@ function AnimationsPageContent() {
   const ActiveSection = TAB_SECTIONS[activeTab];
 
   return (
-    <div className="animations-page">
-      <header className="animations-header">
-        <h1>Animation Test Page</h1>
-        <div className="animations-header-right">
+    <div className="h-screen flex flex-col bg-[#2d5442] text-white overflow-hidden">
+      <header className="flex items-center justify-between py-3 px-6 bg-black/40 shrink-0 z-10">
+        <h1 className="text-[1.1rem] font-bold m-0 whitespace-nowrap">Animation Test Page</h1>
+        <div className="flex items-center gap-4">
           <PresetSelector current={presetName} onChange={setPreset} />
         </div>
       </header>
 
-      <nav className="animations-tabs">
+      <nav className="flex bg-black/25 shrink-0 overflow-x-auto [scrollbar-width:thin] [scrollbar-color:rgba(255,255,255,0.2)_transparent]">
         {TABS.map((tab) => (
           <button
             key={tab.id}
             type="button"
-            className={`animations-tab ${activeTab === tab.id ? 'animations-tab--active' : ''}`}
+            className={`py-2 px-4 border-0 border-b-2 bg-transparent cursor-pointer text-xs font-semibold whitespace-nowrap shrink-0 ${
+              activeTab === tab.id
+                ? 'text-white border-b-myturn bg-white/5'
+                : 'text-white/50 border-b-transparent hover:text-white/80 hover:bg-white/5'
+            }`}
             onClick={() => setActiveTab(tab.id)}
           >
             {tab.label}
@@ -564,7 +589,7 @@ function AnimationsPageContent() {
         ))}
       </nav>
 
-      <div className="animations-tab-content">
+      <div className="flex-1 relative overflow-hidden">
         <ActiveSection />
       </div>
     </div>

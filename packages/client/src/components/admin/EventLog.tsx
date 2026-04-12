@@ -8,6 +8,14 @@ const EVENT_CATEGORIES: Record<string, string[]> = {
   Subscriptions: ['subscription:added', 'subscription:removed', 'view:broadcast'],
 };
 
+const EVENT_TYPE_COLORS: Record<string, string> = {
+  action: 'text-admin-orange',
+  state: 'text-admin-blue',
+  game: 'text-admin-purple',
+  subscription: 'text-[#666]',
+  view: 'text-admin-green',
+};
+
 function formatTime(ts: number): string {
   const d = new Date(ts);
   return d.toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' });
@@ -68,17 +76,17 @@ export function EventLog() {
   };
 
   return (
-    <div className="admin-event-log">
-      <div className="admin-event-log-header">
+    <div className="flex-1 flex flex-col overflow-hidden">
+      <div className="flex justify-between items-center px-3 py-2 border-b border-[#333]">
         <strong>Event Log</strong>
-        <label className="admin-event-autoscroll">
+        <label className="flex items-center gap-1 text-[#888] text-xs">
           <input type="checkbox" checked={autoScroll} onChange={(e) => setAutoScroll(e.target.checked)} />
           Auto-scroll
         </label>
       </div>
-      <div className="admin-event-filters">
+      <div className="flex gap-3 px-3 py-1.5 border-b border-[#333] bg-[#16213e]">
         {Object.entries(EVENT_CATEGORIES).map(([category, types]) => (
-          <label key={category} className="admin-event-filter">
+          <label key={category} className="flex items-center gap-1 text-[#aaa] text-xs cursor-pointer">
             <input
               type="checkbox"
               checked={types.every((t) => eventFilters.has(t))}
@@ -88,16 +96,20 @@ export function EventLog() {
           </label>
         ))}
       </div>
-      <div className="admin-event-list">
+      <div className="flex-1 overflow-y-auto p-1">
         {filteredEvents.map((event, idx) => {
           const eventIdx = event.id ?? idx;
           const isPlayerEvent = selectedPlayerId && (event.playerId === selectedPlayerId);
           const isExpanded = expandedIds.has(eventIdx);
+          const typePrefix = event.type.split(':')[0];
+          const typeColor = EVENT_TYPE_COLORS[typePrefix] ?? '';
 
           return (
             <div
               key={eventIdx}
-              className={`admin-event-entry${isPlayerEvent ? ' admin-event-highlight' : ''}`}
+              className={`flex flex-wrap gap-1.5 px-2 py-[0.1875rem] border-b border-border-subtle cursor-pointer text-xs hover:bg-[#222] ${
+                isPlayerEvent ? 'bg-[#1a2744] border-l-[0.1875rem] border-l-admin-blue' : ''
+              }`}
               role="button"
               tabIndex={0}
               aria-expanded={isExpanded}
@@ -111,13 +123,15 @@ export function EventLog() {
                 }
               }}
             >
-              <span className="admin-event-time">{formatTime(event.timestamp)}</span>
-              <span className={`admin-event-type admin-event-type-${event.type.split(':')[0]}`}>
+              <span className="text-[#666] min-w-[3.75rem]">{formatTime(event.timestamp)}</span>
+              <span className={`font-bold min-w-[8.75rem] ${typeColor}`}>
                 {event.type}
               </span>
-              <span className="admin-event-summary">{getEventSummary(event)}</span>
+              <span className="text-[#aaa]">{getEventSummary(event)}</span>
               {isExpanded && (
-                <pre className="admin-event-detail">{JSON.stringify(event, null, 2)}</pre>
+                <pre className="w-full bg-[#111] p-1.5 rounded-badge mt-1 overflow-x-auto text-[0.6875rem]">
+                  {JSON.stringify(event, null, 2)}
+                </pre>
               )}
             </div>
           );

@@ -46,24 +46,27 @@ export function AdminNavbar() {
   };
 
   return (
-    <div className="admin-navbar">
-      <span className="admin-navbar-title">Admin Console</span>
+    <div className="flex items-center gap-4 px-4 py-2 bg-[#16213e] border-b border-[#333] shrink-0">
+      <span className="font-bold text-[0.9375rem] text-admin-orange">Admin Console</span>
 
       {gameId && gameInfo ? (
-        <div className="admin-navbar-game">
-          <span className="admin-navbar-game-id">{gameId}</span>
-          <span className="admin-navbar-game-meta">
+        <div className="flex items-center gap-3">
+          <span className="text-admin-blue font-bold">{gameId}</span>
+          <span className="text-[#888]">
             {gameInfo.players.length} players | {gameInfo.actionCount} actions
           </span>
-          <button className="admin-btn admin-btn-danger" onClick={handleDestroy}>
+          <button
+            className="px-2.5 py-1 border border-[#ee5a24] bg-[#4a1a1a] text-[#ee5a24] cursor-pointer rounded-[0.1875rem] font-[inherit] text-xs hover:enabled:bg-[#5a2a2a] disabled:opacity-50 disabled:cursor-not-allowed"
+            onClick={handleDestroy}
+          >
             Destroy
           </button>
         </div>
       ) : (
-        <div className="admin-navbar-create">
+        <div className="flex items-center">
           {showCreate ? (
-            <div className="admin-create-inline">
-              <label>
+            <div className="flex items-center gap-2">
+              <label className="flex items-center gap-1 text-[#aaa]">
                 Players:
                 <select value={playerCount} onChange={(e) => setPlayerCount(Number(e.target.value))}>
                   {[2, 3, 4, 5, 6, 7, 8].map((n) => (
@@ -73,25 +76,35 @@ export function AdminNavbar() {
                   ))}
                 </select>
               </label>
-              <label>
+              <label className="flex items-center gap-1 text-[#aaa]">
                 Seed:
                 <input
                   type="number"
                   placeholder="optional"
                   value={seed}
                   onChange={(e) => setSeed(e.target.value)}
-                  className="admin-input-sm"
+                  className="w-20 px-1.5 py-[0.1875rem] border border-[#444] bg-[#111] text-[#ddd] rounded-[0.1875rem] font-[inherit] text-xs"
                 />
               </label>
-              <button className="admin-btn admin-btn-primary" onClick={handleCreate} disabled={creating}>
+              <button
+                className="px-2.5 py-1 border border-[#1e90ff] bg-[#0a3d62] text-admin-blue cursor-pointer rounded-[0.1875rem] font-[inherit] text-xs hover:enabled:bg-[#0c4d7a] disabled:opacity-50 disabled:cursor-not-allowed"
+                onClick={handleCreate}
+                disabled={creating}
+              >
                 {creating ? 'Creating...' : 'Create'}
               </button>
-              <button className="admin-btn" onClick={() => setShowCreate(false)}>
+              <button
+                className="px-2.5 py-1 border border-[#444] bg-[#2a2a4a] text-[#ddd] cursor-pointer rounded-[0.1875rem] font-[inherit] text-xs hover:enabled:bg-[#3a3a5a] disabled:opacity-50 disabled:cursor-not-allowed"
+                onClick={() => setShowCreate(false)}
+              >
                 Cancel
               </button>
             </div>
           ) : (
-            <button className="admin-btn admin-btn-primary" onClick={() => setShowCreate(true)}>
+            <button
+              className="px-2.5 py-1 border border-[#1e90ff] bg-[#0a3d62] text-admin-blue cursor-pointer rounded-[0.1875rem] font-[inherit] text-xs hover:enabled:bg-[#0c4d7a] disabled:opacity-50 disabled:cursor-not-allowed"
+              onClick={() => setShowCreate(true)}
+            >
               Create Test Game
             </button>
           )}

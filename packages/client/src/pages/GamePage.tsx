@@ -91,7 +91,7 @@ export function GamePage() {
 
     return (
       <AnimationPresetProvider>
-        <div className="game-table">
+        <div className="w-screen h-screen bg-felt relative overflow-hidden">
           <DealingAnimation
             seatOrder={dealSequence.seatOrder}
             myCards={myCards}
@@ -159,7 +159,7 @@ export function GamePage() {
 
   // Waiting for game state
   return (
-    <div className="game-table" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+    <div className="w-screen h-screen bg-felt relative overflow-hidden" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
       <span style={{ color: '#fff', fontSize: '1.2rem' }}>Waiting for game to start...</span>
     </div>
   );

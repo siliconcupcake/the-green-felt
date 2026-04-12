@@ -1,4 +1,5 @@
 import { useState, useMemo, useCallback } from 'react';
+import { Maximize2, Minimize2, Clipboard } from 'lucide-react';
 
 interface JsonTreeProps {
   data: unknown;
@@ -70,31 +71,31 @@ function copyToClipboard(text: string): void {
 
 function ValueDisplay({ value }: { value: unknown }) {
   const type = getType(value);
-  let className = 'jt-value';
+  let colorClass = '';
   let display = '';
 
   switch (type) {
     case 'string':
-      className += ' jt-string';
+      colorClass = 'text-[#6ab04c]';
       display = `"${value}"`;
       break;
     case 'number':
-      className += ' jt-number';
+      colorClass = 'text-admin-blue';
       display = String(value);
       break;
     case 'boolean':
-      className += ' jt-boolean';
+      colorClass = 'text-admin-orange';
       display = String(value);
       break;
     case 'null':
-      className += ' jt-null';
+      colorClass = 'text-[#666] italic';
       display = 'null';
       break;
     default:
       display = String(value);
   }
 
-  return <span className={className}>{display}</span>;
+  return <span className={`inline ${colorClass}`}>{display}</span>;
 }
 
 function TreeNode({ keyName, value, path, depth, maxDepth, searchTerm, forceExpanded }: TreeNodeProps) {
@@ -115,14 +116,14 @@ function TreeNode({ keyName, value, path, depth, maxDepth, searchTerm, forceExpa
   const isMatch = matchesSearch(keyName, value, searchTerm);
   const hasDimming = searchTerm && !isMatch && !containsSearchMatch(value, searchTerm);
 
-  const nodeClass = `jt-node${isMatch ? ' jt-highlight' : ''}${hasDimming ? ' jt-dim' : ''}`;
+  const nodeClass = `leading-[1.6] group/leaf${isMatch ? ' bg-[#2a3a1a]' : ''}${hasDimming ? ' opacity-30' : ''}`;
 
   if (!isExpandable) {
     return (
       <div className={nodeClass}>
         {keyName !== null && (
           <span
-            className="jt-key"
+            className="text-[#c0c0c0] cursor-pointer hover:underline hover:text-admin-blue"
             role="button"
             tabIndex={0}
             onClick={() => copyToClipboard(path)}
@@ -140,8 +141,12 @@ function TreeNode({ keyName, value, path, depth, maxDepth, searchTerm, forceExpa
           </span>
         )}
         <ValueDisplay value={value} />
-        <button className="jt-copy-btn" onClick={() => copyToClipboard(JSON.stringify(value))} title="Copy value">
-          <i className="bi bi-clipboard" />
+        <button
+          className="bg-transparent border-none text-[#555] cursor-pointer text-[0.625rem] px-1 opacity-0 group-hover/leaf:opacity-100 hover:text-admin-blue"
+          onClick={() => copyToClipboard(JSON.stringify(value))}
+          title="Copy value"
+        >
+          <Clipboard size={10} />
         </button>
       </div>
     );
@@ -153,9 +158,9 @@ function TreeNode({ keyName, value, path, depth, maxDepth, searchTerm, forceExpa
 
   return (
     <div className={nodeClass}>
-      <div className="jt-row">
+      <div className="flex items-baseline">
         <span
-          className="jt-toggle"
+          className="cursor-pointer select-none w-3.5 inline-block text-[#666] shrink-0 hover:text-[#aaa]"
           role="button"
           tabIndex={0}
           aria-expanded={isExpanded}
@@ -173,7 +178,7 @@ function TreeNode({ keyName, value, path, depth, maxDepth, searchTerm, forceExpa
         </span>
         {keyName !== null && (
           <span
-            className="jt-key"
+            className="text-[#c0c0c0] cursor-pointer hover:underline hover:text-admin-blue"
             role="button"
             tabIndex={0}
             onClick={() => copyToClipboard(path)}
@@ -190,13 +195,13 @@ function TreeNode({ keyName, value, path, depth, maxDepth, searchTerm, forceExpa
             {keyName}:&nbsp;
           </span>
         )}
-        {!isExpanded && <span className="jt-preview">{getPreview(value)}</span>}
+        {!isExpanded && <span className="text-[#666] italic">{getPreview(value)}</span>}
         {isExpanded && (
-          <span className="jt-bracket">{type === 'array' ? `[` : `{`}</span>
+          <span className="text-[#888]">{type === 'array' ? `[` : `{`}</span>
         )}
       </div>
       {isExpanded && (
-        <div className="jt-children">
+        <div className="pl-[1.125rem] border-l border-[#333] ml-1.5">
           {entries.map(([k, v]) => {
             const childPath = type === 'array' ? `${path}[${k}]` : path ? `${path}.${k}` : k;
             return (
@@ -215,7 +220,7 @@ function TreeNode({ keyName, value, path, depth, maxDepth, searchTerm, forceExpa
         </div>
       )}
       {isExpanded && (
-        <span className="jt-bracket">{type === 'array' ? ']' : '}'}</span>
+        <span className="text-[#888]">{type === 'array' ? ']' : '}'}</span>
       )}
     </div>
   );
@@ -229,18 +234,18 @@ export function JsonTree({ data, label }: JsonTreeProps) {
   const depthOptions = useMemo(() => [1, 2, 3, 4, 5, 10], []);
 
   return (
-    <div className="jt-container">
-      <div className="jt-toolbar">
-        {label && <span className="jt-label">{label}</span>}
+    <div className="flex flex-col overflow-hidden h-full">
+      <div className="flex items-center gap-1.5 p-1.5 border-b border-[#333] shrink-0 flex-wrap">
+        {label && <span className="font-bold text-admin-orange mr-2">{label}</span>}
         <input
-          className="jt-search"
+          className="px-1.5 py-0.5 border border-[#444] bg-[#111] text-[#ddd] rounded-[0.1875rem] font-[inherit] text-xs w-[8.75rem]"
           type="text"
           placeholder="Search keys/values..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />
         <select
-          className="jt-depth-select"
+          className="px-1 py-0.5 border border-[#444] bg-[#222] text-[#ddd] rounded-[0.1875rem] font-[inherit] text-[0.6875rem]"
           value={maxDepth}
           onChange={(e) => {
             setMaxDepth(Number(e.target.value));
@@ -253,21 +258,32 @@ export function JsonTree({ data, label }: JsonTreeProps) {
             </option>
           ))}
         </select>
-        <button className="jt-btn" onClick={() => setForceExpanded(true)} title="Expand All">
-          <i className="bi bi-arrows-expand" />
-        </button>
-        <button className="jt-btn" onClick={() => setForceExpanded(false)} title="Collapse All">
-          <i className="bi bi-arrows-collapse" />
+        <button
+          className="px-1.5 py-0.5 border border-[#444] bg-[#2a2a4a] text-[#ddd] cursor-pointer rounded-[0.1875rem] text-xs hover:bg-[#3a3a5a]"
+          onClick={() => setForceExpanded(true)}
+          title="Expand All"
+          aria-label="Expand All"
+        >
+          <Maximize2 size={14} />
         </button>
         <button
-          className="jt-btn"
+          className="px-1.5 py-0.5 border border-[#444] bg-[#2a2a4a] text-[#ddd] cursor-pointer rounded-[0.1875rem] text-xs hover:bg-[#3a3a5a]"
+          onClick={() => setForceExpanded(false)}
+          title="Collapse All"
+          aria-label="Collapse All"
+        >
+          <Minimize2 size={14} />
+        </button>
+        <button
+          className="px-1.5 py-0.5 border border-[#444] bg-[#2a2a4a] text-[#ddd] cursor-pointer rounded-[0.1875rem] text-xs hover:bg-[#3a3a5a]"
           onClick={() => copyToClipboard(JSON.stringify(data, null, 2))}
           title="Copy all as JSON"
+          aria-label="Copy all as JSON"
         >
-          <i className="bi bi-clipboard2" />
+          <Clipboard size={14} />
         </button>
       </div>
-      <div className="jt-tree">
+      <div className="overflow-y-auto p-1.5 flex-1">
         <TreeNode
           keyName={null}
           value={data}

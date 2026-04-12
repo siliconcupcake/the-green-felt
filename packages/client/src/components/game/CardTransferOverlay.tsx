@@ -4,7 +4,6 @@ import { createHidden, cardFromId } from '@the-green-felt/shared';
 import type { CardTransferState } from '../../hooks/useCardTransfer';
 import { useAnimationPreset } from '../animation/AnimationPresetProvider';
 import { Card } from '../card/Card';
-import './game-table.css';
 
 interface CardTransferOverlayProps {
   transfer: CardTransferState | null;
@@ -55,16 +54,16 @@ export function CardTransferOverlay({ transfer, onComplete }: CardTransferOverla
   const card = transfer.flipToFaceUp ? cardFromId(transfer.cardId) : createHidden();
 
   return (
-    <div className="dealing-overlay">
+    <div className="absolute inset-0 z-50 pointer-events-none">
       <div
         ref={scope}
-        className="dealing-card"
+        className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-[100] will-change-transform"
         style={{
           left: `${transfer.from.x}%`,
           top: `${transfer.from.y}%`,
         }}
       >
-        <Card card={card} faceDown={!transfer.flipToFaceUp} disableHover />
+        <Card card={card} faceDown={!transfer.flipToFaceUp} disableHover size="deal" />
       </div>
     </div>
   );

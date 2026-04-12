@@ -4,7 +4,6 @@ import type { AnyCard } from '@the-green-felt/shared';
 import { createHidden } from '@the-green-felt/shared';
 import { useDealAnimation } from '../../hooks/useDealAnimation';
 import { Card } from '../card/Card';
-import './game-table.css';
 
 interface DealingAnimationProps {
   seatOrder: string[];
@@ -48,8 +47,8 @@ export function DealingAnimation({ seatOrder, myCards, cardsPerPlayer, playerPos
   }, [startDeal]);
 
   return (
-    <div className="dealing-overlay" ref={scope}>
-      <div className="dealing-deck">
+    <div className="absolute inset-0 z-50 pointer-events-none" ref={scope}>
+      <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-[99]">
         <Card card={createHidden()} faceDown disableHover />
       </div>
       {dealOrder.map((entry, i) => {
@@ -60,11 +59,11 @@ export function DealingAnimation({ seatOrder, myCards, cardsPerPlayer, playerPos
         return (
           <div
             key={`deal-${i}`}
-            className="dealing-card"
+            className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-[100] will-change-transform"
             data-deal-card
             style={{ '--target-x': `${offsetX}vw`, '--target-y': `${offsetY}vh`, opacity: 0 } as CSSProperties}
           >
-            <Card card={entry.card} faceDown={!entry.faceUp} disableHover />
+            <Card card={entry.card} faceDown={!entry.faceUp} disableHover size="deal" />
           </div>
         );
       })}
