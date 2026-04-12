@@ -15,8 +15,8 @@ export function App() {
         <Route path="/" element={<LobbyPage />} />
         <Route path="/join/:roomCode" element={<LobbyPage />} />
         <Route path="/game" element={<GamePage />} />
-        <Route path="/admin" element={<AdminPage />} />
-        <Route path="/animations" element={<AnimationsPage />} />
+        <Route path="/admin/console" element={<AdminPage />} />
+        <Route path="/admin/animations" element={<AnimationsPage />} />
       </Routes>
     </BrowserRouter>
   );
