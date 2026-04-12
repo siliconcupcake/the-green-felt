@@ -12,18 +12,18 @@
     "typecheck": "pnpm -r typecheck"
   },
   "devDependencies": {
-    "@types/node": "^22.0.0",
-    "eslint": "^9.0.0",
+    "@types/node": "^24.12.2",
+    "eslint": "^9.39.4",
     "eslint-config-prettier": "^10.1.8",
     "eslint-import-resolver-typescript": "^4.4.4",
     "eslint-plugin-import": "^2.32.0",
     "eslint-plugin-jsx-a11y": "^6.10.2",
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^7.0.1",
-    "prettier": "^3.4.0",
-    "typescript": "^5.7.0",
-    "typescript-eslint": "^8.56.1",
-    "vitest": "^3.0.0"
+    "prettier": "^3.8.2",
+    "typescript": "^6.0.2",
+    "typescript-eslint": "^8.58.1",
+    "vitest": "^4.1.4"
   },
   "pnpm": {
     "onlyBuiltDependencies": [
@@ -35,7 +35,7 @@
     ]
   },
   "engines": {
-    "node": ">=22.0.0",
-    "pnpm": ">=9.0.0"
+    "node": ">=24.0.0",
+    "pnpm": ">=10.0.0"
   }
 }
