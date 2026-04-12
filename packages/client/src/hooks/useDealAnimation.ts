@@ -3,11 +3,12 @@ import { useAnimate, stagger } from 'motion/react';
 import { useAnimationPreset } from '../components/animation/AnimationPresetProvider';
 
 interface DealAnimationConfig {
-  totalCards: number;
+  /** Total number of cards to deal (reserved for future progress indicator) */
+  _totalCards?: number;
   onComplete: () => void;
 }
 
-export function useDealAnimation({ totalCards, onComplete }: DealAnimationConfig) {
+export function useDealAnimation({ onComplete }: DealAnimationConfig) {
   const preset = useAnimationPreset();
   const [scope, animate] = useAnimate();
   const hasRun = useRef(false);
