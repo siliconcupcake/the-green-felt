@@ -1,17 +1,10 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router';
-import Container from 'react-bootstrap/Container';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
-import Card from 'react-bootstrap/Card';
-import Form from 'react-bootstrap/Form';
-import Tab from 'react-bootstrap/Tab';
-import Tabs from 'react-bootstrap/Tabs';
-import Alert from 'react-bootstrap/Alert';
-import { JoinGameForm } from '../components/lobby/JoinGameForm';
-import { CreateGameForm } from '../components/lobby/CreateGameForm';
 import { trpc } from '../trpc';
 import { useLobbyStore } from '../stores/lobby-store';
+import { GameCatalog } from '../components/lobby/GameCatalog';
+import { JoinField } from '../components/lobby/JoinField';
+import { WaitingRoom } from '../components/lobby/WaitingRoom';
 import '../components/lobby/lobby.css';
 
 const STORAGE_KEY_NAME = 'tgf:playerName';
@@ -21,32 +14,46 @@ const STORAGE_KEY_ROOM_CODE = 'tgf:roomCode';
 export function LobbyPage() {
   const { roomCode: routeRoomCode } = useParams<{ roomCode?: string }>();
   const navigate = useNavigate();
-  const { activeTab, setActiveTab, isHost, setRoom, reset, error, setError } = useLobbyStore();
+  const { phase, enterWaitingRoom, setError, setLoading, loading, error } = useLobbyStore();
+
   const [playerName, setPlayerName] = useState(() => localStorage.getItem(STORAGE_KEY_NAME) ?? '');
   const [nameError, setNameError] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [createdRoomCode, setCreatedRoomCode] = useState('');
+  const [joinError, setJoinError] = useState<string | null>(null);
+  const [phaseClass, setPhaseClass] = useState('lobby-phase lobby-phase--active');
+  const nameInputRef = useRef<HTMLInputElement>(null);
+  const pendingPhaseRef = useRef<'landing' | 'waiting' | null>(null);
 
-  // If arriving via /join/:roomCode, switch to join tab with the code
-  useEffect(() => {
-    if (routeRoomCode) {
-      setCreatedRoomCode(routeRoomCode);
-      setActiveTab('join');
+  const validateName = (): boolean => {
+    if (!playerName.trim()) {
+      setNameError(true);
+      nameInputRef.current?.focus();
+      return false;
     }
-  }, [routeRoomCode, setActiveTab]);
+    setNameError(false);
+    return true;
+  };
 
-  const saveLocalData = (name: string, id: string, roomCode: string) => {
+  const saveLocalData = (name: string, playerId: string, roomCode: string) => {
     localStorage.setItem(STORAGE_KEY_NAME, name.trim());
-    localStorage.setItem(STORAGE_KEY_PLAYER_ID, id);
+    localStorage.setItem(STORAGE_KEY_PLAYER_ID, playerId);
     localStorage.setItem(STORAGE_KEY_ROOM_CODE, roomCode);
   };
 
-  const handleCreateGame = async (gameTypeId: string) => {
-    if (!playerName.trim()) {
-      setNameError(true);
-      return;
-    }
-    setNameError(false);
+  // Transition animation helper
+  const transitionTo = (targetPhase: 'landing' | 'waiting', callback: () => void) => {
+    setPhaseClass('lobby-phase lobby-phase--exit');
+    pendingPhaseRef.current = targetPhase;
+    setTimeout(() => {
+      callback();
+      setPhaseClass('lobby-phase lobby-phase--enter');
+      requestAnimationFrame(() => {
+        setPhaseClass('lobby-phase lobby-phase--active');
+      });
+    }, 200);
+  };
+
+  const handleHost = async (gameTypeId: string) => {
+    if (!validateName()) return;
     setLoading(true);
     setError(null);
 
@@ -56,10 +63,14 @@ export function LobbyPage() {
         playerName: playerName.trim(),
       });
 
-      setRoom(result.roomCode, true);
       saveLocalData(playerName, result.playerId, result.roomCode);
-      setCreatedRoomCode(result.roomCode);
-      setActiveTab('join');
+
+      const names = await trpc.lobby.getPlayerNames.query({ playerIds: result.room.players });
+
+      transitionTo('waiting', () => {
+        enterWaitingRoom(result.roomCode, gameTypeId, true, result.room.players, names);
+        navigate(`/join/${result.roomCode}`, { replace: true });
+      });
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to create room');
     } finally {
@@ -67,13 +78,10 @@ export function LobbyPage() {
     }
   };
 
-  const handleJoinGame = async (gameCode: string) => {
-    if (!playerName.trim()) {
-      setNameError(true);
-      return;
-    }
-    setNameError(false);
+  const handleJoin = async (gameCode: string) => {
+    if (!validateName()) return;
     setLoading(true);
+    setJoinError(null);
     setError(null);
 
     try {
@@ -85,111 +93,104 @@ export function LobbyPage() {
       });
 
       saveLocalData(playerName, result.playerId, gameCode);
-      setRoom(gameCode, false);
+
+      const names = await trpc.lobby.getPlayerNames.query({ playerIds: result.room.players });
+
+      transitionTo('waiting', () => {
+        enterWaitingRoom(gameCode, result.room.gameTypeId, false, result.room.players, names);
+        navigate(`/join/${gameCode}`, { replace: true });
+      });
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to join room');
+      setJoinError(err instanceof Error ? err.message : 'Room not found');
     } finally {
       setLoading(false);
     }
   };
 
-  const handleLeaveRoom = () => {
-    setCreatedRoomCode('');
-    localStorage.removeItem(STORAGE_KEY_ROOM_CODE);
-    reset();
-    setActiveTab('create');
-  };
-
-  const handleStartGame = async (gameCode: string) => {
-    const hostPlayerId = localStorage.getItem(STORAGE_KEY_PLAYER_ID);
-    if (!hostPlayerId) return;
-    setLoading(true);
-    setError(null);
-
-    try {
-      await trpc.lobby.startGame.mutate({ roomCode: gameCode, hostPlayerId });
-      navigate('/game');
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to start game');
-    } finally {
-      setLoading(false);
+  // Deep link: auto-join if arriving via /join/:roomCode with a saved name
+  useEffect(() => {
+    if (routeRoomCode && phase === 'landing') {
+      const savedName = localStorage.getItem(STORAGE_KEY_NAME);
+      if (savedName?.trim()) {
+        setPlayerName(savedName);
+        handleJoin(routeRoomCode);
+      } else {
+        nameInputRef.current?.focus();
+      }
     }
-  };
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const handleGameStarted = () => {
-    navigate('/game');
-  };
+  // If store resets to landing externally (leave, close, room-closed), animate in and reset URL
+  useEffect(() => {
+    if (phase === 'landing') {
+      // Reset URL to root when returning to landing
+      if (window.location.pathname !== '/') {
+        navigate('/', { replace: true });
+      }
+      if (pendingPhaseRef.current === null && phaseClass.includes('active')) {
+        // External reset — animate the landing content in
+        setPhaseClass('lobby-phase lobby-phase--enter');
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => {
+            setPhaseClass('lobby-phase lobby-phase--active');
+          });
+        });
+      }
+    }
+    if (pendingPhaseRef.current !== null) {
+      pendingPhaseRef.current = null;
+    }
+  }, [phase, navigate]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <div className="lobby">
-      <Container>
-        <Row className="gy-4">
-          <Col xs={12}>
-            <h1 className="lobby-title">The Green Felt</h1>
-          </Col>
+      <div className="lobby-content">
+        {/* Brand — always visible */}
+        <div className="lobby-brand">
+          <h1 className="lobby-brand-title">The Green Felt</h1>
+          <div className="lobby-brand-tagline">Card Games Reimagined</div>
+        </div>
 
-          <Col xs={12}>
-            <Card className="lobby-card">
-              <Card.Body>
-                {error && (
-                  <Alert variant="danger" dismissible onClose={() => setError(null)}>
-                    {error}
-                  </Alert>
-                )}
+        {/* Name Input — always visible */}
+        <div className="lobby-name-input-wrapper">
+          <input
+            ref={nameInputRef}
+            type="text"
+            aria-label="Your name"
+            className={`lobby-name-input${nameError ? ' lobby-name-input--error' : ''}`}
+            placeholder="Your name..."
+            value={playerName}
+            onChange={(e) => {
+              setPlayerName(e.target.value);
+              setNameError(false);
+            }}
+            readOnly={phase === 'waiting'}
+          />
+        </div>
 
-                <Row className="gy-3">
-                  <Col xs={12}>
-                    <Form.Group className="d-flex justify-content-center">
-                      <Form.Control
-                        type="text"
-                        placeholder="who art thou?"
-                        value={playerName}
-                        onChange={(e) => {
-                          setPlayerName(e.target.value);
-                          setNameError(false);
-                        }}
-                        isInvalid={nameError}
-                        className="lobby-name-input"
-                      />
-                    </Form.Group>
-                  </Col>
+        {/* Swappable middle section */}
+        <div className={phaseClass}>
+          {phase === 'landing' ? (
+            <>
+              <GameCatalog onHost={handleHost} disabled={loading} />
 
-                  <Col xs={12}>
-                    <Tabs activeKey={activeTab} onSelect={(k) => setActiveTab(k as 'create' | 'join')} justify>
-                      <Tab eventKey="create" title="Host Game">
-                        <Row className="gy-3 pt-3">
-                          <Col xs={12}>
-                            <CreateGameForm onCreateGame={handleCreateGame} disabled={loading} />
-                          </Col>
-                        </Row>
-                      </Tab>
-                      <Tab eventKey="join" title="Join Game">
-                        <Row className="gy-3 pt-3">
-                          <Col xs={12}>
-                            <JoinGameForm
-                              gameCode={createdRoomCode}
-                              isHost={isHost}
-                              onJoinGame={handleJoinGame}
-                              onLeaveRoom={handleLeaveRoom}
-                              onStartGame={handleStartGame}
-                              onGameStarted={handleGameStarted}
-                              disabled={loading}
-                            />
-                          </Col>
-                        </Row>
-                      </Tab>
-                    </Tabs>
-                  </Col>
-                </Row>
-              </Card.Body>
-            </Card>
-          </Col>
-        </Row>
+              {error && <div className="lobby-error">{error}</div>}
 
-        <p className="text-center mt-auto pt-4">
-          <span className="lobby-footer">Made with ❤️ by siliconcupcake</span>
-        </p>
-      </Container>
+              <JoinField
+                initialCode={routeRoomCode ?? ''}
+                onJoin={handleJoin}
+                disabled={loading}
+                error={joinError}
+              />
+            </>
+          ) : (
+            <WaitingRoom />
+          )}
+        </div>
+
+        {/* Footer — always visible */}
+        <div className="lobby-footer">Made with <span className="lobby-footer__heart">♥</span> by siliconcupcake</div>
+      </div>
     </div>
   );
 }

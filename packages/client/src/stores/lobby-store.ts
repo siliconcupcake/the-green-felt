@@ -1,30 +1,87 @@
 import { create } from 'zustand';
 
-interface LobbyState {
-  roomId: string | null;
-  isHost: boolean;
-  error: string | null;
-  activeTab: 'create' | 'join';
+const AVATAR_GRADIENTS = [
+  ['#34d399', '#059669'], // green (host)
+  ['#8b5cf6', '#6d28d9'], // violet
+  ['#f59e0b', '#d97706'], // amber
+  ['#3b82f6', '#2563eb'], // blue
+  ['#ec4899', '#db2777'], // pink
+  ['#06b6d4', '#0891b2'], // cyan
+  ['#f97316', '#ea580c'], // orange
+  ['#a78bfa', '#7c3aed'], // light violet
+] as const;
 
-  setActiveTab: (tab: 'create' | 'join') => void;
-  setRoom: (roomId: string, isHost: boolean) => void;
+export function getAvatarGradient(index: number): [string, string] {
+  const gradient = AVATAR_GRADIENTS[index % AVATAR_GRADIENTS.length];
+  return [gradient[0], gradient[1]];
+}
+
+interface LobbyState {
+  // Room state
+  phase: 'landing' | 'waiting';
+  roomCode: string | null;
+  gameTypeId: string | null;
+  isHost: boolean;
+
+  // Player state
+  players: string[];
+  playerNames: Record<string, string>;
+
+  // UI state
+  error: string | null;
+  loading: boolean;
+
+  // Actions
+  enterWaitingRoom: (roomCode: string, gameTypeId: string, isHost: boolean, players: string[], playerNames: Record<string, string>) => void;
+  addPlayer: (playerId: string, playerName: string) => void;
+  removePlayer: (playerId: string) => void;
   setError: (error: string | null) => void;
+  setLoading: (loading: boolean) => void;
   reset: () => void;
 }
 
-export const useLobbyStore = create<LobbyState>((set) => ({
-  roomId: null,
+const initialState = {
+  phase: 'landing' as const,
+  roomCode: null,
+  gameTypeId: null,
   isHost: false,
+  players: [],
+  playerNames: {},
   error: null,
-  activeTab: 'create',
+  loading: false,
+};
 
-  setActiveTab: (activeTab) => set({ activeTab }),
-  setRoom: (roomId, isHost) => set({ roomId, isHost }),
-  setError: (error) => set({ error }),
-  reset: () =>
+export const useLobbyStore = create<LobbyState>((set) => ({
+  ...initialState,
+
+  enterWaitingRoom: (roomCode, gameTypeId, isHost, players, playerNames) =>
     set({
-      roomId: null,
-      isHost: false,
+      phase: 'waiting',
+      roomCode,
+      gameTypeId,
+      isHost,
+      players,
+      playerNames,
       error: null,
     }),
+
+  addPlayer: (playerId, playerName) =>
+    set((state) => {
+      if (state.players.includes(playerId)) return state;
+      return {
+        players: [...state.players, playerId],
+        playerNames: { ...state.playerNames, [playerId]: playerName },
+      };
+    }),
+
+  removePlayer: (playerId) =>
+    set((state) => ({
+      players: state.players.filter((p) => p !== playerId),
+    })),
+
+  setError: (error) => set({ error }),
+
+  setLoading: (loading) => set({ loading }),
+
+  reset: () => set(initialState),
 }));

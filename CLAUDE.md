@@ -143,6 +143,7 @@ Deterministic seeds produce known card distributions for reproducible tests.
 
  ## Commit Style
 - Do not include 'Co-Authored-By' lines in commit messages
+- **Never push to remote** — always ask the user to push. Do not run `git push` or any variant.
 
 ## Knowledge Graph
 
