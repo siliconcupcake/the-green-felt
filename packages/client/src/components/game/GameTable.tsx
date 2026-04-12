@@ -3,6 +3,9 @@ import { Card } from '../card/Card';
 import { CardFan } from '../card/CardFan';
 import { PlayerSeat } from './PlayerSeat';
 import { GameInfoPanel } from './GameInfoPanel';
+import { YourTurnBanner } from './YourTurnBanner';
+import { GameToast } from './GameToast';
+import { ScoreCounter } from './ScoreCounter';
 import './game-table.css';
 
 export interface GamePlayer {
@@ -24,6 +27,8 @@ interface GameTableProps {
   drawPile: AnyCard[];
   discardPile: AnyCard[];
   onCardClick?: (card: AnyCard) => void;
+  errorMessage?: string | null;
+  onErrorDismiss?: () => void;
 }
 
 const X_RADIUS = 42;
@@ -119,6 +124,8 @@ export function GameTable({
   drawPile,
   discardPile,
   onCardClick,
+  errorMessage,
+  onErrorDismiss,
 }: GameTableProps) {
   const topDiscard = discardPile.length > 0 ? discardPile[discardPile.length - 1] : null;
   const myTeam = currentPlayer.team;
@@ -167,10 +174,7 @@ export function GameTable({
       {/* Current player's hand at bottom center */}
       <div className="game-table-my-hand">
         {currentPlayer.score != null && (
-          <div className="my-score">
-            <span className="my-score-label">{currentPlayer.name}</span>
-            <span className="my-score-value">{currentPlayer.score}</span>
-          </div>
+          <ScoreCounter label={currentPlayer.name} value={currentPlayer.score} />
         )}
         <CardFan cards={currentPlayer.cards} onCardClick={onCardClick} />
       </div>
@@ -182,6 +186,10 @@ export function GameTable({
         isMyTurn={isMyTurn}
         isTeammateTurn={isTeammateTurn}
       />
+      <YourTurnBanner isMyTurn={isMyTurn} />
+      {onErrorDismiss && (
+        <GameToast message={errorMessage ?? null} onDismiss={onErrorDismiss} />
+      )}
     </div>
   );
 }

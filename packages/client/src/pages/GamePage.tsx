@@ -4,6 +4,7 @@ import type { AnyCard, DealSequenceData, LiteraturePlayerView } from '@the-green
 import { cardFromId, createHidden } from '@the-green-felt/shared';
 import { GameTable, computePlayerPositions, type GamePlayer } from '../components/game/GameTable';
 import { DealingAnimation } from '../components/game/DealingAnimation';
+import { AnimationPresetProvider } from '../components/animation/AnimationPresetProvider';
 import { trpc } from '../trpc';
 
 const STORAGE_KEY_ROOM_CODE = 'tgf:roomCode';
@@ -19,6 +20,7 @@ export function GamePage() {
   const [dealSequence, setDealSequence] = useState<DealSequenceData | null>(null);
   const [isDealing, setIsDealing] = useState(false);
   const [playerNames, setPlayerNames] = useState<Record<string, string>>({});
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const pendingGameView = useRef<LiteraturePlayerView | null>(null);
   const isDealingRef = useRef(false);
 
@@ -41,6 +43,8 @@ export function GamePage() {
             } else {
               setGameView(view);
             }
+          } else if (event.type === 'ACTION_REJECTED') {
+            setErrorMessage(event.reason);
           }
         },
       },
@@ -69,6 +73,10 @@ export function GamePage() {
       setGameView(pendingGameView.current);
       pendingGameView.current = null;
     }
+  }, []);
+
+  const handleErrorDismiss = useCallback(() => {
+    setErrorMessage(null);
   }, []);
 
   if (!roomCode || !playerId) {
@@ -128,7 +136,7 @@ export function GamePage() {
     const isMyTurn = currentPlayer.isCurrentTurn;
     const isTeammateTurn = !isMyTurn && turnPlayer?.team === currentPlayer.team;
 
-    return (
+    const content = (
       <GameTable
         currentPlayer={currentPlayer}
         opponents={opponents}
@@ -139,8 +147,12 @@ export function GamePage() {
         drawPile={[]}
         discardPile={[]}
         onCardClick={(card) => console.log('Clicked:', card.id)}
+        errorMessage={errorMessage}
+        onErrorDismiss={handleErrorDismiss}
       />
     );
+
+    return <AnimationPresetProvider>{content}</AnimationPresetProvider>;
   }
 
   // Waiting for game state
