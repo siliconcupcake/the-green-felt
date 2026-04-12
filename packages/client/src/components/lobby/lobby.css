@@ -32,12 +32,29 @@
   align-items: center;
   justify-content: center;
   padding: 2rem 1rem;
+  position: relative;
+}
+
+.lobby::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url('/img/background.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  opacity: 0.04;
+  filter: brightness(0.5) saturate(0.3);
+  pointer-events: none;
+  z-index: 0;
 }
 
 .lobby-content {
   width: 100%;
   max-width: 480px;
   margin-top: -4vh;
+  position: relative;
+  z-index: 1;
 }
 
 /* ── Brand Header ──────────────────────────────────────────── */
