@@ -6,6 +6,7 @@ import 'bootstrap-icons/font/bootstrap-icons.css';
 import { LobbyPage } from './pages/LobbyPage.js';
 import { GamePage } from './pages/GamePage.js';
 import { AdminPage } from './pages/AdminPage.js';
+import { AnimationsPage } from './pages/AnimationsPage.js';
 
 export function App() {
   return (
@@ -15,6 +16,7 @@ export function App() {
         <Route path="/join/:roomCode" element={<LobbyPage />} />
         <Route path="/game" element={<GamePage />} />
         <Route path="/admin" element={<AdminPage />} />
+        <Route path="/animations" element={<AnimationsPage />} />
       </Routes>
     </BrowserRouter>
   );
