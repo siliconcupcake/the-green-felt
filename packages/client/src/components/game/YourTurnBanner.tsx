@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useAnimationPreset } from '../animation/AnimationPresetProvider';
 
@@ -6,25 +6,18 @@ interface YourTurnBannerProps {
   isMyTurn: boolean;
 }
 
-export function YourTurnBanner({ isMyTurn }: YourTurnBannerProps) {
+/**
+ * Inner component that shows on mount and auto-dismisses after the preset hold duration.
+ * Remounted via key change when isMyTurn transitions to true.
+ */
+function YourTurnBannerInner() {
   const preset = useAnimationPreset();
-  const [dismissed, setDismissed] = useState(false);
-  const prevIsMyTurn = useRef(isMyTurn);
+  const [visible, setVisible] = useState(true);
 
-  // Reset dismissed flag when isMyTurn transitions to true
-  if (isMyTurn && !prevIsMyTurn.current) {
-    setDismissed(false);
-  }
-  prevIsMyTurn.current = isMyTurn;
-
-  // Auto-dismiss after hold duration
   useEffect(() => {
-    if (!isMyTurn || dismissed) return;
-    const timeout = setTimeout(() => { setDismissed(true); }, preset.hold.yourTurnBanner);
+    const timeout = setTimeout(() => { setVisible(false); }, preset.hold.yourTurnBanner);
     return () => clearTimeout(timeout);
-  }, [isMyTurn, dismissed, preset.hold.yourTurnBanner]);
-
-  const visible = isMyTurn && !dismissed;
+  }, [preset.hold.yourTurnBanner]);
 
   return (
     <AnimatePresence>
@@ -49,4 +42,26 @@ export function YourTurnBanner({ isMyTurn }: YourTurnBannerProps) {
       )}
     </AnimatePresence>
   );
+}
+
+/**
+ * Animated "Your Turn" banner that briefly appears when isMyTurn becomes true.
+ * Uses a key counter to remount the inner component on each new turn,
+ * avoiding ref access and synchronous setState during render.
+ */
+export function YourTurnBanner({ isMyTurn }: YourTurnBannerProps) {
+  const [turnCount, setTurnCount] = useState(0);
+  const [wasMyTurn, setWasMyTurn] = useState(isMyTurn);
+
+  // Detect rising edge of isMyTurn — increment key to remount inner component
+  if (isMyTurn && !wasMyTurn) {
+    setTurnCount((c) => c + 1);
+  }
+  if (wasMyTurn !== isMyTurn) {
+    setWasMyTurn(isMyTurn);
+  }
+
+  if (!isMyTurn) return null;
+
+  return <YourTurnBannerInner key={turnCount} />;
 }
