@@ -26,7 +26,7 @@ export function GameToast({ message, onDismiss }: GameToastProps) {
           exit={{ opacity: 0, y: -20 }}
           transition={{ type: 'spring', ...preset.spring.default }}
         >
-          {message}
+          <span className="game-toast-inner">{message}</span>
         </motion.div>
       )}
     </AnimatePresence>

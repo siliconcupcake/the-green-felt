@@ -224,8 +224,8 @@
   padding: 2rem;
   height: 100%;
   display: flex;
-  align-items: flex-end;
-  justify-content: flex-start;
+  align-items: center;
+  justify-content: center;
 }
 
 .toast-stage {
