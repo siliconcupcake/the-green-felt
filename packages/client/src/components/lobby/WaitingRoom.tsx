@@ -69,7 +69,7 @@ export function WaitingRoom() {
     try {
       await trpc.lobby.leaveRoom.mutate({ roomCode, playerId: pid });
       reset();
-    } catch (_err) {
+    } catch {
       // If leave fails, reset anyway — server state may already be cleaned up
       reset();
     }
@@ -80,7 +80,7 @@ export function WaitingRoom() {
     if (!pid || !roomCode) return;
     try {
       await trpc.lobby.closeRoom.mutate({ roomCode, hostPlayerId: pid });
-    } catch (_err) {
+    } catch {
       reset();
     }
   };
@@ -89,7 +89,7 @@ export function WaitingRoom() {
     if (!roomCode) return;
     try {
       await trpc.lobby.leaveRoom.mutate({ roomCode, playerId: targetPlayerId });
-    } catch (_err) {
+    } catch {
       // Player may have already left
     }
   };

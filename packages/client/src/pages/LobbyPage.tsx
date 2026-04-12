@@ -14,7 +14,7 @@ const STORAGE_KEY_ROOM_CODE = 'tgf:roomCode';
 export function LobbyPage() {
   const { roomCode: routeRoomCode } = useParams<{ roomCode?: string }>();
   const navigate = useNavigate();
-  const { phase, enterWaitingRoom, setError, setLoading, loading, error, reset } = useLobbyStore();
+  const { phase, enterWaitingRoom, setError, setLoading, loading, error } = useLobbyStore();
 
   const [playerName, setPlayerName] = useState(() => localStorage.getItem(STORAGE_KEY_NAME) ?? '');
   const [nameError, setNameError] = useState(false);
@@ -140,7 +140,7 @@ export function LobbyPage() {
     if (pendingPhaseRef.current !== null) {
       pendingPhaseRef.current = null;
     }
-  }, [phase]);
+  }, [phase, navigate]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <div className="lobby">
