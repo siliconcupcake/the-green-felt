@@ -169,7 +169,6 @@
   border-radius: 50%;
   background: #ffd700;
   display: inline-block;
-  animation: pulse 1.5s ease-in-out infinite;
 }
 
 .turn-dot--mine {
@@ -190,16 +189,6 @@
 
 .turn-text--teammate {
   color: #64b5f6;
-}
-
-@keyframes pulse {
-  0%,
-  100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.4;
-  }
 }
 
 /* My hand label */
@@ -223,18 +212,24 @@
   pointer-events: none;
 }
 
+.dealing-deck {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 99;
+}
+
 .dealing-card {
   position: absolute;
-  z-index: 100;
+  left: 50%;
+  top: 50%;
   transform: translate(-50%, -50%);
-  transition: left 0.15s ease-out, top 0.15s ease-out;
+  z-index: 100;
+  will-change: transform;
 }
 
 .dealing-card .playing-card {
   width: 4.5rem;
   height: 6.25rem;
-}
-
-.dealing-card--flying {
-  opacity: 0.8;
 }
