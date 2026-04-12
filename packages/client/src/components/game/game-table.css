@@ -238,10 +238,18 @@
 .your-turn-banner {
   position: absolute;
   top: 35%;
-  left: 50%;
-  transform: translateX(-50%);
+  left: 0;
+  right: 0;
   z-index: 60;
   pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 0.875rem 2rem 0.875rem 1.5rem;
+}
+
+.your-turn-banner-card {
   display: flex;
   align-items: center;
   gap: 0.75rem;
@@ -254,6 +262,7 @@
     0 0.5rem 2rem rgba(0, 0, 0, 0.4),
     0 0 1.5rem rgba(76, 175, 80, 0.15);
   overflow: hidden;
+  position: relative;
 }
 
 .your-turn-banner-glow {

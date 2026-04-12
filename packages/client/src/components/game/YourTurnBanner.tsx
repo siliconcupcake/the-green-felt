@@ -27,13 +27,15 @@ export function YourTurnBanner({ isMyTurn }: YourTurnBannerProps) {
           exit={{ opacity: 0, y: -10, scale: 0.95 }}
           transition={{ type: 'spring', ...preset.spring.default }}
         >
-          <motion.div
-            className="your-turn-banner-glow"
-            animate={{ opacity: [0.4, 0.8, 0.4] }}
-            transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
-          />
-          <span className="your-turn-banner-icon">&#9654;</span>
-          <span className="your-turn-banner-text">Your Turn</span>
+          <div className="your-turn-banner-card">
+            <motion.div
+              className="your-turn-banner-glow"
+              animate={{ opacity: [0.4, 0.8, 0.4] }}
+              transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+            />
+            <span className="your-turn-banner-icon">&#9654;</span>
+            <span className="your-turn-banner-text">Your Turn</span>
+          </div>
         </motion.div>
       )}
     </AnimatePresence>
