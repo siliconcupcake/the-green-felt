@@ -11,21 +11,11 @@
   justify-content: center;
   cursor: pointer;
   user-select: none;
-  transition:
-    transform 0.15s ease,
-    box-shadow 0.15s ease;
   font-family: 'Georgia', serif;
   position: relative;
 }
 
-.playing-card:hover {
-  transform: translateY(-0.5rem);
-  box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.2);
-}
-
 .playing-card-selected {
-  transform: translateY(-0.75rem);
-  box-shadow: 0 0.25rem 1rem rgba(0, 100, 200, 0.4);
   border-color: #0064c8;
 }
 
@@ -59,7 +49,6 @@
   margin-right: 0;
 }
 
-/* Compact fan for opponent hands — tighter overlap, smaller cards */
 .card-fan--compact .card-fan-slot {
   margin-right: -3.5rem;
 }
@@ -72,9 +61,4 @@
   width: 5.76rem;
   height: 8rem;
   cursor: default;
-}
-
-.card-fan--compact .playing-card:hover {
-  transform: none;
-  box-shadow: none;
 }
