@@ -17,9 +17,9 @@
     "@prisma/client": "^6.0.0",
     "@the-green-felt/engine": "workspace:*",
     "@the-green-felt/shared": "workspace:*",
-    "@trpc/server": "^11.0.0",
-    "fastify": "^5.0.0",
-    "ws": "^8.18.0",
+    "@trpc/server": "^11.16.0",
+    "fastify": "^5.8.4",
+    "ws": "^8.20.0",
     "zod": "^3.24.0"
   },
   "devDependencies": {
