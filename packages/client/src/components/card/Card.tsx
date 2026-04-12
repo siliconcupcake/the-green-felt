@@ -2,7 +2,8 @@ import { motion } from 'motion/react';
 import type { AnyCard } from '@the-green-felt/shared';
 import { isHidden } from '@the-green-felt/shared';
 import { useAnimationPreset } from '../animation/AnimationPresetProvider';
-import './card.css';
+
+export type CardSize = 'default' | 'compact' | 'deal';
 
 interface CardProps {
   card: AnyCard;
@@ -10,13 +11,39 @@ interface CardProps {
   selected?: boolean;
   onClick?: () => void;
   disableHover?: boolean;
+  size?: CardSize;
 }
 
-export function Card({ card, faceDown = false, selected = false, onClick, disableHover = false }: CardProps) {
+const sizeClasses: Record<CardSize, string> = {
+  default: 'w-[8.225rem] h-[11.5rem] cursor-pointer',
+  compact: 'w-[5.76rem] h-32 cursor-default',
+  deal: 'w-[4.5rem] h-[6.25rem] cursor-default',
+};
+
+export function Card({
+  card,
+  faceDown = false,
+  selected = false,
+  onClick,
+  disableHover = false,
+  size = 'default',
+}: CardProps) {
   const preset = useAnimationPreset();
   const showBack = faceDown || isHidden(card);
   const svgPath = showBack ? '/backs/BCK.svg' : `/cards/${card.id}.svg`;
-  const className = `playing-card ${showBack ? 'playing-card-back' : 'playing-card-svg'} ${selected ? 'playing-card-selected' : ''}`;
+
+  const baseClasses = [
+    sizeClasses[size],
+    'border-none rounded-[0.65rem] p-0 bg-white',
+    'flex flex-col items-center justify-center',
+    'select-none font-[Georgia,serif] relative',
+    showBack
+      ? 'bg-[linear-gradient(135deg,#1a3a5c_25%,#2a5a8c_50%,#1a3a5c_75%)] border-[#0d2240]'
+      : 'p-0 overflow-hidden',
+    selected ? 'border-[#0064c8]' : '',
+  ]
+    .filter(Boolean)
+    .join(' ');
 
   const hoverAnimation = disableHover ? undefined : { y: `${preset.hover.lift}rem`, boxShadow: preset.hover.shadow };
   const selectedAnimation = selected
@@ -26,14 +53,14 @@ export function Card({ card, faceDown = false, selected = false, onClick, disabl
   return (
     <motion.button
       type="button"
-      className={className}
+      className={baseClasses}
       onClick={onClick}
       aria-label={card.id}
       animate={selectedAnimation}
       whileHover={hoverAnimation}
       transition={{ type: 'spring', ...preset.spring.snappy }}
     >
-      <img src={svgPath} alt={card.id} className="playing-card-svg-img" draggable={false} />
+      <img src={svgPath} alt={card.id} className="w-full h-full object-contain pointer-events-none" draggable={false} />
     </motion.button>
   );
 }

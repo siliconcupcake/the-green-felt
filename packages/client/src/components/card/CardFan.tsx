@@ -2,7 +2,6 @@ import { motion, AnimatePresence } from 'motion/react';
 import type { AnyCard } from '@the-green-felt/shared';
 import { useHandLayout } from '../../hooks/useHandLayout';
 import { Card } from './Card';
-import './card.css';
 
 interface CardFanProps {
   cards: AnyCard[];
@@ -14,15 +13,17 @@ interface CardFanProps {
 
 export function CardFan({ cards, selectedIds, onCardClick, compact = false, faceDown = false }: CardFanProps) {
   const { transition } = useHandLayout();
-  const className = `card-fan ${compact ? 'card-fan--compact' : ''}`;
+  const slotClass = compact
+    ? 'mr-[-3.5rem] last:mr-0'
+    : 'mr-[-5.75rem] last:mr-0';
 
   return (
-    <div className={className}>
+    <div className="flex py-5">
       <AnimatePresence mode="popLayout">
         {cards.map((card, i) => (
           <motion.div
             key={card.id}
-            className="card-fan-slot"
+            className={slotClass}
             style={{ zIndex: i }}
             layout
             transition={transition}
@@ -36,6 +37,7 @@ export function CardFan({ cards, selectedIds, onCardClick, compact = false, face
               selected={selectedIds?.has(card.id)}
               onClick={() => onCardClick?.(card)}
               disableHover={compact}
+              size={compact ? 'compact' : 'default'}
             />
           </motion.div>
         ))}

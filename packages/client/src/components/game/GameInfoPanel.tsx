@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
+import { Clock, Hash } from 'lucide-react';
 import { useAnimationPreset } from '../animation/AnimationPresetProvider';
-import './game-table.css';
 
 interface GameInfoPanelProps {
   roomCode: string;
@@ -28,26 +28,30 @@ export function GameInfoPanel({ roomCode, currentTurnPlayer, isMyTurn, isTeammat
   }, [turnKey]);
 
   const timeWarning = timeLeft <= 10;
-  const turnDotClass = isMyTurn ? 'turn-dot--mine' : isTeammateTurn ? 'turn-dot--teammate' : 'turn-dot--opponent';
+  const turnDotClass = isMyTurn
+    ? 'bg-myturn'
+    : isTeammateTurn
+      ? 'bg-teammate'
+      : 'bg-gold';
   const turnLabel = isMyTurn ? 'Your turn' : `${currentTurnPlayer}'s turn`;
 
   return (
-    <div className="game-info-panel">
-      <div className="game-info-row">
-        <i className="bi bi-hash" />
-        <span className="game-info-room-code">{roomCode}</span>
+    <div className="absolute bottom-6 left-6 bg-black/70 text-white py-3 px-4 rounded-lg text-[0.8rem] z-10 min-w-[10rem]">
+      <div className="flex items-center gap-2 py-[0.2rem]">
+        <Hash size={14} />
+        <span className="font-mono font-bold tracking-[0.05rem]">{roomCode}</span>
       </div>
-      <div className="game-info-divider" />
-      <div className="game-info-row">
+      <div className="border-t border-white/20 my-[0.375rem]" />
+      <div className="flex items-center gap-2 py-[0.2rem]">
         <motion.span
-          className={`turn-indicator-dot ${turnDotClass}`}
+          className={`w-[0.625rem] h-[0.625rem] rounded-full inline-block ${turnDotClass}`}
           animate={{ opacity: [1, 0.4, 1] }}
           transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
         />
         <AnimatePresence mode="wait">
           <motion.span
             key={turnKey}
-            className={isMyTurn ? 'turn-text--mine' : isTeammateTurn ? 'turn-text--teammate' : ''}
+            className={isMyTurn ? 'text-myturn' : isTeammateTurn ? 'text-teammate' : ''}
             initial={{ opacity: 0, y: -4 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 4 }}
@@ -57,9 +61,9 @@ export function GameInfoPanel({ roomCode, currentTurnPlayer, isMyTurn, isTeammat
           </motion.span>
         </AnimatePresence>
       </div>
-      <div className="game-info-row">
-        <i className={`bi bi-clock ${timeWarning ? 'text-warning' : ''}`} />
-        <span className={timeWarning ? 'text-warning fw-bold' : ''}>{timeLeft}s</span>
+      <div className="flex items-center gap-2 py-[0.2rem]">
+        <Clock size={14} className={timeWarning ? 'text-[#ffc107]' : ''} />
+        <span className={timeWarning ? 'text-[#ffc107] font-bold' : ''}>{timeLeft}s</span>
       </div>
     </div>
   );

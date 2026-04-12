@@ -6,7 +6,6 @@ import { GameInfoPanel } from './GameInfoPanel';
 import { YourTurnBanner } from './YourTurnBanner';
 import { GameToast } from './GameToast';
 import { ScoreCounter } from './ScoreCounter';
-import './game-table.css';
 
 export interface GamePlayer {
   id: string;
@@ -131,33 +130,41 @@ export function GameTable({
   const myTeam = currentPlayer.team;
 
   return (
-    <div className="game-table">
+    <div className="w-screen h-screen bg-felt relative overflow-hidden">
       {/* Center area — draw and discard piles */}
-      <div className="game-table-center">
-        <div className="game-table-pile-stack">
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex gap-8 items-center justify-center">
+        <div className="flex flex-col items-center gap-[0.375rem]">
           {drawPile.length > 0 ? (
             <>
               <Card card={drawPile[0]} faceDown />
-              <span className="pile-label">{drawPile.length} cards</span>
+              <span className="text-white/50 text-[0.7rem] font-semibold uppercase tracking-[0.03rem]">
+                {drawPile.length} cards
+              </span>
             </>
           ) : (
-            <div className="game-table-pile">Empty</div>
+            <div className="w-20 h-[7rem] border-2 border-dashed border-white/30 rounded-lg flex items-center justify-center text-white/40 text-xs uppercase tracking-[0.05rem]">
+              Empty
+            </div>
           )}
         </div>
-        <div className="game-table-pile-stack">
+        <div className="flex flex-col items-center gap-[0.375rem]">
           {topDiscard ? (
             <>
               <Card card={topDiscard} />
-              <span className="pile-label">Discard</span>
+              <span className="text-white/50 text-[0.7rem] font-semibold uppercase tracking-[0.03rem]">
+                Discard
+              </span>
             </>
           ) : (
-            <div className="game-table-pile">Discard</div>
+            <div className="w-20 h-[7rem] border-2 border-dashed border-white/30 rounded-lg flex items-center justify-center text-white/40 text-xs uppercase tracking-[0.05rem]">
+              Discard
+            </div>
           )}
         </div>
       </div>
 
       {/* Opponent seats positioned in semicircle */}
-      <div className="game-table-opponents">
+      <div className="absolute inset-0 pointer-events-none">
         {opponents.map((opponent, i) => (
           <div key={opponent.id} style={getOpponentPosition(i, opponents.length)}>
             <PlayerSeat
@@ -172,7 +179,7 @@ export function GameTable({
       </div>
 
       {/* Current player's hand at bottom center */}
-      <div className="game-table-my-hand">
+      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex flex-col items-center">
         {currentPlayer.score != null && (
           <ScoreCounter label={currentPlayer.name} value={currentPlayer.score} />
         )}

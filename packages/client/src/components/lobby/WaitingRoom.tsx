@@ -4,7 +4,6 @@ import { GAME_CATALOG } from '@the-green-felt/shared';
 import { trpc } from '../../trpc';
 import { useLobbyStore } from '../../stores/lobby-store';
 import { PlayerGrid } from './PlayerGrid';
-import './lobby.css';
 
 const STORAGE_KEY_PLAYER_ID = 'tgf:playerId';
 const STORAGE_KEY_ROOM_CODE = 'tgf:roomCode';
@@ -120,24 +119,35 @@ export function WaitingRoom() {
   return (
     <div>
       {/* Header */}
-      <div className="waiting-room-header">
-        <div className="waiting-room-header__left">
-          <h2 className="waiting-room-header__game-name">{gameInfo?.displayName ?? 'Game'}</h2>
-          <div className="waiting-room-header__meta">
-            <span className="waiting-room-header__room-code">{roomCode}</span>
-            <span className="waiting-room-header__status">· waiting for players</span>
+      <div className="flex justify-between items-start mb-6">
+        <div className="flex flex-col gap-1">
+          <h2 className="text-xl font-bold text-text-primary m-0">{gameInfo?.displayName ?? 'Game'}</h2>
+          <div className="flex items-center gap-2">
+            <span className="font-mono text-xs font-semibold tracking-[0.1em] text-accent-green bg-[rgba(52,211,153,0.1)] px-2 py-[0.125rem] rounded-badge">
+              {roomCode}
+            </span>
+            <span className="text-[0.6875rem] text-text-muted">· waiting for players</span>
           </div>
         </div>
-        <div className="waiting-room-header__actions">
-          <button className="waiting-room-button waiting-room-button--copy" onClick={handleCopyInvite}>
+        <div className="flex gap-2 shrink-0">
+          <button
+            className="rounded-button py-1.5 px-3 font-sans text-xs cursor-pointer transition-opacity duration-150 flex items-center gap-1 hover:opacity-[0.85] bg-elevated border border-border text-text-secondary"
+            onClick={handleCopyInvite}
+          >
             {copied ? '✓ Copied!' : '🔗 Copy Invite'}
           </button>
           {isHost ? (
-            <button className="waiting-room-button waiting-room-button--danger" onClick={handleClose}>
+            <button
+              className="rounded-button py-1.5 px-3 font-sans text-xs cursor-pointer transition-opacity duration-150 flex items-center gap-1 hover:opacity-[0.85] bg-accent-red-bg border border-[rgba(239,68,68,0.2)] text-accent-red"
+              onClick={handleClose}
+            >
               Close Room
             </button>
           ) : (
-            <button className="waiting-room-button waiting-room-button--danger" onClick={handleLeave}>
+            <button
+              className="rounded-button py-1.5 px-3 font-sans text-xs cursor-pointer transition-opacity duration-150 flex items-center gap-1 hover:opacity-[0.85] bg-accent-red-bg border border-[rgba(239,68,68,0.2)] text-accent-red"
+              onClick={handleLeave}
+            >
               Leave
             </button>
           )}
@@ -145,17 +155,20 @@ export function WaitingRoom() {
       </div>
 
       {/* Progress Bar */}
-      <div className="progress-bar">
-        <div className="progress-bar__labels">
-          <span className={`progress-bar__label${isReady ? ' progress-bar__label--ready' : ''}`}>
+      <div className="mb-6">
+        <div className="flex justify-between mb-1.5 text-[0.6875rem]">
+          <span className={isReady ? 'text-accent-green font-semibold' : 'text-text-secondary'}>
             {isReady ? 'Ready!' : 'Players'}
           </span>
-          <span className={`progress-bar__count${isReady ? ' progress-bar__count--ready' : ''}`}>
+          <span className={isReady ? 'text-accent-green font-semibold' : 'text-text-secondary'}>
             {players.length} / {minPlayers}
           </span>
         </div>
-        <div className="progress-bar__track">
-          <div className="progress-bar__fill" style={{ width: `${Math.min(fillPercent, 100)}%` }} />
+        <div className="h-1 bg-border rounded-sm overflow-hidden">
+          <div
+            className="h-full bg-gradient-to-r from-accent-green to-accent-green-dark rounded-sm transition-[width] duration-500 ease-out"
+            style={{ width: `${Math.min(fillPercent, 100)}%` }}
+          />
         </div>
       </div>
 
@@ -171,17 +184,21 @@ export function WaitingRoom() {
       />
 
       {/* Start / Waiting */}
-      <div className="waiting-room-start">
+      <div className="text-center">
         {isHost ? (
           <button
-            className={`waiting-room-start__button ${canStart ? 'waiting-room-start__button--ready' : 'waiting-room-start__button--disabled'}`}
+            className={`inline-block border-none rounded-card py-3 px-10 font-sans text-sm font-semibold cursor-pointer [transition:opacity_0.15s,box-shadow_0.3s] ${
+              canStart
+                ? 'bg-gradient-to-br from-accent-green to-accent-green-dark text-[#121212] font-bold shadow-[0_0_20px_rgba(52,211,153,0.3)] hover:opacity-90 hover:shadow-[0_0_30px_rgba(52,211,153,0.4)]'
+                : 'bg-border text-text-muted cursor-default'
+            }`}
             onClick={handleStart}
             disabled={!canStart}
           >
             {canStart ? 'Start Game' : `Need ${minPlayers - players.length} more player${minPlayers - players.length === 1 ? '' : 's'}`}
           </button>
         ) : (
-          <div className="waiting-room-start__text">Waiting for host to start...</div>
+          <div className="text-[0.8125rem] text-text-muted">Waiting for host to start...</div>
         )}
       </div>
     </div>

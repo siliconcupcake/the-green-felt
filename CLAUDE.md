@@ -140,6 +140,7 @@ Deterministic seeds produce known card distributions for reproducible tests.
 - **Prettier** — single quotes, trailing commas, semicolons, 120 char width, 2-space indent
 - **Immutable engine classes** — Deck, Hand, CardSet return new instances on mutation
 - **Branded types** — use `CardId` (branded string), construct via `makeCardId('AS')`
+- **No pixel units (px) in Tailwind classes** — always use rem. Convert px to rem (1rem = 16px). Use arbitrary values like `text-[0.6875rem]` not `text-[11px]`, `w-[2.125rem]` not `w-[34px]`, `rounded-[0.1875rem]` not `rounded-[3px]`. This applies to all Tailwind arbitrary values: widths, heights, padding, margins, font sizes, border radius, border widths, gaps, min/max widths, blur values, etc. Standard Tailwind classes (`p-4`, `text-sm`, `gap-2`) are fine as they are already rem-based.
 
  ## Commit Style
 - Do not include 'Co-Authored-By' lines in commit messages

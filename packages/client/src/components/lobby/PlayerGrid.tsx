@@ -1,5 +1,4 @@
 import { PlayerCard } from './PlayerCard';
-import './lobby.css';
 
 interface PlayerGridProps {
   players: string[];
@@ -23,7 +22,7 @@ export function PlayerGrid({
   const emptyCount = Math.max(0, totalSlots - players.length);
 
   return (
-    <div className="player-grid">
+    <div className="grid grid-cols-2 md:grid-cols-4 gap-2 mb-6">
       {players.map((playerId, index) => (
         <PlayerCard
           key={playerId}

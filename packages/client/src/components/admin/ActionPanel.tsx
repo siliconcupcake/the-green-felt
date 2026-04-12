@@ -98,8 +98,8 @@ export function ActionPanel() {
 
   if (isHistorical) {
     return (
-      <div className="admin-action-panel">
-        <div className="admin-action-disabled">
+      <div className="p-3 border-t border-[#333] shrink-0">
+        <div className="text-[#888] italic p-2">
           Actions disabled while viewing historical state
         </div>
       </div>
@@ -107,8 +107,8 @@ export function ActionPanel() {
   }
 
   return (
-    <div className="admin-action-panel">
-      <div className="admin-action-header">
+    <div className="p-3 border-t border-[#333] shrink-0">
+      <div className="mb-2">
         <strong>Acting as:</strong>{' '}
         {activePlayer ? (
           <>
@@ -120,19 +120,27 @@ export function ActionPanel() {
       </div>
 
       {/* Suggest Move */}
-      <div className="admin-action-section">
-        <button className="admin-btn admin-btn-primary" onClick={handleSuggest} disabled={loading || !activePlayer}>
+      <div className="mb-3">
+        <button
+          className="px-2.5 py-1 border border-[#1e90ff] bg-[#0a3d62] text-admin-blue cursor-pointer rounded-[0.1875rem] font-[inherit] text-xs hover:enabled:bg-[#0c4d7a] disabled:opacity-50 disabled:cursor-not-allowed"
+          onClick={handleSuggest}
+          disabled={loading || !activePlayer}
+        >
           {loading ? 'Generating...' : 'Suggest Move'}
         </button>
         {suggestedMove && (
-          <div className="admin-suggested-move">
+          <div className="mt-2 flex flex-col gap-1.5">
             <textarea
-              className="admin-json-input"
+              className="w-full p-1.5 border border-[#444] bg-[#111] text-[#ddd] rounded-[0.1875rem] font-[inherit] text-xs resize-y"
               value={actionJson}
               onChange={(e) => setActionJson(e.target.value)}
               rows={4}
             />
-            <button className="admin-btn admin-btn-success" onClick={handleApprove} disabled={loading}>
+            <button
+              className="px-2.5 py-1 border border-admin-green bg-[#1a4a1a] text-admin-green cursor-pointer rounded-[0.1875rem] font-[inherit] text-xs hover:enabled:bg-[#2a5a2a] disabled:opacity-50 disabled:cursor-not-allowed"
+              onClick={handleApprove}
+              disabled={loading}
+            >
               Approve & Dispatch
             </button>
           </div>
@@ -140,8 +148,8 @@ export function ActionPanel() {
       </div>
 
       {/* Manual Dispatch */}
-      <div className="admin-action-section">
-        <div className="admin-action-manual-header">
+      <div className="mb-3">
+        <div className="flex items-center gap-2 mb-1">
           <strong>Manual:</strong>
           <select value={actionType} onChange={(e) => setActionType(e.target.value)}>
             {ACTION_TYPES.map((t) => (
@@ -152,20 +160,30 @@ export function ActionPanel() {
           </select>
         </div>
         <textarea
-          className="admin-json-input"
+          className="w-full p-1.5 border border-[#444] bg-[#111] text-[#ddd] rounded-[0.1875rem] font-[inherit] text-xs resize-y"
           value={actionJson}
           onChange={(e) => setActionJson(e.target.value)}
           placeholder={`{ "type": "${actionType}", ... }`}
           rows={4}
         />
-        <button className="admin-btn" onClick={handleManualDispatch} disabled={loading || !activePlayer}>
+        <button
+          className="px-2.5 py-1 border border-[#444] bg-[#2a2a4a] text-[#ddd] cursor-pointer rounded-[0.1875rem] font-[inherit] text-xs hover:enabled:bg-[#3a3a5a] disabled:opacity-50 disabled:cursor-not-allowed"
+          onClick={handleManualDispatch}
+          disabled={loading || !activePlayer}
+        >
           Dispatch
         </button>
       </div>
 
       {/* Last result */}
       {lastActionResult && (
-        <div className={`admin-action-result ${lastActionResult.success ? 'admin-success' : 'admin-error'}`}>
+        <div
+          className={`px-2.5 py-1.5 rounded-badge mt-2 ${
+            lastActionResult.success
+              ? 'text-admin-green bg-[#1a2a1a]'
+              : 'text-[#ee5a24] bg-[#2a1a1a]'
+          }`}
+        >
           {lastActionResult.success ? 'Action dispatched successfully' : `Error: ${lastActionResult.error}`}
         </div>
       )}

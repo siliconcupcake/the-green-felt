@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import './lobby.css';
 
 interface JoinFieldProps {
   initialCode?: string;
@@ -26,27 +25,31 @@ export function JoinField({ initialCode = '', onJoin, disabled, error }: JoinFie
 
   return (
     <div>
-      <div className="lobby-divider">
-        <div className="lobby-divider__line" />
-        <div className="lobby-divider__text">or join a friend</div>
-        <div className="lobby-divider__line" />
+      <div className="flex items-center gap-3 mb-5">
+        <div className="flex-1 h-px bg-border" />
+        <div className="text-[0.6875rem] uppercase tracking-[0.1em] text-text-muted whitespace-nowrap">or join a friend</div>
+        <div className="flex-1 h-px bg-border" />
       </div>
-      <div className="join-field">
+      <div className="flex gap-2 max-w-[20rem] mx-auto max-md:max-w-full md:max-w-[25rem]">
         <input
           type="text"
-          className={`join-field__input${error ? ' join-field__input--error' : ''}`}
+          className={`flex-1 bg-surface border rounded-card py-3 px-4 text-text-primary font-sans text-sm outline-none transition-[border-color] duration-150 placeholder:text-text-muted focus:border-accent-green ${error ? 'border-accent-red' : 'border-border'}`}
           placeholder="Room code..."
           value={code}
           onChange={(e) => setCode(e.target.value)}
           onKeyDown={handleKeyDown}
           aria-describedby={error ? 'join-error' : undefined}
         />
-        <button className="join-field__button" onClick={handleSubmit} disabled={disabled || !code.trim()}>
+        <button
+          className="bg-elevated border border-accent-green rounded-card py-3 px-5 text-accent-green font-sans text-sm font-semibold cursor-pointer transition-opacity duration-150 whitespace-nowrap hover:opacity-[0.85] disabled:opacity-50 disabled:cursor-not-allowed"
+          onClick={handleSubmit}
+          disabled={disabled || !code.trim()}
+        >
           Join
         </button>
       </div>
       {error && (
-        <div id="join-error" className="lobby-error">
+        <div id="join-error" className="text-accent-red text-xs mt-2 text-center">
           {error}
         </div>
       )}

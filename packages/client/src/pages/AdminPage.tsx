@@ -8,7 +8,6 @@ import { StateInspector } from '../components/admin/StateInspector';
 import { ActionPanel } from '../components/admin/ActionPanel';
 import { EventLog } from '../components/admin/EventLog';
 import { Timeline } from '../components/admin/Timeline';
-import '../components/admin/admin.css';
 
 export function AdminPage() {
   const {
@@ -57,17 +56,17 @@ export function AdminPage() {
   }, [gameId, appendEvent]);
 
   return (
-    <div className="admin-page">
+    <div className="flex flex-col h-screen bg-admin-bg text-[#e0e0e0] font-mono text-[0.8125rem]">
       <AdminNavbar />
       {!gameId ? (
         <CreateGamePanel />
       ) : (
-        <div className="admin-layout">
-          <div className="admin-left">
+        <div className="flex flex-1 overflow-hidden">
+          <div className="flex-1 flex flex-col overflow-y-auto border-r border-[#333]">
             <StateInspector />
             <ActionPanel />
           </div>
-          <div className="admin-right">
+          <div className="w-[26.25rem] flex flex-col overflow-hidden">
             <EventLog />
             <Timeline />
           </div>
