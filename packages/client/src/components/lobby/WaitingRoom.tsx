@@ -7,6 +7,7 @@ import { PlayerGrid } from './PlayerGrid';
 import './lobby.css';
 
 const STORAGE_KEY_PLAYER_ID = 'tgf:playerId';
+const STORAGE_KEY_ROOM_CODE = 'tgf:roomCode';
 
 function getPlayerId(): string | null {
   return localStorage.getItem(STORAGE_KEY_PLAYER_ID);
@@ -58,9 +59,13 @@ export function WaitingRoom() {
   const handleCopyInvite = async () => {
     if (!roomCode) return;
     const link = `${window.location.origin}/join/${roomCode}`;
-    await navigator.clipboard.writeText(link);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+    try {
+      await navigator.clipboard.writeText(link);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      window.prompt('Copy this invite link:', link);
+    }
   };
 
   const handleLeave = async () => {
@@ -68,9 +73,11 @@ export function WaitingRoom() {
     if (!pid || !roomCode) return;
     try {
       await trpc.lobby.leaveRoom.mutate({ roomCode, playerId: pid });
+      localStorage.removeItem(STORAGE_KEY_ROOM_CODE);
       reset();
     } catch {
       // If leave fails, reset anyway — server state may already be cleaned up
+      localStorage.removeItem(STORAGE_KEY_ROOM_CODE);
       reset();
     }
   };
@@ -80,7 +87,10 @@ export function WaitingRoom() {
     if (!pid || !roomCode) return;
     try {
       await trpc.lobby.closeRoom.mutate({ roomCode, hostPlayerId: pid });
+      localStorage.removeItem(STORAGE_KEY_ROOM_CODE);
+      reset();
     } catch {
+      localStorage.removeItem(STORAGE_KEY_ROOM_CODE);
       reset();
     }
   };

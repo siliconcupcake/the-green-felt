@@ -12,7 +12,8 @@ const AVATAR_GRADIENTS = [
 ] as const;
 
 export function getAvatarGradient(index: number): [string, string] {
-  return [...AVATAR_GRADIENTS[index % AVATAR_GRADIENTS.length]];
+  const gradient = AVATAR_GRADIENTS[index % AVATAR_GRADIENTS.length];
+  return [gradient[0], gradient[1]];
 }
 
 interface LobbyState {
