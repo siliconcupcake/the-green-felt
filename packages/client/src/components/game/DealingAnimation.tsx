@@ -1,9 +1,9 @@
 import type { CSSProperties } from 'react';
 import { useEffect } from 'react';
-import { Card } from '../card/Card';
 import type { AnyCard } from '@the-green-felt/shared';
 import { createHidden } from '@the-green-felt/shared';
 import { useDealAnimation } from '../../hooks/useDealAnimation';
+import { Card } from '../card/Card';
 import './game-table.css';
 
 interface DealingAnimationProps {

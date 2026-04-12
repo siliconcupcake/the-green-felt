@@ -1,7 +1,7 @@
 import { motion, AnimatePresence } from 'motion/react';
 import type { AnyCard } from '@the-green-felt/shared';
-import { Card } from './Card';
 import { useHandLayout } from '../../hooks/useHandLayout';
+import { Card } from './Card';
 import './card.css';
 
 interface CardFanProps {

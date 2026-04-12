@@ -1,9 +1,9 @@
 import { useEffect, useRef } from 'react';
 import { useAnimate } from 'motion/react';
-import { Card } from '../card/Card';
-import { useAnimationPreset } from '../animation/AnimationPresetProvider';
-import type { CardTransferState } from '../../hooks/useCardTransfer';
 import { createHidden, cardFromId } from '@the-green-felt/shared';
+import type { CardTransferState } from '../../hooks/useCardTransfer';
+import { useAnimationPreset } from '../animation/AnimationPresetProvider';
+import { Card } from '../card/Card';
 import './game-table.css';
 
 interface CardTransferOverlayProps {

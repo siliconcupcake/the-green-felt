@@ -1,11 +1,11 @@
 import type { CSSProperties } from 'react';
 import { useEffect, useRef } from 'react';
 import { useAnimate, stagger } from 'motion/react';
-import { Card } from '../card/Card';
-import { useAnimationPreset } from '../animation/AnimationPresetProvider';
+import { cardFromId, createHidden } from '@the-green-felt/shared';
 import { buildShakeKeyframes } from '../../hooks/useShake';
 import type { SetDeclarationState } from '../../hooks/useSetDeclaration';
-import { cardFromId, createHidden } from '@the-green-felt/shared';
+import { useAnimationPreset } from '../animation/AnimationPresetProvider';
+import { Card } from '../card/Card';
 import './game-table.css';
 
 interface SetDeclarationOverlayProps {

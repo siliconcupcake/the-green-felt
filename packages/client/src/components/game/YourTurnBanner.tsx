@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useAnimationPreset } from '../animation/AnimationPresetProvider';
 
@@ -8,14 +8,23 @@ interface YourTurnBannerProps {
 
 export function YourTurnBanner({ isMyTurn }: YourTurnBannerProps) {
   const preset = useAnimationPreset();
-  const [visible, setVisible] = useState(false);
+  const [dismissed, setDismissed] = useState(false);
+  const prevIsMyTurn = useRef(isMyTurn);
 
+  // Reset dismissed flag when isMyTurn transitions to true
+  if (isMyTurn && !prevIsMyTurn.current) {
+    setDismissed(false);
+  }
+  prevIsMyTurn.current = isMyTurn;
+
+  // Auto-dismiss after hold duration
   useEffect(() => {
-    if (!isMyTurn) { setVisible(false); return; }
-    setVisible(true);
-    const timeout = setTimeout(() => { setVisible(false); }, preset.hold.yourTurnBanner);
+    if (!isMyTurn || dismissed) return;
+    const timeout = setTimeout(() => { setDismissed(true); }, preset.hold.yourTurnBanner);
     return () => clearTimeout(timeout);
-  }, [isMyTurn, preset.hold.yourTurnBanner]);
+  }, [isMyTurn, dismissed, preset.hold.yourTurnBanner]);
+
+  const visible = isMyTurn && !dismissed;
 
   return (
     <AnimatePresence>
@@ -41,4 +50,3 @@ export function YourTurnBanner({ isMyTurn }: YourTurnBannerProps) {
     </AnimatePresence>
   );
 }
-
