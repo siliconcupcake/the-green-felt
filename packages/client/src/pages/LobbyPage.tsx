@@ -69,6 +69,7 @@ export function LobbyPage() {
 
       transitionTo('waiting', () => {
         enterWaitingRoom(result.roomCode, gameTypeId, true, result.room.players, names);
+        navigate(`/join/${result.roomCode}`, { replace: true });
       });
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to create room');
@@ -97,6 +98,7 @@ export function LobbyPage() {
 
       transitionTo('waiting', () => {
         enterWaitingRoom(gameCode, result.room.gameTypeId, false, result.room.players, names);
+        navigate(`/join/${gameCode}`, { replace: true });
       });
     } catch (err) {
       setJoinError(err instanceof Error ? err.message : 'Room not found');
@@ -118,16 +120,22 @@ export function LobbyPage() {
     }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // If store resets to landing externally (leave, close, room-closed), animate in
+  // If store resets to landing externally (leave, close, room-closed), animate in and reset URL
   useEffect(() => {
-    if (phase === 'landing' && pendingPhaseRef.current === null && phaseClass.includes('active')) {
-      // External reset — animate the landing content in
-      setPhaseClass('lobby-phase lobby-phase--enter');
-      requestAnimationFrame(() => {
+    if (phase === 'landing') {
+      // Reset URL to root when returning to landing
+      if (window.location.pathname !== '/') {
+        navigate('/', { replace: true });
+      }
+      if (pendingPhaseRef.current === null && phaseClass.includes('active')) {
+        // External reset — animate the landing content in
+        setPhaseClass('lobby-phase lobby-phase--enter');
         requestAnimationFrame(() => {
-          setPhaseClass('lobby-phase lobby-phase--active');
+          requestAnimationFrame(() => {
+            setPhaseClass('lobby-phase lobby-phase--active');
+          });
         });
-      });
+      }
     }
     if (pendingPhaseRef.current !== null) {
       pendingPhaseRef.current = null;
@@ -137,51 +145,51 @@ export function LobbyPage() {
   return (
     <div className="lobby">
       <div className="lobby-content">
+        {/* Brand — always visible */}
+        <div className="lobby-brand">
+          <h1 className="lobby-brand-title">The Green Felt</h1>
+          <div className="lobby-brand-tagline">Card Games Reimagined</div>
+        </div>
+
+        {/* Name Input — always visible */}
+        <div className="lobby-name-input-wrapper">
+          <input
+            ref={nameInputRef}
+            type="text"
+            aria-label="Your name"
+            className={`lobby-name-input${nameError ? ' lobby-name-input--error' : ''}`}
+            placeholder="Your name..."
+            value={playerName}
+            onChange={(e) => {
+              setPlayerName(e.target.value);
+              setNameError(false);
+            }}
+            readOnly={phase === 'waiting'}
+          />
+        </div>
+
+        {/* Swappable middle section */}
         <div className={phaseClass}>
           {phase === 'landing' ? (
             <>
-              {/* Brand */}
-              <div className="lobby-brand">
-                <h1 className="lobby-brand-title">The Green Felt</h1>
-                <div className="lobby-brand-tagline">Card Games Reimagined</div>
-              </div>
-
-              {/* Name Input */}
-              <div className="lobby-name-input-wrapper">
-                <input
-                  ref={nameInputRef}
-                  type="text"
-                  aria-label="Your name"
-                  className={`lobby-name-input${nameError ? ' lobby-name-input--error' : ''}`}
-                  placeholder="Your name..."
-                  value={playerName}
-                  onChange={(e) => {
-                    setPlayerName(e.target.value);
-                    setNameError(false);
-                  }}
-                />
-              </div>
-
-              {/* Game Catalog */}
               <GameCatalog onHost={handleHost} disabled={loading} />
 
               {error && <div className="lobby-error">{error}</div>}
 
-              {/* Join Field */}
               <JoinField
                 initialCode={routeRoomCode ?? ''}
                 onJoin={handleJoin}
                 disabled={loading}
                 error={joinError}
               />
-
-              {/* Footer */}
-              <div className="lobby-footer">Made with ♠ by siliconcupcake</div>
             </>
           ) : (
             <WaitingRoom />
           )}
         </div>
+
+        {/* Footer — always visible */}
+        <div className="lobby-footer">Made with ♠ by siliconcupcake</div>
       </div>
     </div>
   );
