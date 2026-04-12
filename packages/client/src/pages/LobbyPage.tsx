@@ -189,7 +189,7 @@ export function LobbyPage() {
         </div>
 
         {/* Footer — always visible */}
-        <div className="lobby-footer">Made with ♠ by siliconcupcake</div>
+        <div className="lobby-footer">Made with <span className="lobby-footer__heart">♥</span> by siliconcupcake</div>
       </div>
     </div>
   );

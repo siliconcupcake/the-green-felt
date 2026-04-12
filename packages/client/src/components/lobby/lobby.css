@@ -21,7 +21,7 @@
   --font-stack: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 }
 
-/* ── Page Shell ────────────────────────��───────────────────── */
+/* ── Page Shell ───────────────────────────────────────────── */
 .lobby {
   min-height: 100vh;
   background: var(--bg-base);
@@ -127,7 +127,7 @@
   margin-bottom: 12px;
 }
 
-/* ��─ Game Catalog ──────────────────────────────────────────── */
+/* ── Game Catalog ──────────────────────────────────────────── */
 .game-catalog {
   display: flex;
   gap: 12px;
@@ -238,7 +238,7 @@
   white-space: nowrap;
 }
 
-/* ── Join Field ──���─────────────────────────────────────────── */
+/* ── Join Field ───────────────────────────────────────────── */
 .join-field {
   display: flex;
   gap: 8px;
@@ -312,6 +312,10 @@
   padding: 12px 0;
   color: var(--text-disabled);
   font-size: 11px;
+}
+
+.lobby-footer__heart {
+  color: var(--accent-green);
 }
 
 /* ── Waiting Room ──────────────────────────────────────────── */
