@@ -262,6 +262,7 @@ export function JsonTree({ data, label }: JsonTreeProps) {
           className="px-1.5 py-0.5 border border-[#444] bg-[#2a2a4a] text-[#ddd] cursor-pointer rounded-[0.1875rem] text-xs hover:bg-[#3a3a5a]"
           onClick={() => setForceExpanded(true)}
           title="Expand All"
+          aria-label="Expand All"
         >
           <Maximize2 size={14} />
         </button>
@@ -269,6 +270,7 @@ export function JsonTree({ data, label }: JsonTreeProps) {
           className="px-1.5 py-0.5 border border-[#444] bg-[#2a2a4a] text-[#ddd] cursor-pointer rounded-[0.1875rem] text-xs hover:bg-[#3a3a5a]"
           onClick={() => setForceExpanded(false)}
           title="Collapse All"
+          aria-label="Collapse All"
         >
           <Minimize2 size={14} />
         </button>
@@ -276,6 +278,7 @@ export function JsonTree({ data, label }: JsonTreeProps) {
           className="px-1.5 py-0.5 border border-[#444] bg-[#2a2a4a] text-[#ddd] cursor-pointer rounded-[0.1875rem] text-xs hover:bg-[#3a3a5a]"
           onClick={() => copyToClipboard(JSON.stringify(data, null, 2))}
           title="Copy all as JSON"
+          aria-label="Copy all as JSON"
         >
           <Clipboard size={14} />
         </button>

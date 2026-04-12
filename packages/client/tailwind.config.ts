@@ -54,9 +54,9 @@ export default {
         },
       },
       borderRadius: {
-        card: '10px',
-        button: '8px',
-        badge: '4px',
+        card: '0.625rem',
+        button: '0.5rem',
+        badge: '0.25rem',
       },
       keyframes: {
         shake: {

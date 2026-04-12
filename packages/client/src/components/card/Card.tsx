@@ -34,13 +34,13 @@ export function Card({
 
   const baseClasses = [
     sizeClasses[size],
-    'border-none rounded-[0.65rem] p-0 bg-white',
+    'rounded-[0.65rem] p-0 bg-white',
     'flex flex-col items-center justify-center',
     'select-none font-[Georgia,serif] relative',
     showBack
-      ? 'bg-[linear-gradient(135deg,#1a3a5c_25%,#2a5a8c_50%,#1a3a5c_75%)] border-[#0d2240]'
-      : 'p-0 overflow-hidden',
-    selected ? 'border-[#0064c8]' : '',
+      ? 'border-2 border-[#0d2240] bg-[linear-gradient(135deg,#1a3a5c_25%,#2a5a8c_50%,#1a3a5c_75%)]'
+      : 'border-none p-0 overflow-hidden',
+    selected ? 'border-2 border-[#0064c8]' : '',
   ]
     .filter(Boolean)
     .join(' ');

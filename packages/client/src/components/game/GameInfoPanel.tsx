@@ -38,7 +38,7 @@ export function GameInfoPanel({ roomCode, currentTurnPlayer, isMyTurn, isTeammat
   return (
     <div className="absolute bottom-6 left-6 bg-black/70 text-white py-3 px-4 rounded-lg text-[0.8rem] z-10 min-w-[10rem]">
       <div className="flex items-center gap-2 py-[0.2rem]">
-        <Hash size={14} />
+        <Hash size={14} aria-hidden="true" />
         <span className="font-mono font-bold tracking-[0.05rem]">{roomCode}</span>
       </div>
       <div className="border-t border-white/20 my-[0.375rem]" />
@@ -62,7 +62,7 @@ export function GameInfoPanel({ roomCode, currentTurnPlayer, isMyTurn, isTeammat
         </AnimatePresence>
       </div>
       <div className="flex items-center gap-2 py-[0.2rem]">
-        <Clock size={14} className={timeWarning ? 'text-[#ffc107]' : ''} />
+        <Clock size={14} aria-hidden="true" className={timeWarning ? 'text-[#ffc107]' : ''} />
         <span className={timeWarning ? 'text-[#ffc107] font-bold' : ''}>{timeLeft}s</span>
       </div>
     </div>
