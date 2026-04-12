@@ -118,10 +118,18 @@ export function LobbyPage() {
     }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // If store resets to landing (e.g., room closed), animate back
+  // If store resets to landing externally (leave, close, room-closed), animate in
   useEffect(() => {
-    if (phase === 'landing' && pendingPhaseRef.current === 'waiting') {
-      // Store was reset externally — we're already on landing content
+    if (phase === 'landing' && pendingPhaseRef.current === null && phaseClass.includes('active')) {
+      // External reset — animate the landing content in
+      setPhaseClass('lobby-phase lobby-phase--enter');
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          setPhaseClass('lobby-phase lobby-phase--active');
+        });
+      });
+    }
+    if (pendingPhaseRef.current !== null) {
       pendingPhaseRef.current = null;
     }
   }, [phase]);
@@ -143,6 +151,7 @@ export function LobbyPage() {
                 <input
                   ref={nameInputRef}
                   type="text"
+                  aria-label="Your name"
                   className={`lobby-name-input${nameError ? ' lobby-name-input--error' : ''}`}
                   placeholder="Your name..."
                   value={playerName}
