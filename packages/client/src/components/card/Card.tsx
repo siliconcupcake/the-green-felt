@@ -15,7 +15,7 @@ interface CardProps {
 export function Card({ card, faceDown = false, selected = false, onClick, disableHover = false }: CardProps) {
   const preset = useAnimationPreset();
   const showBack = faceDown || isHidden(card);
-  const svgPath = showBack ? '/cards/BCK.svg' : `/cards/${card.id}.svg`;
+  const svgPath = showBack ? '/backs/BCK.svg' : `/cards/${card.id}.svg`;
   const className = `playing-card ${showBack ? 'playing-card-back' : 'playing-card-svg'} ${selected ? 'playing-card-selected' : ''}`;
 
   const hoverAnimation = disableHover ? undefined : { y: `${preset.hover.lift}rem`, boxShadow: preset.hover.shadow };
