@@ -1,0 +1,242 @@
+.animations-page {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: #2d5442;
+  color: #fff;
+  overflow: hidden;
+}
+
+/* ---------- Header bar ---------- */
+
+.animations-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1.5rem;
+  background: rgba(0, 0, 0, 0.4);
+  flex-shrink: 0;
+  z-index: 10;
+}
+
+.animations-header h1 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin: 0;
+  white-space: nowrap;
+}
+
+.animations-header-right {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+/* ---------- Preset selector ---------- */
+
+.preset-selector {
+  display: flex;
+  gap: 0.375rem;
+}
+
+.preset-btn {
+  padding: 0.25rem 0.625rem;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 0.375rem;
+  background: transparent;
+  color: #fff;
+  cursor: pointer;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.preset-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.preset-btn--active {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: #fff;
+}
+
+/* ---------- Tab bar ---------- */
+
+.animations-tabs {
+  display: flex;
+  gap: 0;
+  background: rgba(0, 0, 0, 0.25);
+  flex-shrink: 0;
+  overflow-x: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+}
+
+.animations-tab {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-bottom: 2px solid transparent;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.5);
+  cursor: pointer;
+  font-size: 0.75rem;
+  font-weight: 600;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.animations-tab:hover {
+  color: rgba(255, 255, 255, 0.8);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.animations-tab--active {
+  color: #fff;
+  border-bottom-color: #4caf50;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+/* ---------- Tab content (full remaining viewport) ---------- */
+
+.animations-tab-content {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+}
+
+/* ---------- Section (fills the tab content) ---------- */
+
+.animation-section {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.animation-section-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1.5rem;
+  background: rgba(0, 0, 0, 0.2);
+  flex-shrink: 0;
+  flex-wrap: wrap;
+}
+
+.animation-section-bar p {
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.75rem;
+  margin: 0;
+  flex: 1;
+  min-width: 12rem;
+}
+
+.animation-section-controls {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+/* ---------- Play / action buttons ---------- */
+
+.play-btn {
+  padding: 0.3rem 0.875rem;
+  border: none;
+  border-radius: 0.375rem;
+  background: #4caf50;
+  color: #fff;
+  cursor: pointer;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.play-btn:hover {
+  background: #43a047;
+}
+
+.play-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.play-btn--danger {
+  background: #e53935;
+}
+
+.play-btn--danger:hover {
+  background: #c62828;
+}
+
+.play-btn--muted {
+  background: #757575;
+}
+
+.play-btn--muted:hover {
+  background: #616161;
+}
+
+/* ---------- Stage (the green felt area, fills remaining space) ---------- */
+
+.animation-stage {
+  flex: 1;
+  position: relative;
+  background: #35654d;
+  overflow: hidden;
+}
+
+.animation-stage-cards {
+  display: flex;
+  gap: 1rem;
+  padding: 1.5rem;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  height: 100%;
+}
+
+.animation-stage-centered {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: rgba(255, 255, 255, 0.35);
+  font-size: 0.85rem;
+}
+
+/* ---------- Per-section helpers ---------- */
+
+.shake-seat-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+
+.score-counter-row {
+  display: flex;
+  gap: 3rem;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+
+.turn-indicator-wrapper {
+  padding: 2rem;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.toast-stage {
+  position: relative;
+}
+
+.status-label {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.75rem;
+}
+
+.status-label strong {
+  color: #fff;
+}

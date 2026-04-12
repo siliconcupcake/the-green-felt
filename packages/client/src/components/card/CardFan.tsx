@@ -1,5 +1,7 @@
+import { motion, AnimatePresence } from 'motion/react';
 import type { AnyCard } from '@the-green-felt/shared';
-import { Card } from './Card.js';
+import { useHandLayout } from '../../hooks/useHandLayout';
+import { Card } from './Card';
 import './card.css';
 
 interface CardFanProps {
@@ -10,26 +12,34 @@ interface CardFanProps {
   faceDown?: boolean;
 }
 
-/**
- * Renders a hand of cards in a fan layout.
- * - `compact`: tighter overlap for opponent hands
- * - `faceDown`: render all cards face-down
- */
 export function CardFan({ cards, selectedIds, onCardClick, compact = false, faceDown = false }: CardFanProps) {
+  const { transition } = useHandLayout();
   const className = `card-fan ${compact ? 'card-fan--compact' : ''}`;
 
   return (
     <div className={className}>
-      {cards.map((card, i) => (
-        <div key={card.id} className="card-fan-slot" style={{ zIndex: i }}>
-          <Card
-            card={card}
-            faceDown={faceDown}
-            selected={selectedIds?.has(card.id)}
-            onClick={() => onCardClick?.(card)}
-          />
-        </div>
-      ))}
+      <AnimatePresence mode="popLayout">
+        {cards.map((card, i) => (
+          <motion.div
+            key={card.id}
+            className="card-fan-slot"
+            style={{ zIndex: i }}
+            layout
+            transition={transition}
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.8 }}
+          >
+            <Card
+              card={card}
+              faceDown={faceDown}
+              selected={selectedIds?.has(card.id)}
+              onClick={() => onCardClick?.(card)}
+              disableHover={compact}
+            />
+          </motion.div>
+        ))}
+      </AnimatePresence>
     </div>
   );
 }
