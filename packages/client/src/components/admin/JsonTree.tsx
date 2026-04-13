@@ -1,5 +1,5 @@
 import { useState, useMemo, useCallback } from 'react';
-import { Maximize2, Minimize2, Clipboard } from 'lucide-react';
+import { Braces, Maximize2, Minimize2, Clipboard } from 'lucide-react';
 
 interface JsonTreeProps {
   data: unknown;
@@ -14,7 +14,27 @@ interface TreeNodeProps {
   maxDepth: number;
   searchTerm: string;
   forceExpanded: boolean | null;
+  simplified: boolean;
 }
+
+// --- Card detection utilities ---
+
+function isCardLike(v: unknown): v is { id: string; rank: string; suit: string } {
+  if (typeof v !== 'object' || v === null) return false;
+  const obj = v as Record<string, unknown>;
+  return typeof obj.id === 'string' && typeof obj.rank === 'string' && typeof obj.suit === 'string';
+}
+
+function isCardArray(v: unknown): boolean {
+  return Array.isArray(v) && v.length > 0 && v.every(isCardLike);
+}
+
+function getCardId(v: unknown): string {
+  if (isCardLike(v)) return v.id;
+  return '?';
+}
+
+// --- Core utilities ---
 
 function getType(value: unknown): string {
   if (value === null) return 'null';
@@ -69,6 +89,68 @@ function copyToClipboard(text: string): void {
   });
 }
 
+// --- Simplified card array component ---
+
+interface SimplifiedCardArrayProps {
+  keyName: string | null;
+  value: unknown[];
+  path: string;
+  searchTerm: string;
+}
+
+function SimplifiedCardArray({ keyName, value, path, searchTerm }: SimplifiedCardArrayProps) {
+  const ids = value.map(getCardId);
+  const lower = searchTerm.toLowerCase();
+  const keyMatches = searchTerm && keyName && keyName.toLowerCase().includes(lower);
+  const anyIdMatches = searchTerm && ids.some((id) => id.toLowerCase().includes(lower));
+  const hasDimming = searchTerm && !keyMatches && !anyIdMatches;
+
+  return (
+    <div className={`leading-[1.6] group/leaf${hasDimming ? ' opacity-30' : ''}`}>
+      {keyName !== null && (
+        <span
+          className="text-admin-text-key cursor-pointer transition-colors duration-100 hover:underline hover:text-admin-accent focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-admin-accent/50"
+          role="button"
+          tabIndex={0}
+          onClick={() => copyToClipboard(path)}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') {
+              copyToClipboard(path);
+            } else if (e.key === ' ') {
+              e.preventDefault();
+              copyToClipboard(path);
+            }
+          }}
+          title={`Copy path: ${path}`}
+        >
+          {keyName}:&nbsp;
+        </span>
+      )}
+      <span className="text-admin-text-muted">[</span>
+      {ids.map((id, i) => {
+        const idMatches = searchTerm && id.toLowerCase().includes(lower);
+        return (
+          <span key={i}>
+            <span className={`text-admin-json-string${idMatches ? ' bg-admin-json-match font-bold' : ''}`}>{id}</span>
+            {i < ids.length - 1 && <span className="text-admin-text-dim">, </span>}
+          </span>
+        );
+      })}
+      <span className="text-admin-text-muted">]</span>
+      <span className="text-admin-text-dim ml-1">({value.length})</span>
+      <button
+        className="bg-transparent border-none text-admin-text-dim cursor-pointer text-[0.625rem] px-1 opacity-0 group-hover/leaf:opacity-100 transition-opacity duration-100 hover:text-admin-accent focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-admin-accent/50"
+        onClick={() => copyToClipboard(JSON.stringify(value, null, 2))}
+        title="Copy full card data"
+      >
+        <Clipboard size={10} />
+      </button>
+    </div>
+  );
+}
+
+// --- Value display ---
+
 function ValueDisplay({ value }: { value: unknown }) {
   const type = getType(value);
   let colorClass = '';
@@ -98,7 +180,9 @@ function ValueDisplay({ value }: { value: unknown }) {
   return <span className={`inline ${colorClass}`}>{display}</span>;
 }
 
-function TreeNode({ keyName, value, path, depth, maxDepth, searchTerm, forceExpanded }: TreeNodeProps) {
+// --- Tree node ---
+
+function TreeNode({ keyName, value, path, depth, maxDepth, searchTerm, forceExpanded, simplified }: TreeNodeProps) {
   const type = getType(value);
   const isExpandable = type === 'object' || type === 'array';
   const defaultExpanded = depth < maxDepth;
@@ -150,6 +234,11 @@ function TreeNode({ keyName, value, path, depth, maxDepth, searchTerm, forceExpa
         </button>
       </div>
     );
+  }
+
+  // Simplified mode: collapse card arrays into compact ID lists
+  if (simplified && isCardArray(value)) {
+    return <SimplifiedCardArray keyName={keyName} value={value as unknown[]} path={path} searchTerm={searchTerm} />;
   }
 
   const entries = Array.isArray(value)
@@ -214,6 +303,7 @@ function TreeNode({ keyName, value, path, depth, maxDepth, searchTerm, forceExpa
                 maxDepth={maxDepth}
                 searchTerm={searchTerm}
                 forceExpanded={forceExpanded}
+                simplified={simplified}
               />
             );
           })}
@@ -226,10 +316,13 @@ function TreeNode({ keyName, value, path, depth, maxDepth, searchTerm, forceExpa
   );
 }
 
+// --- Root component ---
+
 export function JsonTree({ data, label }: JsonTreeProps) {
   const [searchTerm, setSearchTerm] = useState('');
   const [maxDepth, setMaxDepth] = useState(2);
   const [forceExpanded, setForceExpanded] = useState<boolean | null>(null);
+  const [simplified, setSimplified] = useState(true);
 
   const depthOptions = useMemo(() => [1, 2, 3, 4, 5, 10], []);
 
@@ -245,6 +338,18 @@ export function JsonTree({ data, label }: JsonTreeProps) {
           onChange={(e) => setSearchTerm(e.target.value)}
         />
         <div className="flex items-center gap-1 ml-auto">
+          <button
+            className={`p-1 border cursor-pointer rounded-badge transition-all duration-150 active:scale-[0.95] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-admin-accent/50 ${
+              simplified
+                ? 'border-admin-accent/30 bg-admin-btn-primary text-admin-accent'
+                : 'border-admin-border bg-admin-btn-neutral text-admin-text hover:bg-admin-btn-neutral-hover'
+            }`}
+            onClick={() => setSimplified((s) => !s)}
+            title={simplified ? 'Show raw JSON' : 'Show simplified view'}
+            aria-label={simplified ? 'Show raw JSON' : 'Show simplified view'}
+          >
+            <Braces size={14} />
+          </button>
           <select
             className="px-1 py-0.5 border border-admin-input-border bg-admin-input-bg text-admin-text rounded-badge font-[inherit] text-[0.6875rem] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-admin-accent/50"
             value={maxDepth}
@@ -294,6 +399,7 @@ export function JsonTree({ data, label }: JsonTreeProps) {
           maxDepth={maxDepth}
           searchTerm={searchTerm}
           forceExpanded={forceExpanded}
+          simplified={simplified}
         />
       </div>
     </div>

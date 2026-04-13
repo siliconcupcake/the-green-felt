@@ -42,7 +42,7 @@
     -webkit-appearance: none;
     appearance: none;
     height: 0.25rem;
-    background: #2a2a2a;
+    background: #1e1e1e;
     border-radius: 0.125rem;
     outline: none;
   }
@@ -54,7 +54,7 @@
     height: 0.875rem;
     background: #34d399;
     border-radius: 50%;
-    border: 2px solid #121212;
+    border: 2px solid #0a0a0a;
     cursor: pointer;
     box-shadow: 0 0 0.5rem rgba(52, 211, 153, 0.3);
     transition: box-shadow 0.15s ease, transform 0.15s ease;
@@ -70,7 +70,7 @@
     height: 0.875rem;
     background: #34d399;
     border-radius: 50%;
-    border: 2px solid #121212;
+    border: 2px solid #0a0a0a;
     cursor: pointer;
     box-shadow: 0 0 0.5rem rgba(52, 211, 153, 0.3);
     transition: box-shadow 0.15s ease, transform 0.15s ease;
@@ -83,7 +83,7 @@
 
   .admin-range::-moz-range-track {
     height: 0.25rem;
-    background: #2a2a2a;
+    background: #1e1e1e;
     border-radius: 0.125rem;
   }
 

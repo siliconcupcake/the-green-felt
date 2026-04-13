@@ -38,8 +38,8 @@ export function CreateGamePanel() {
     <div className="flex flex-col items-center justify-center flex-1 gap-6">
       <div className="flex flex-col items-center gap-1">
         <span className="text-[1.5rem] opacity-30">{'>'}_</span>
-        <h2 className="text-admin-text-muted font-normal text-base">No active game</h2>
-        <p className="text-admin-text-dim text-xs">Create a test game to get started</p>
+        <h2 className="text-admin-text font-normal text-base">No active game</h2>
+        <p className="text-admin-text-muted text-xs">Create a test game to get started</p>
       </div>
       <div className="flex flex-col items-center gap-4 p-6 bg-admin-bg-surface rounded-card border border-admin-border-subtle shadow-[0_0_1.5rem_rgba(52,211,153,0.04)]">
         <div className="flex gap-4 items-center">

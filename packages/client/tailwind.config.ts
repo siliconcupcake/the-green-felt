@@ -45,14 +45,14 @@ export default {
         myturn: '#4caf50',
         // Admin console — mirrors lobby palette, no gradients
         admin: {
-          // Surfaces (same as lobby: base → surface → elevated)
-          bg: { DEFAULT: '#121212', surface: '#1a1a1a', elevated: '#1e1e1e' },
-          // Text hierarchy (same as lobby)
-          text: { DEFAULT: '#f5f5f5', muted: '#888888', dim: '#555555', key: '#b0b0b0' },
-          // Borders (same as lobby)
-          border: { DEFAULT: '#2a2a2a', subtle: '#222222' },
+          // Surfaces (terminal-dark base, subtle lifts for panels)
+          bg: { DEFAULT: '#0a0a0a', surface: '#111111', elevated: '#161616' },
+          // Text hierarchy (brighter for terminal contrast)
+          text: { DEFAULT: '#f5f5f5', muted: '#aaaaaa', dim: '#777777', key: '#cccccc' },
+          // Borders
+          border: { DEFAULT: '#1e1e1e', subtle: '#181818' },
           // Inputs
-          input: { bg: '#161616', border: '#333333' },
+          input: { bg: '#0e0e0e', border: '#2a2a2a' },
           // Single primary accent (lobby green)
           accent: '#34d399',
           // Label/section accent (warm muted — for headers only)
