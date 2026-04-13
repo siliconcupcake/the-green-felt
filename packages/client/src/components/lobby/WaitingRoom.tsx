@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
+import { Link2, Check } from 'lucide-react';
 import { GAME_CATALOG } from '@the-green-felt/shared';
 import { trpc } from '../../trpc';
 import { useLobbyStore } from '../../stores/lobby-store';
@@ -24,6 +25,7 @@ export function WaitingRoom() {
   const isReady = players.length >= minPlayers;
   const currentPlayerId = getPlayerId();
   const hostPlayerId = players.length > 0 ? players[0] : null;
+  const isHostAlone = isHost && players.length === 1;
 
   // Subscribe to lobby updates
   useEffect(() => {
@@ -75,7 +77,6 @@ export function WaitingRoom() {
       localStorage.removeItem(STORAGE_KEY_ROOM_CODE);
       reset();
     } catch {
-      // If leave fails, reset anyway — server state may already be cleaned up
       localStorage.removeItem(STORAGE_KEY_ROOM_CODE);
       reset();
     }
@@ -117,35 +118,55 @@ export function WaitingRoom() {
   const fillPercent = Math.min((players.length / minPlayers) * 100, 100);
 
   return (
-    <div>
+    <section>
       {/* Header */}
-      <div className="flex justify-between items-start mb-6">
-        <div className="flex flex-col gap-1">
-          <h2 className="text-xl font-bold text-text-primary m-0">{gameInfo?.displayName ?? 'Game'}</h2>
-          <div className="flex items-center gap-2">
-            <span className="font-mono text-xs font-semibold tracking-[0.1em] text-accent-green bg-[rgba(52,211,153,0.1)] px-2 py-[0.125rem] rounded-badge">
+      <div className="flex justify-between items-start mb-8 gap-5 animate-fade-in-up">
+        <div className="flex flex-col gap-2 min-w-0">
+          <h2 className="text-[1.4375rem] font-bold tracking-[-0.02em] text-text-primary m-0 leading-tight">
+            {gameInfo?.displayName ?? 'Game'}
+          </h2>
+          <div className="flex items-center gap-2.5 flex-wrap">
+            <span className="font-mono text-[0.8125rem] font-semibold tracking-[0.12em] text-accent-green bg-accent-green-bg px-3 py-1 rounded-badge border border-accent-green-border select-all">
               {roomCode}
             </span>
-            <span className="text-[0.6875rem] text-text-muted">· waiting for players</span>
+            <span className="text-[0.8125rem] text-text-muted">
+              {isReady ? (
+                <span className="text-accent-green font-medium">Ready to start</span>
+              ) : (
+                'Waiting for players'
+              )}
+            </span>
           </div>
         </div>
-        <div className="flex gap-2 shrink-0">
+        <div className="flex gap-2.5 shrink-0">
           <button
-            className="rounded-button py-1.5 px-3 font-sans text-xs cursor-pointer transition-opacity duration-150 flex items-center gap-1 hover:opacity-[0.85] bg-elevated border border-border text-text-secondary"
+            className="rounded-button py-2.5 px-4 font-sans text-[0.8125rem] font-medium cursor-pointer transition-[border-color,color,transform] duration-150 ease-snappy flex items-center gap-2 bg-elevated border border-border text-text-secondary hover:border-accent-green-border hover:text-text-primary active:scale-[0.97]"
             onClick={handleCopyInvite}
           >
-            {copied ? '✓ Copied!' : '🔗 Copy Invite'}
+            <span className="flex items-center gap-2 transition-opacity duration-100">
+              {copied ? (
+                <>
+                  <Check size={16} className="text-accent-green" />
+                  Copied
+                </>
+              ) : (
+                <>
+                  <Link2 size={16} />
+                  Copy invite
+                </>
+              )}
+            </span>
           </button>
           {isHost ? (
             <button
-              className="rounded-button py-1.5 px-3 font-sans text-xs cursor-pointer transition-opacity duration-150 flex items-center gap-1 hover:opacity-[0.85] bg-accent-red-bg border border-[rgba(239,68,68,0.2)] text-accent-red"
+              className="rounded-button py-2.5 px-4 font-sans text-[0.8125rem] font-medium cursor-pointer transition-[border-color,transform] duration-150 ease-snappy flex items-center gap-2 bg-accent-red-bg border border-[rgba(239,68,68,0.15)] text-accent-red hover:border-accent-red active:scale-[0.97]"
               onClick={handleClose}
             >
-              Close Room
+              Close room
             </button>
           ) : (
             <button
-              className="rounded-button py-1.5 px-3 font-sans text-xs cursor-pointer transition-opacity duration-150 flex items-center gap-1 hover:opacity-[0.85] bg-accent-red-bg border border-[rgba(239,68,68,0.2)] text-accent-red"
+              className="rounded-button py-2.5 px-4 font-sans text-[0.8125rem] font-medium cursor-pointer transition-[border-color,transform] duration-150 ease-snappy flex items-center gap-2 bg-accent-red-bg border border-[rgba(239,68,68,0.15)] text-accent-red hover:border-accent-red active:scale-[0.97]"
               onClick={handleLeave}
             >
               Leave
@@ -154,53 +175,62 @@ export function WaitingRoom() {
         </div>
       </div>
 
-      {/* Progress Bar */}
-      <div className="mb-6">
-        <div className="flex justify-between mb-1.5 text-[0.6875rem]">
-          <span className={isReady ? 'text-accent-green font-semibold' : 'text-text-secondary'}>
-            {isReady ? 'Ready!' : 'Players'}
+      {/* Progress indicator */}
+      <div className="mb-8 animate-fade-in-up" style={{ animationDelay: '50ms' }}>
+        <div className="flex justify-between mb-2.5 text-[0.8125rem] font-medium">
+          <span className={isReady ? 'text-accent-green' : 'text-text-secondary'}>
+            Players
           </span>
-          <span className={isReady ? 'text-accent-green font-semibold' : 'text-text-secondary'}>
+          <span className={`font-mono tabular-nums ${isReady ? 'text-accent-green' : 'text-text-secondary'}`}>
             {players.length} / {minPlayers}
           </span>
         </div>
-        <div className="h-1 bg-border rounded-sm overflow-hidden">
+        <div className="h-1.5 bg-border rounded-full overflow-hidden">
           <div
-            className="h-full bg-gradient-to-r from-accent-green to-accent-green-dark rounded-sm transition-[width] duration-500 ease-out"
-            style={{ width: `${Math.min(fillPercent, 100)}%` }}
+            className={`h-full bg-gradient-to-r from-accent-green to-accent-green-dark rounded-full origin-left w-full transition-transform duration-500 ease-snappy ${isReady ? 'progress-shimmer' : ''}`}
+            style={{ transform: `scaleX(${fillPercent / 100})` }}
           />
         </div>
       </div>
 
       {/* Player Grid */}
-      <PlayerGrid
-        players={players}
-        playerNames={playerNames}
-        currentPlayerId={currentPlayerId}
-        hostPlayerId={hostPlayerId}
-        isHost={isHost}
-        totalSlots={totalSlots}
-        onKick={isHost ? handleKick : undefined}
-      />
+      <div className="animate-fade-in-up" style={{ animationDelay: '100ms' }}>
+        <PlayerGrid
+          players={players}
+          playerNames={playerNames}
+          currentPlayerId={currentPlayerId}
+          hostPlayerId={hostPlayerId}
+          isHost={isHost}
+          totalSlots={totalSlots}
+          onKick={isHost ? handleKick : undefined}
+        />
+
+        {/* Empty state hint */}
+        {isHostAlone && (
+          <p className="text-center text-[0.8125rem] text-text-muted -mt-4 mb-6">
+            Share the invite link to get your friends in
+          </p>
+        )}
+      </div>
 
       {/* Start / Waiting */}
-      <div className="text-center">
+      <div className="text-center mt-2.5 animate-fade-in-up" style={{ animationDelay: '150ms' }}>
         {isHost ? (
           <button
-            className={`inline-block border-none rounded-card py-3 px-10 font-sans text-sm font-semibold cursor-pointer [transition:opacity_0.15s,box-shadow_0.3s] ${
+            className={`inline-block border-none rounded-card py-4 px-14 font-sans text-[1rem] font-semibold cursor-pointer transition-[transform,box-shadow] duration-150 ease-snappy ${
               canStart
-                ? 'bg-gradient-to-br from-accent-green to-accent-green-dark text-[#121212] font-bold shadow-[0_0_20px_rgba(52,211,153,0.3)] hover:opacity-90 hover:shadow-[0_0_30px_rgba(52,211,153,0.4)]'
+                ? 'bg-gradient-to-br from-accent-green to-accent-green-dark text-[#0f1210] shadow-glow hover:shadow-glow-lg hover:-translate-y-[0.0625rem] active:scale-[0.98] active:translate-y-0 active:shadow-none'
                 : 'bg-border text-text-muted cursor-default'
             }`}
             onClick={handleStart}
             disabled={!canStart}
           >
-            {canStart ? 'Start Game' : `Need ${minPlayers - players.length} more player${minPlayers - players.length === 1 ? '' : 's'}`}
+            {canStart ? 'Start game' : `Need ${minPlayers - players.length} more player${minPlayers - players.length === 1 ? '' : 's'}`}
           </button>
         ) : (
-          <div className="text-[0.8125rem] text-text-muted">Waiting for host to start...</div>
+          <p className="text-[0.9375rem] text-text-muted m-0">Waiting for host to start...</p>
         )}
       </div>
-    </div>
+    </section>
   );
 }

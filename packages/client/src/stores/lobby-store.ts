@@ -30,6 +30,7 @@ interface LobbyState {
   // UI state
   error: string | null;
   loading: boolean;
+  loadingGameId: string | null;
 
   // Actions
   enterWaitingRoom: (roomCode: string, gameTypeId: string, isHost: boolean, players: string[], playerNames: Record<string, string>) => void;
@@ -37,6 +38,7 @@ interface LobbyState {
   removePlayer: (playerId: string) => void;
   setError: (error: string | null) => void;
   setLoading: (loading: boolean) => void;
+  setLoadingGameId: (id: string | null) => void;
   reset: () => void;
 }
 
@@ -49,6 +51,7 @@ const initialState = {
   playerNames: {},
   error: null,
   loading: false,
+  loadingGameId: null,
 };
 
 export const useLobbyStore = create<LobbyState>((set) => ({
@@ -82,6 +85,8 @@ export const useLobbyStore = create<LobbyState>((set) => ({
   setError: (error) => set({ error }),
 
   setLoading: (loading) => set({ loading }),
+
+  setLoadingGameId: (loadingGameId) => set({ loadingGameId }),
 
   reset: () => set(initialState),
 }));
