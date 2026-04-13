@@ -123,7 +123,7 @@ function TreeNode({ keyName, value, path, depth, maxDepth, searchTerm, forceExpa
       <div className={nodeClass}>
         {keyName !== null && (
           <span
-            className="text-admin-text-key cursor-pointer transition-colors duration-100 hover:underline hover:text-admin-blue"
+            className="text-admin-text-key cursor-pointer transition-colors duration-100 hover:underline hover:text-admin-blue focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-admin-blue/50"
             role="button"
             tabIndex={0}
             onClick={() => copyToClipboard(path)}
@@ -142,7 +142,7 @@ function TreeNode({ keyName, value, path, depth, maxDepth, searchTerm, forceExpa
         )}
         <ValueDisplay value={value} />
         <button
-          className="bg-transparent border-none text-admin-text-dim cursor-pointer text-[0.625rem] px-1 opacity-0 group-hover/leaf:opacity-100 transition-opacity duration-100 hover:text-admin-blue"
+          className="bg-transparent border-none text-admin-text-dim cursor-pointer text-[0.625rem] px-1 opacity-0 group-hover/leaf:opacity-100 transition-opacity duration-100 hover:text-admin-blue focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-admin-blue/50"
           onClick={() => copyToClipboard(JSON.stringify(value))}
           title="Copy value"
         >
@@ -160,7 +160,7 @@ function TreeNode({ keyName, value, path, depth, maxDepth, searchTerm, forceExpa
     <div className={nodeClass}>
       <div className="flex items-baseline">
         <span
-          className="cursor-pointer select-none w-3.5 inline-block text-admin-text-dim shrink-0 transition-colors duration-100 hover:text-admin-text-muted"
+          className="cursor-pointer select-none w-3.5 inline-block text-admin-text-dim shrink-0 transition-colors duration-100 hover:text-admin-text-muted focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-admin-blue/50"
           role="button"
           tabIndex={0}
           aria-expanded={isExpanded}
@@ -178,7 +178,7 @@ function TreeNode({ keyName, value, path, depth, maxDepth, searchTerm, forceExpa
         </span>
         {keyName !== null && (
           <span
-            className="text-admin-text-key cursor-pointer transition-colors duration-100 hover:underline hover:text-admin-blue"
+            className="text-admin-text-key cursor-pointer transition-colors duration-100 hover:underline hover:text-admin-blue focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-admin-blue/50"
             role="button"
             tabIndex={0}
             onClick={() => copyToClipboard(path)}
@@ -238,7 +238,7 @@ export function JsonTree({ data, label }: JsonTreeProps) {
       <div className="flex items-center gap-1.5 p-1.5 border-b border-admin-border-subtle shrink-0 flex-wrap">
         {label && <span className="font-bold text-admin-orange mr-2">{label}</span>}
         <input
-          className="px-1.5 py-0.5 border border-admin-input-border bg-admin-input-bg text-admin-text rounded-badge font-[inherit] text-xs w-[8.75rem] transition-colors duration-150 focus:border-admin-blue/50 focus:outline-none"
+          className="px-1.5 py-0.5 border border-admin-input-border bg-admin-input-bg text-admin-text rounded-badge font-[inherit] text-xs w-[8.75rem] transition-colors duration-150 focus:border-admin-blue/50 focus:outline-none focus-visible:ring-1 focus-visible:ring-admin-blue/50"
           type="text"
           placeholder="Search keys/values..."
           value={searchTerm}
@@ -246,7 +246,7 @@ export function JsonTree({ data, label }: JsonTreeProps) {
         />
         <div className="flex items-center gap-1 ml-auto">
           <select
-            className="px-1 py-0.5 border border-admin-input-border bg-admin-input-bg text-admin-text rounded-badge font-[inherit] text-[0.6875rem]"
+            className="px-1 py-0.5 border border-admin-input-border bg-admin-input-bg text-admin-text rounded-badge font-[inherit] text-[0.6875rem] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-admin-blue/50"
             value={maxDepth}
             onChange={(e) => {
               setMaxDepth(Number(e.target.value));
@@ -260,7 +260,7 @@ export function JsonTree({ data, label }: JsonTreeProps) {
             ))}
           </select>
           <button
-            className="p-1 border border-admin-border bg-admin-btn-neutral text-admin-text cursor-pointer rounded-badge transition-all duration-150 hover:bg-admin-btn-neutral-hover active:scale-[0.95]"
+            className="p-1 border border-admin-border bg-admin-btn-neutral text-admin-text cursor-pointer rounded-badge transition-all duration-150 hover:bg-admin-btn-neutral-hover active:scale-[0.95] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-admin-blue/50"
             onClick={() => setForceExpanded(true)}
             title="Expand All"
             aria-label="Expand All"
@@ -268,7 +268,7 @@ export function JsonTree({ data, label }: JsonTreeProps) {
             <Maximize2 size={14} />
           </button>
           <button
-            className="p-1 border border-admin-border bg-admin-btn-neutral text-admin-text cursor-pointer rounded-badge transition-all duration-150 hover:bg-admin-btn-neutral-hover active:scale-[0.95]"
+            className="p-1 border border-admin-border bg-admin-btn-neutral text-admin-text cursor-pointer rounded-badge transition-all duration-150 hover:bg-admin-btn-neutral-hover active:scale-[0.95] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-admin-blue/50"
             onClick={() => setForceExpanded(false)}
             title="Collapse All"
             aria-label="Collapse All"
@@ -276,7 +276,7 @@ export function JsonTree({ data, label }: JsonTreeProps) {
             <Minimize2 size={14} />
           </button>
           <button
-            className="p-1 border border-admin-border bg-admin-btn-neutral text-admin-text cursor-pointer rounded-badge transition-all duration-150 hover:bg-admin-btn-neutral-hover active:scale-[0.95]"
+            className="p-1 border border-admin-border bg-admin-btn-neutral text-admin-text cursor-pointer rounded-badge transition-all duration-150 hover:bg-admin-btn-neutral-hover active:scale-[0.95] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-admin-blue/50"
             onClick={() => copyToClipboard(JSON.stringify(data, null, 2))}
             title="Copy all as JSON"
             aria-label="Copy all as JSON"

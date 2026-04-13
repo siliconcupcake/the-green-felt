@@ -91,13 +91,13 @@ export function AdminNavbar() {
             <div className="flex items-center gap-2 shrink-0">
               <span className="text-admin-red text-xs">Destroy this game?</span>
               <button
-                className="px-2.5 py-1 border border-admin-red/40 bg-admin-btn-danger text-admin-red cursor-pointer rounded-badge font-[inherit] text-xs transition-all duration-150 hover:enabled:bg-admin-btn-danger-hover active:enabled:scale-[0.97] disabled:opacity-50 disabled:cursor-not-allowed"
+                className="px-2.5 py-1 border border-admin-red/40 bg-admin-btn-danger text-admin-red cursor-pointer rounded-badge font-[inherit] text-xs transition-all duration-150 hover:enabled:bg-admin-btn-danger-hover active:enabled:scale-[0.97] disabled:opacity-50 disabled:cursor-not-allowed focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-admin-blue/50"
                 onClick={handleDestroy}
               >
                 Confirm
               </button>
               <button
-                className="px-2.5 py-1 border border-admin-border bg-admin-btn-neutral text-admin-text cursor-pointer rounded-badge font-[inherit] text-xs transition-all duration-150 hover:enabled:bg-admin-btn-neutral-hover active:enabled:scale-[0.97]"
+                className="px-2.5 py-1 border border-admin-border bg-admin-btn-neutral text-admin-text cursor-pointer rounded-badge font-[inherit] text-xs transition-all duration-150 hover:enabled:bg-admin-btn-neutral-hover active:enabled:scale-[0.97] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-admin-blue/50"
                 onClick={() => setConfirmDestroy(false)}
               >
                 Cancel
@@ -105,7 +105,7 @@ export function AdminNavbar() {
             </div>
           ) : (
             <button
-              className="px-2.5 py-1 border border-admin-red/30 bg-admin-btn-danger text-admin-red cursor-pointer rounded-badge font-[inherit] text-xs transition-all duration-150 hover:enabled:bg-admin-btn-danger-hover active:enabled:scale-[0.97] disabled:opacity-50 disabled:cursor-not-allowed shrink-0"
+              className="px-2.5 py-1 border border-admin-red/30 bg-admin-btn-danger text-admin-red cursor-pointer rounded-badge font-[inherit] text-xs transition-all duration-150 hover:enabled:bg-admin-btn-danger-hover active:enabled:scale-[0.97] disabled:opacity-50 disabled:cursor-not-allowed shrink-0 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-admin-blue/50"
               onClick={() => setConfirmDestroy(true)}
             >
               Destroy
@@ -116,16 +116,22 @@ export function AdminNavbar() {
         <div className="flex items-center">
           {showCreate ? (
             <div className="flex items-center gap-2">
-              <label className="flex items-center gap-1 text-admin-text-muted">
-                Players:
-                <select value={playerCount} onChange={(e) => setPlayerCount(Number(e.target.value))}>
-                  {[2, 3, 4, 5, 6, 7, 8].map((n) => (
-                    <option key={n} value={n}>
-                      {n}
-                    </option>
-                  ))}
-                </select>
-              </label>
+              <span className="text-admin-text-muted">Players:</span>
+              <div className="flex">
+                {[2, 3, 4, 5, 6, 7, 8].map((n) => (
+                  <button
+                    key={n}
+                    className={`px-1.5 py-0.5 text-xs font-[inherit] border border-admin-border cursor-pointer transition-all duration-150 first:rounded-l-badge last:rounded-r-badge -ml-px first:ml-0 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-admin-blue/50 focus-visible:z-10 ${
+                      playerCount === n
+                        ? 'bg-admin-btn-primary text-admin-blue border-admin-blue/30 z-10'
+                        : 'bg-admin-btn-neutral text-admin-text-muted hover:bg-admin-btn-neutral-hover hover:text-admin-text'
+                    }`}
+                    onClick={() => setPlayerCount(n)}
+                  >
+                    {n}
+                  </button>
+                ))}
+              </div>
               <label className="flex items-center gap-1 text-admin-text-muted">
                 Seed:
                 <input
@@ -133,18 +139,18 @@ export function AdminNavbar() {
                   placeholder="optional"
                   value={seed}
                   onChange={(e) => setSeed(e.target.value)}
-                  className="w-20 px-1.5 py-[0.1875rem] border border-admin-input-border bg-admin-input-bg text-admin-text rounded-badge font-[inherit] text-xs transition-colors duration-150 focus:border-admin-blue/50 focus:outline-none"
+                  className="w-20 px-1.5 py-[0.1875rem] border border-admin-input-border bg-admin-input-bg text-admin-text rounded-badge font-[inherit] text-xs transition-colors duration-150 focus:border-admin-blue/50 focus:outline-none focus-visible:ring-1 focus-visible:ring-admin-blue/50"
                 />
               </label>
               <button
-                className="px-2.5 py-1 border border-admin-blue/30 bg-admin-btn-primary text-admin-blue cursor-pointer rounded-badge font-[inherit] text-xs transition-all duration-150 hover:enabled:bg-admin-btn-primary-hover active:enabled:scale-[0.97] disabled:opacity-50 disabled:cursor-not-allowed"
+                className="px-2.5 py-1 border border-admin-blue/30 bg-admin-btn-primary text-admin-blue cursor-pointer rounded-badge font-[inherit] text-xs transition-all duration-150 hover:enabled:bg-admin-btn-primary-hover active:enabled:scale-[0.97] disabled:opacity-50 disabled:cursor-not-allowed focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-admin-blue/50"
                 onClick={handleCreate}
                 disabled={creating}
               >
                 {creating ? 'Creating...' : 'Create'}
               </button>
               <button
-                className="px-2.5 py-1 border border-admin-border bg-admin-btn-neutral text-admin-text cursor-pointer rounded-badge font-[inherit] text-xs transition-all duration-150 hover:enabled:bg-admin-btn-neutral-hover active:enabled:scale-[0.97] disabled:opacity-50 disabled:cursor-not-allowed"
+                className="px-2.5 py-1 border border-admin-border bg-admin-btn-neutral text-admin-text cursor-pointer rounded-badge font-[inherit] text-xs transition-all duration-150 hover:enabled:bg-admin-btn-neutral-hover active:enabled:scale-[0.97] disabled:opacity-50 disabled:cursor-not-allowed focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-admin-blue/50"
                 onClick={() => setShowCreate(false)}
               >
                 Cancel
@@ -152,7 +158,7 @@ export function AdminNavbar() {
             </div>
           ) : (
             <button
-              className="px-2.5 py-1 border border-admin-blue/30 bg-admin-btn-primary text-admin-blue cursor-pointer rounded-badge font-[inherit] text-xs transition-all duration-150 hover:enabled:bg-admin-btn-primary-hover active:enabled:scale-[0.97] disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-2.5 py-1 border border-admin-blue/30 bg-admin-btn-primary text-admin-blue cursor-pointer rounded-badge font-[inherit] text-xs transition-all duration-150 hover:enabled:bg-admin-btn-primary-hover active:enabled:scale-[0.97] disabled:opacity-50 disabled:cursor-not-allowed focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-admin-blue/50"
               onClick={() => setShowCreate(true)}
             >
               Create Test Game

@@ -116,7 +116,7 @@ export function EventLog() {
           return (
             <div
               key={eventIdx}
-              className={`flex flex-wrap items-start gap-1.5 px-2 py-1 border-b border-admin-border-subtle cursor-pointer text-xs transition-colors duration-100 hover:bg-admin-bg-surface ${
+              className={`flex flex-wrap items-start gap-1.5 px-2 py-1 border-b border-admin-border-subtle cursor-pointer text-xs transition-colors duration-100 hover:bg-admin-bg-surface odd:bg-white/[0.02] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-inset focus-visible:ring-admin-blue/50 ${
                 isPlayerEvent ? 'bg-admin-status-highlight border-l-[0.1875rem] border-l-admin-blue' : ''
               }`}
               role="button"
