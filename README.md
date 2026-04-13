@@ -6,6 +6,7 @@ An online card game platform built around a game-agnostic deck engine. Implement
 
 - [Node.js](https://nodejs.org/) >= 22.0.0
 - [pnpm](https://pnpm.io/) >= 9.0.0
+- [Docker](https://www.docker.com/) (for local MongoDB)
 - [MongoDB](https://www.mongodb.com/) (local or hosted)
 
 ## Setup
@@ -20,8 +21,30 @@ pnpm install
 
 # Set up environment variables
 cp packages/server/.env.example packages/server/.env
-# Edit .env with your MongoDB connection string
+# Edit .env with your MongoDB connection string (default: mongodb://localhost:27017/the-green-felt)
+```
 
+### Local MongoDB (Docker)
+
+The easiest way to get MongoDB running locally:
+
+```bash
+# Start a MongoDB 7 container with a persistent data volume
+docker run -d --name mongodb-green-felt -p 27017:27017 -v mongodb-green-felt-data:/data/db mongo:7
+```
+
+The default `.env` already points to `mongodb://localhost:27017/the-green-felt`, so no changes are needed.
+
+| Command | Description |
+|---------|-------------|
+| `docker stop mongodb-green-felt` | Stop the container |
+| `docker start mongodb-green-felt` | Restart the container |
+| `docker logs mongodb-green-felt` | View MongoDB logs |
+| `docker rm -f mongodb-green-felt && docker volume rm mongodb-green-felt-data` | Remove container and data |
+
+### Initialize the Database
+
+```bash
 # Generate Prisma client
 pnpm --filter @the-green-felt/server db:generate
 
