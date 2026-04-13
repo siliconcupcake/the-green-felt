@@ -151,7 +151,7 @@ export function ActionPanel() {
       <div className="mb-3">
         <div className="flex items-center gap-2 mb-1">
           <span className="text-[0.6875rem] uppercase tracking-wider text-admin-text-muted font-semibold">Manual</span>
-          <select className="focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-admin-accent/50" value={actionType} onChange={(e) => setActionType(e.target.value)}>
+          <select className="px-1 py-0.5 border border-admin-input-border bg-admin-input-bg text-admin-text rounded-badge font-[inherit] text-xs focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-admin-accent/50" value={actionType} onChange={(e) => setActionType(e.target.value)}>
             {ACTION_TYPES.map((t) => (
               <option key={t} value={t}>
                 {t}

@@ -45,10 +45,12 @@ export function CreateGamePanel() {
         <div className="flex gap-4 items-center">
           <div className="flex flex-col gap-1.5">
             <span className="text-[0.6875rem] uppercase tracking-wider text-admin-text-muted font-semibold">Players</span>
-            <div className="flex">
+            <div className="flex" role="radiogroup" aria-label="Player count">
               {[2, 3, 4, 5, 6, 7, 8].map((n) => (
                 <button
                   key={n}
+                  role="radio"
+                  aria-checked={playerCount === n}
                   className={`px-2 py-1 text-xs font-[inherit] border border-admin-border cursor-pointer transition-all duration-150 first:rounded-l-badge last:rounded-r-badge -ml-px first:ml-0 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-admin-accent/50 focus-visible:z-10 ${
                     playerCount === n
                       ? 'bg-admin-btn-primary text-admin-accent border-admin-accent/30 z-10'

@@ -73,7 +73,7 @@ export function StateInspector() {
             <span className="text-[0.6875rem] uppercase tracking-wider text-admin-text-muted font-semibold">Player view</span>
             <select
               id="admin-player-select"
-              className="focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-admin-accent/50"
+              className="px-1 py-0.5 border border-admin-input-border bg-admin-input-bg text-admin-text rounded-badge font-[inherit] text-xs focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-admin-accent/50"
               value={selectedPlayerId ?? ''}
               onChange={(e) => selectPlayer(e.target.value || null)}
             >
