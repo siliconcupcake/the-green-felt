@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import type { MouseEvent } from 'react';
 import { Spade, Diamond, Heart, Club, Loader2 } from 'lucide-react';
 import { GAME_CATALOG } from '@the-green-felt/shared';
 import type { LucideIcon } from 'lucide-react';
@@ -23,7 +24,7 @@ interface GameCatalogProps {
   loadingGameId: string | null;
 }
 
-function handleMouseMove(e: React.MouseEvent<HTMLDivElement>) {
+function handleMouseMove(e: MouseEvent<HTMLDivElement>) {
   const rect = e.currentTarget.getBoundingClientRect();
   const x = e.clientX - rect.left;
   const y = e.clientY - rect.top;

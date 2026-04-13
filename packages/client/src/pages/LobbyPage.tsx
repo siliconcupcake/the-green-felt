@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
+import type { TransitionEvent } from 'react';
 import { useNavigate, useParams } from 'react-router';
 import { X } from 'lucide-react';
 import { trpc } from '../trpc';
@@ -20,9 +21,9 @@ export function LobbyPage() {
   const [playerName, setPlayerName] = useState(() => localStorage.getItem(STORAGE_KEY_NAME) ?? '');
   const [nameError, setNameError] = useState(false);
   const [joinError, setJoinError] = useState<string | null>(null);
+  const [joiningRoom, setJoiningRoom] = useState(false);
   const [phaseState, setPhaseState] = useState<'active' | 'exit' | 'enter'>('active');
   const nameInputRef = useRef<HTMLInputElement>(null);
-  const phaseRef = useRef<HTMLDivElement>(null);
   const pendingCallbackRef = useRef<(() => void) | null>(null);
 
   const validateName = (): boolean => {
@@ -48,7 +49,7 @@ export function LobbyPage() {
   }, []);
 
   const handleTransitionEnd = useCallback(
-    (e: React.TransitionEvent) => {
+    (e: TransitionEvent) => {
       // Only respond to opacity transitions on the phase wrapper itself
       if (e.target !== e.currentTarget || e.propertyName !== 'opacity') return;
 
@@ -96,6 +97,7 @@ export function LobbyPage() {
   const handleJoin = async (gameCode: string) => {
     if (!validateName()) return;
     setLoading(true);
+    setJoiningRoom(true);
     setJoinError(null);
     setError(null);
 
@@ -119,6 +121,7 @@ export function LobbyPage() {
       setJoinError(err instanceof Error ? err.message : 'Room not found');
     } finally {
       setLoading(false);
+      setJoiningRoom(false);
     }
   };
 
@@ -191,7 +194,6 @@ export function LobbyPage() {
 
         {/* Swappable middle section */}
         <div
-          ref={phaseRef}
           className="lobby-phase"
           data-phase-state={phaseState}
           onTransitionEnd={handleTransitionEnd}
@@ -220,6 +222,7 @@ export function LobbyPage() {
                 initialCode={routeRoomCode ?? ''}
                 onJoin={handleJoin}
                 disabled={loading}
+                joining={joiningRoom}
                 error={joinError}
               />
             </>
@@ -228,7 +231,7 @@ export function LobbyPage() {
           )}
         </div>
 
-        {/* Footer — in document flow, pushed to bottom by flex */}
+        {/* Footer — fixed to the viewport bottom */}
         <footer className="fixed bottom-0 left-0 right-0 text-center py-5 text-text-disabled text-[0.8125rem] tracking-wide">
           Made with <span className="text-accent-green">♥</span> by siliconcupcake
         </footer>

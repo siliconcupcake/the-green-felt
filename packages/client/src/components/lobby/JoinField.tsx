@@ -1,16 +1,17 @@
 import { useState } from 'react';
+import type { KeyboardEvent } from 'react';
 import { Loader2 } from 'lucide-react';
 
 interface JoinFieldProps {
   initialCode?: string;
   onJoin: (gameCode: string) => void;
   disabled: boolean;
+  joining?: boolean;
   error?: string | null;
 }
 
-export function JoinField({ initialCode = '', onJoin, disabled, error }: JoinFieldProps) {
+export function JoinField({ initialCode = '', onJoin, disabled, joining, error }: JoinFieldProps) {
   const [code, setCode] = useState(initialCode);
-  const isJoining = disabled && !!code.trim();
 
   const handleSubmit = () => {
     const trimmed = code.trim();
@@ -19,7 +20,7 @@ export function JoinField({ initialCode = '', onJoin, disabled, error }: JoinFie
     }
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent) => {
+  const handleKeyDown = (e: KeyboardEvent) => {
     if (e.key === 'Enter') {
       handleSubmit();
     }
@@ -54,7 +55,7 @@ export function JoinField({ initialCode = '', onJoin, disabled, error }: JoinFie
           onClick={handleSubmit}
           disabled={disabled || !code.trim()}
         >
-          {isJoining ? <Loader2 size={16} className="animate-spin" /> : 'Join'}
+          {joining ? <Loader2 size={16} className="animate-spin" /> : 'Join'}
         </button>
       </div>
       {error && (

@@ -97,10 +97,6 @@ export default {
           '25%': { transform: 'translateX(-4px)' },
           '75%': { transform: 'translateX(4px)' },
         },
-        'fade-in-up': {
-          from: { opacity: '0', transform: 'translateY(0.5rem)' },
-          to: { opacity: '1', transform: 'translateY(0)' },
-        },
       },
       animation: {
         shake: 'shake 0.3s ease-in-out',
