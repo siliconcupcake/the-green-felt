@@ -142,24 +142,33 @@ export function LobbyPage() {
   }, [phase, navigate]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
-    <div className="lobby min-h-screen bg-base font-sans text-text-primary flex flex-col items-center justify-center py-8 px-4 relative">
-      <div className="w-full max-w-[30rem] -mt-[4vh] relative z-[1] md:max-w-[60rem]">
-        {/* Brand — always visible */}
-        <div className="text-center mb-8">
-          <h1 className="text-[1.75rem] font-bold tracking-[-0.02em] text-text-primary m-0">The Green Felt</h1>
-          <div className="text-[0.6875rem] font-normal tracking-[0.3em] uppercase text-accent-green mt-1">
-            Card Games Reimagined
-          </div>
-        </div>
+    <main className="lobby min-h-screen bg-base font-sans text-text-primary flex flex-col items-center justify-center py-14 px-6 relative">
+      {/* Ambient top glow */}
+      <div className="lobby-glow" aria-hidden="true" />
 
-        {/* Name Input — always visible */}
-        <div className="max-w-[20rem] mx-auto mb-8 max-md:max-w-full md:max-w-[25rem]">
+      <div className="w-full max-w-[32rem] -mt-[4vh] relative z-[1] md:max-w-[64rem]">
+        {/* Brand */}
+        <header className="text-center mb-12">
+          <h1 className="text-[2.625rem] md:text-[3.1875rem] font-bold tracking-[-0.04em] leading-none text-text-primary m-0">
+            The Green Felt
+          </h1>
+          <p className="text-[0.875rem] font-medium tracking-[0.2em] uppercase text-accent-green mt-2.5 mb-0">
+            Classic cards, anywhere
+          </p>
+        </header>
+
+        {/* Name Input */}
+        <div className="max-w-[25rem] mx-auto mb-12 max-md:max-w-full md:max-w-[27.5rem]">
+          <label className="block text-[0.8125rem] text-text-muted mb-2.5 ml-1 font-medium tracking-wide" htmlFor="player-name">
+            Your name
+          </label>
           <input
+            id="player-name"
             ref={nameInputRef}
             type="text"
-            aria-label="Your name"
-            className={`w-full bg-surface border rounded-card py-3 px-4 text-text-primary font-sans text-sm outline-none transition-[border-color] duration-150 placeholder:text-text-muted focus:border-accent-green ${nameError ? 'border-accent-red animate-shake' : 'border-border'}`}
-            placeholder="Your name..."
+            maxLength={24}
+            className={`w-full bg-surface border rounded-card py-3 px-4 text-text-primary font-sans text-[0.875rem] outline-none transition-all duration-200 placeholder:text-text-muted focus:border-accent-green focus:shadow-[0_0_0_0.1875rem_rgba(52,211,153,0.1)] ${nameError ? 'border-accent-red animate-shake' : 'border-border'}`}
+            placeholder="who art thou?"
             value={playerName}
             onChange={(e) => {
               setPlayerName(e.target.value);
@@ -175,7 +184,11 @@ export function LobbyPage() {
             <>
               <GameCatalog onHost={handleHost} disabled={loading} />
 
-              {error && <div className="text-accent-red text-xs mt-2 text-center">{error}</div>}
+              {error && (
+                <div className="text-accent-red text-[0.8125rem] mt-3.5 text-center" role="alert">
+                  {error}
+                </div>
+              )}
 
               <JoinField
                 initialCode={routeRoomCode ?? ''}
@@ -189,11 +202,11 @@ export function LobbyPage() {
           )}
         </div>
 
-        {/* Footer — always visible */}
-        <div className="fixed bottom-0 left-0 right-0 text-center py-3 text-text-disabled text-[0.6875rem]">
+        {/* Footer */}
+        <footer className="fixed bottom-0 left-0 right-0 text-center py-5 text-text-disabled text-[0.8125rem] tracking-wide">
           Made with <span className="text-accent-green">♥</span> by siliconcupcake
-        </div>
+        </footer>
       </div>
-    </div>
+    </main>
   );
 }

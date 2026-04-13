@@ -5,8 +5,9 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        sans: ['-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'sans-serif'],
+        sans: ['Geist', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'sans-serif'],
         mono: [
+          'Geist Mono',
           'SF Mono',
           'Monaco',
           'Inconsolata',
@@ -18,16 +19,16 @@ export default {
       },
       colors: {
         // Dark theme surfaces
-        base: '#121212',
-        surface: '#1a1a1a',
-        elevated: '#1e1e1e',
-        // Borders
-        border: { DEFAULT: '#2a2a2a', subtle: '#222222' },
+        base: '#0a0d0b',
+        surface: '#141816',
+        elevated: '#1b201c',
+        // Borders — tinted to match green accent hue
+        border: { DEFAULT: '#252b27', subtle: '#1e2420' },
         // Text
-        'text-primary': '#f5f5f5',
-        'text-secondary': '#888888',
-        'text-muted': '#555555',
-        'text-disabled': '#444444',
+        'text-primary': '#eef1ef',
+        'text-secondary': '#7d8a80',
+        'text-muted': '#4d5950',
+        'text-disabled': '#3a4240',
         // Green accent
         accent: {
           green: {
@@ -76,10 +77,16 @@ export default {
           'json-match': 'rgba(52,211,153,0.1)',
         },
       },
+      boxShadow: {
+        'card-hover': '0 0.5rem 2rem -0.25rem rgba(52,211,153,0.08), 0 0.25rem 0.5rem -0.125rem rgba(0,0,0,0.3)',
+        'card-active': '0 0.125rem 0.5rem rgba(0,0,0,0.4)',
+        glow: '0 0 1.25rem rgba(52,211,153,0.25)',
+        'glow-lg': '0 0 2rem rgba(52,211,153,0.35)',
+      },
       borderRadius: {
-        card: '0.625rem',
-        button: '0.5rem',
-        badge: '0.25rem',
+        card: '0.875rem',
+        button: '0.5625rem',
+        badge: '0.3125rem',
       },
       keyframes: {
         shake: {
@@ -87,9 +94,19 @@ export default {
           '25%': { transform: 'translateX(-4px)' },
           '75%': { transform: 'translateX(4px)' },
         },
+        'fade-in-up': {
+          from: { opacity: '0', transform: 'translateY(0.5rem)' },
+          to: { opacity: '1', transform: 'translateY(0)' },
+        },
+        'pulse-soft': {
+          '0%, 100%': { opacity: '1' },
+          '50%': { opacity: '0.7' },
+        },
       },
       animation: {
         shake: 'shake 0.3s ease-in-out',
+        'fade-in-up': 'fade-in-up 0.4s ease-out both',
+        'pulse-soft': 'pulse-soft 2s ease-in-out infinite',
       },
     },
   },

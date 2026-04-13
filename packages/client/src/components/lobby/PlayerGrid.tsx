@@ -22,21 +22,24 @@ export function PlayerGrid({
   const emptyCount = Math.max(0, totalSlots - players.length);
 
   return (
-    <div className="grid grid-cols-2 md:grid-cols-4 gap-2 mb-6">
+    <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-8 stagger-children" role="list" aria-label="Players">
       {players.map((playerId, index) => (
-        <PlayerCard
-          key={playerId}
-          playerId={playerId}
-          name={playerNames[playerId] ?? playerId.slice(0, 6)}
-          index={index}
-          isSelf={playerId === currentPlayerId}
-          isHost={playerId === hostPlayerId}
-          canKick={isHost && playerId !== currentPlayerId}
-          onKick={() => onKick?.(playerId)}
-        />
+        <div key={playerId} role="listitem">
+          <PlayerCard
+            playerId={playerId}
+            name={playerNames[playerId] ?? playerId.slice(0, 6)}
+            index={index}
+            isSelf={playerId === currentPlayerId}
+            isHost={playerId === hostPlayerId}
+            canKick={isHost && playerId !== currentPlayerId}
+            onKick={() => onKick?.(playerId)}
+          />
+        </div>
       ))}
       {Array.from({ length: emptyCount }, (_, i) => (
-        <PlayerCard key={`empty-${i}`} empty />
+        <div key={`empty-${i}`} role="listitem">
+          <PlayerCard empty />
+        </div>
       ))}
     </div>
   );
