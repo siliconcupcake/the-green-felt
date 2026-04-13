@@ -37,6 +37,56 @@
 }
 
 @layer components {
+  /* Admin range slider */
+  .admin-range {
+    -webkit-appearance: none;
+    appearance: none;
+    height: 0.25rem;
+    background: #1e1e1e;
+    border-radius: 0.125rem;
+    outline: none;
+  }
+
+  .admin-range::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 0.875rem;
+    height: 0.875rem;
+    background: #34d399;
+    border-radius: 50%;
+    border: 2px solid #0a0a0a;
+    cursor: pointer;
+    box-shadow: 0 0 0.5rem rgba(52, 211, 153, 0.3);
+    transition: box-shadow 0.15s ease, transform 0.15s ease;
+  }
+
+  .admin-range::-webkit-slider-thumb:hover {
+    box-shadow: 0 0 0.75rem rgba(52, 211, 153, 0.5);
+    transform: scale(1.15);
+  }
+
+  .admin-range::-moz-range-thumb {
+    width: 0.875rem;
+    height: 0.875rem;
+    background: #34d399;
+    border-radius: 50%;
+    border: 2px solid #0a0a0a;
+    cursor: pointer;
+    box-shadow: 0 0 0.5rem rgba(52, 211, 153, 0.3);
+    transition: box-shadow 0.15s ease, transform 0.15s ease;
+  }
+
+  .admin-range::-moz-range-thumb:hover {
+    box-shadow: 0 0 0.75rem rgba(52, 211, 153, 0.5);
+    transform: scale(1.15);
+  }
+
+  .admin-range::-moz-range-track {
+    height: 0.25rem;
+    background: #1e1e1e;
+    border-radius: 0.125rem;
+  }
+
   .lobby::before {
     content: '';
     position: fixed;

@@ -9,11 +9,19 @@ const EVENT_CATEGORIES: Record<string, string[]> = {
 };
 
 const EVENT_TYPE_COLORS: Record<string, string> = {
-  action: 'text-admin-orange',
-  state: 'text-admin-blue',
-  game: 'text-admin-purple',
-  subscription: 'text-[#666]',
-  view: 'text-admin-green',
+  action: 'text-admin-label',
+  state: 'text-admin-accent',
+  game: 'text-admin-muted',
+  subscription: 'text-admin-text-dim',
+  view: 'text-admin-accent',
+};
+
+const EVENT_DOT_COLORS: Record<string, string> = {
+  action: 'bg-admin-label',
+  state: 'bg-admin-accent',
+  game: 'bg-admin-muted',
+  subscription: 'bg-admin-text-dim',
+  view: 'bg-admin-accent',
 };
 
 function formatTime(ts: number): string {
@@ -77,16 +85,16 @@ export function EventLog() {
 
   return (
     <div className="flex-1 flex flex-col overflow-hidden">
-      <div className="flex justify-between items-center px-3 py-2 border-b border-[#333]">
-        <strong>Event Log</strong>
-        <label className="flex items-center gap-1 text-[#888] text-xs">
+      <div className="flex justify-between items-center px-3 py-2 border-b border-admin-border-subtle bg-admin-bg-surface">
+        <span className="text-[0.6875rem] uppercase tracking-wider text-admin-text-muted font-semibold">Event log</span>
+        <label className="flex items-center gap-1 text-admin-text-muted text-xs cursor-pointer">
           <input type="checkbox" checked={autoScroll} onChange={(e) => setAutoScroll(e.target.checked)} />
           Auto-scroll
         </label>
       </div>
-      <div className="flex gap-3 px-3 py-1.5 border-b border-[#333] bg-[#16213e]">
+      <div className="flex gap-3 px-3 py-1.5 border-b border-admin-border-subtle bg-admin-bg-elevated">
         {Object.entries(EVENT_CATEGORIES).map(([category, types]) => (
-          <label key={category} className="flex items-center gap-1 text-[#aaa] text-xs cursor-pointer">
+          <label key={category} className="flex items-center gap-1 text-admin-text-muted text-xs cursor-pointer transition-colors duration-150 hover:text-admin-text">
             <input
               type="checkbox"
               checked={types.every((t) => eventFilters.has(t))}
@@ -103,12 +111,13 @@ export function EventLog() {
           const isExpanded = expandedIds.has(eventIdx);
           const typePrefix = event.type.split(':')[0];
           const typeColor = EVENT_TYPE_COLORS[typePrefix] ?? '';
+          const dotColor = EVENT_DOT_COLORS[typePrefix] ?? 'bg-admin-text-dim';
 
           return (
             <div
               key={eventIdx}
-              className={`flex flex-wrap gap-1.5 px-2 py-[0.1875rem] border-b border-border-subtle cursor-pointer text-xs hover:bg-[#222] ${
-                isPlayerEvent ? 'bg-[#1a2744] border-l-[0.1875rem] border-l-admin-blue' : ''
+              className={`flex flex-wrap items-start gap-1.5 px-2 py-1 border-b border-admin-border-subtle cursor-pointer text-xs transition-colors duration-100 hover:bg-admin-bg-surface odd:bg-white/[0.02] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-inset focus-visible:ring-admin-accent/50 ${
+                isPlayerEvent ? 'bg-admin-status-highlight border-l-[0.1875rem] border-l-admin-accent' : ''
               }`}
               role="button"
               tabIndex={0}
@@ -123,13 +132,16 @@ export function EventLog() {
                 }
               }}
             >
-              <span className="text-[#666] min-w-[3.75rem]">{formatTime(event.timestamp)}</span>
+              <span className="inline-flex items-center gap-1.5 min-w-[3.75rem]">
+                <span className={`w-1 h-1 rounded-full shrink-0 ${dotColor}`} />
+                <span className="text-admin-text-dim">{formatTime(event.timestamp)}</span>
+              </span>
               <span className={`font-bold min-w-[8.75rem] ${typeColor}`}>
                 {event.type}
               </span>
-              <span className="text-[#aaa]">{getEventSummary(event)}</span>
+              <span className="text-admin-text-muted">{getEventSummary(event)}</span>
               {isExpanded && (
-                <pre className="w-full bg-[#111] p-1.5 rounded-badge mt-1 overflow-x-auto text-[0.6875rem]">
+                <pre className="w-full bg-admin-input-bg p-1.5 rounded-badge mt-1 overflow-x-auto text-[0.6875rem] max-h-[12rem] overflow-y-auto">
                   {JSON.stringify(event, null, 2)}
                 </pre>
               )}

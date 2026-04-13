@@ -51,28 +51,29 @@ export function StateInspector() {
   return (
     <div className="flex-1 flex flex-col overflow-hidden">
       {isHistorical && (
-        <div className="px-3 py-1.5 text-center bg-[#3a2a0a] text-admin-orange border-b border-admin-orange">
+        <div className="px-3 py-1.5 text-center bg-admin-status-warning text-admin-label border-b border-admin-label/30 text-xs">
           Viewing historical state at action {timelineIndex! + 1} &mdash;{' '}
           <button
-            className="bg-transparent border-none text-admin-blue cursor-pointer underline p-0 font-[inherit] text-[inherit]"
+            className="bg-transparent border-none text-admin-accent cursor-pointer underline p-0 font-[inherit] text-[inherit] transition-colors duration-150 hover:text-admin-accent/80 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-admin-accent/50"
             onClick={() => {
               useAdminStore.getState().setTimelineIndex(null);
               useAdminStore.getState().setHistoricalState(null, null);
             }}
           >
-            Back to Live
+            Back to live
           </button>
         </div>
       )}
-      <div className="flex flex-1 overflow-hidden">
-        <div className="flex-1 overflow-y-auto p-2 border-r border-[#333] last:border-r-0">
+      <div className="flex flex-1 overflow-hidden gap-px bg-admin-border-subtle">
+        <div className="flex-1 overflow-y-auto p-2 bg-admin-bg">
           <JsonTree data={displayState} label="Full State (God Mode)" />
         </div>
-        <div className="flex-1 overflow-y-auto p-2 border-r border-[#333] last:border-r-0">
-          <div className="flex items-center gap-2 pb-2 border-b border-[#333] mb-2">
-            <label htmlFor="admin-player-select" className="text-[#aaa]">Player View:</label>
+        <div className="flex-1 overflow-y-auto p-2 bg-admin-bg">
+          <div className="flex items-center gap-2 pb-2 border-b border-admin-border-subtle mb-2">
+            <span className="text-[0.6875rem] uppercase tracking-wider text-admin-text-muted font-semibold">Player view</span>
             <select
               id="admin-player-select"
+              className="px-1 py-0.5 border border-admin-input-border bg-admin-input-bg text-admin-text rounded-badge font-[inherit] text-xs focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-admin-accent/50"
               value={selectedPlayerId ?? ''}
               onChange={(e) => selectPlayer(e.target.value || null)}
             >
@@ -87,7 +88,7 @@ export function StateInspector() {
           {displayView ? (
             <JsonTree data={displayView} label={`View: ${selectedPlayerId}`} />
           ) : (
-            <div className="text-[#666] italic p-4 text-center">Select a player to view their perspective</div>
+            <div className="text-admin-text-dim italic p-4 text-center">Select a player to view their perspective</div>
           )}
         </div>
       </div>

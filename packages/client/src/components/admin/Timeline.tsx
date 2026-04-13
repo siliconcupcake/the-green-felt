@@ -83,22 +83,22 @@ export function Timeline() {
 
   if (totalActions === 0) {
     return (
-      <div className="p-3 border-t border-[#333] shrink-0">
-        <div className="text-[#666] italic">No actions yet</div>
+      <div className="p-3 border-t border-admin-border-subtle shrink-0 bg-admin-bg-surface">
+        <div className="text-admin-text-dim italic">No actions yet</div>
       </div>
     );
   }
 
   return (
-    <div className="p-3 border-t border-[#333] shrink-0">
+    <div className="p-3 border-t border-admin-border-subtle shrink-0 bg-admin-bg-surface">
       <div className="flex justify-between items-center mb-2">
-        <strong>Timeline</strong>
+        <span className="text-[0.6875rem] uppercase tracking-wider text-admin-text-muted font-semibold">Timeline</span>
         {timelineIndex !== null && (
           <button
-            className="bg-transparent border-none text-admin-blue cursor-pointer underline p-0 font-[inherit] text-[inherit]"
+            className="bg-transparent border-none text-admin-accent cursor-pointer underline p-0 font-[inherit] text-xs transition-colors duration-150 hover:text-admin-accent/80 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-admin-accent/50"
             onClick={handleBackToLive}
           >
-            Back to Live
+            Back to live
           </button>
         )}
       </div>
@@ -109,15 +109,15 @@ export function Timeline() {
           max={totalActions - 1}
           value={currentIndex}
           onChange={(e) => handleSliderChange(Number(e.target.value))}
-          className="w-full cursor-pointer"
+          className="w-full cursor-pointer admin-range"
         />
-        <div className="text-center text-[#aaa] text-xs mt-1">
+        <div className="text-center text-admin-text-muted text-xs mt-1">
           Action {currentIndex + 1} of {totalActions}
           {timelineIndex !== null && ' (historical)'}
         </div>
       </div>
       {timelineIndex !== null && (
-        <div className="text-[#888] text-xs mb-2">
+        <div className="text-admin-text-muted text-xs mb-2">
           {successfulActions[timelineIndex] && (
             <span>
               {successfulActions[timelineIndex].playerId}: {successfulActions[timelineIndex].action.type}
@@ -127,24 +127,24 @@ export function Timeline() {
       )}
       <div className="flex gap-2 items-center">
         <button
-          className="px-2.5 py-1 border border-[#444] bg-[#2a2a4a] text-[#ddd] cursor-pointer rounded-[0.1875rem] font-[inherit] text-xs hover:enabled:bg-[#3a3a5a] disabled:opacity-50 disabled:cursor-not-allowed"
+          className="px-2.5 py-1 border border-admin-border bg-admin-btn-neutral text-admin-text cursor-pointer rounded-badge font-[inherit] text-xs transition-all duration-150 hover:enabled:bg-admin-btn-neutral-hover active:enabled:scale-[0.97] disabled:opacity-50 disabled:cursor-not-allowed focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-admin-accent/50"
           onClick={handleViewState}
           disabled={loading || timelineIndex === null}
         >
-          {loading ? 'Loading...' : 'View State Here'}
+          {loading ? 'Loading...' : 'View state here'}
         </button>
         {confirmRewind ? (
           <div className="flex items-center gap-2">
-            <span className="text-[#ee5a24] text-xs">Rewind to action {(timelineIndex ?? 0) + 1}? This is destructive.</span>
+            <span className="text-admin-red text-xs">Rewind to action {(timelineIndex ?? 0) + 1}? This is destructive.</span>
             <button
-              className="px-2.5 py-1 border border-[#ee5a24] bg-[#4a1a1a] text-[#ee5a24] cursor-pointer rounded-[0.1875rem] font-[inherit] text-xs hover:enabled:bg-[#5a2a2a] disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-2.5 py-1 border border-admin-red/40 bg-admin-btn-danger text-admin-red cursor-pointer rounded-badge font-[inherit] text-xs transition-all duration-150 hover:enabled:bg-admin-btn-danger-hover active:enabled:scale-[0.97] disabled:opacity-50 disabled:cursor-not-allowed focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-admin-accent/50"
               onClick={handleRewind}
               disabled={loading}
             >
-              Confirm Rewind
+              Confirm rewind
             </button>
             <button
-              className="px-2.5 py-1 border border-[#444] bg-[#2a2a4a] text-[#ddd] cursor-pointer rounded-[0.1875rem] font-[inherit] text-xs hover:enabled:bg-[#3a3a5a] disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-2.5 py-1 border border-admin-border bg-admin-btn-neutral text-admin-text cursor-pointer rounded-badge font-[inherit] text-xs transition-all duration-150 hover:enabled:bg-admin-btn-neutral-hover active:enabled:scale-[0.97] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-admin-accent/50"
               onClick={() => setConfirmRewind(false)}
             >
               Cancel
@@ -152,11 +152,11 @@ export function Timeline() {
           </div>
         ) : (
           <button
-            className="px-2.5 py-1 border border-[#ee5a24] bg-[#4a1a1a] text-[#ee5a24] cursor-pointer rounded-[0.1875rem] font-[inherit] text-xs hover:enabled:bg-[#5a2a2a] disabled:opacity-50 disabled:cursor-not-allowed"
+            className="px-2.5 py-1 border border-admin-red/30 bg-admin-btn-danger text-admin-red cursor-pointer rounded-badge font-[inherit] text-xs transition-all duration-150 hover:enabled:bg-admin-btn-danger-hover active:enabled:scale-[0.97] disabled:opacity-50 disabled:cursor-not-allowed focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-admin-accent/50"
             onClick={() => setConfirmRewind(true)}
             disabled={loading || timelineIndex === null}
           >
-            Rewind Here
+            Rewind here
           </button>
         )}
       </div>
