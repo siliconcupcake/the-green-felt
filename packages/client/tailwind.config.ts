@@ -88,6 +88,9 @@ export default {
         button: '0.5625rem',
         badge: '0.3125rem',
       },
+      transitionTimingFunction: {
+        snappy: 'cubic-bezier(0.23, 1, 0.32, 1)',
+      },
       keyframes: {
         shake: {
           '0%, 100%': { transform: 'translateX(0)' },
@@ -98,15 +101,10 @@ export default {
           from: { opacity: '0', transform: 'translateY(0.5rem)' },
           to: { opacity: '1', transform: 'translateY(0)' },
         },
-        'pulse-soft': {
-          '0%, 100%': { opacity: '1' },
-          '50%': { opacity: '0.7' },
-        },
       },
       animation: {
         shake: 'shake 0.3s ease-in-out',
-        'fade-in-up': 'fade-in-up 0.4s ease-out both',
-        'pulse-soft': 'pulse-soft 2s ease-in-out infinite',
+        'fade-in-up': 'fade-in-up 0.35s cubic-bezier(0.23, 1, 0.32, 1) both',
       },
     },
   },

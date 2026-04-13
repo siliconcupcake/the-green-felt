@@ -46,10 +46,10 @@ export function GameCatalog({ onHost, disabled }: GameCatalogProps) {
           return (
             <div
               key={game.id}
-              className={`card-spotlight bg-surface border border-border rounded-card p-6 text-center transition-all duration-200 ${
+              className={`card-spotlight bg-surface border border-border rounded-card p-6 text-center transition-[transform,border-color,box-shadow] duration-150 ease-snappy ${
                 isDisabled
                   ? 'opacity-40 cursor-default'
-                  : 'hover:border-accent-green-border hover:shadow-card-hover hover:-translate-y-[0.125rem] active:translate-y-0 active:shadow-card-active cursor-pointer'
+                  : 'hover:border-accent-green-border hover:shadow-card-hover hover:-translate-y-[0.0625rem] active:scale-[0.98] active:translate-y-0 active:shadow-card-active cursor-pointer'
               }`}
               onMouseMove={isDisabled ? undefined : handleMouseMove}
               onClick={isDisabled || disabled ? undefined : () => onHost(game.id)}

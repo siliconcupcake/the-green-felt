@@ -75,7 +75,6 @@ export function WaitingRoom() {
       localStorage.removeItem(STORAGE_KEY_ROOM_CODE);
       reset();
     } catch {
-      // If leave fails, reset anyway — server state may already be cleaned up
       localStorage.removeItem(STORAGE_KEY_ROOM_CODE);
       reset();
     }
@@ -139,7 +138,7 @@ export function WaitingRoom() {
         </div>
         <div className="flex gap-2.5 shrink-0">
           <button
-            className="rounded-button py-2.5 px-4 font-sans text-[0.8125rem] font-medium cursor-pointer transition-all duration-200 flex items-center gap-2 bg-elevated border border-border text-text-secondary hover:border-accent-green-border hover:text-text-primary active:scale-[0.97]"
+            className="rounded-button py-2.5 px-4 font-sans text-[0.8125rem] font-medium cursor-pointer transition-[border-color,color,transform] duration-150 ease-snappy flex items-center gap-2 bg-elevated border border-border text-text-secondary hover:border-accent-green-border hover:text-text-primary active:scale-[0.97]"
             onClick={handleCopyInvite}
           >
             {copied ? (
@@ -158,14 +157,14 @@ export function WaitingRoom() {
           </button>
           {isHost ? (
             <button
-              className="rounded-button py-2.5 px-4 font-sans text-[0.8125rem] font-medium cursor-pointer transition-all duration-200 flex items-center gap-2 bg-accent-red-bg border border-[rgba(239,68,68,0.15)] text-accent-red hover:border-accent-red active:scale-[0.97]"
+              className="rounded-button py-2.5 px-4 font-sans text-[0.8125rem] font-medium cursor-pointer transition-[border-color,transform] duration-150 ease-snappy flex items-center gap-2 bg-accent-red-bg border border-[rgba(239,68,68,0.15)] text-accent-red hover:border-accent-red active:scale-[0.97]"
               onClick={handleClose}
             >
               Close room
             </button>
           ) : (
             <button
-              className="rounded-button py-2.5 px-4 font-sans text-[0.8125rem] font-medium cursor-pointer transition-all duration-200 flex items-center gap-2 bg-accent-red-bg border border-[rgba(239,68,68,0.15)] text-accent-red hover:border-accent-red active:scale-[0.97]"
+              className="rounded-button py-2.5 px-4 font-sans text-[0.8125rem] font-medium cursor-pointer transition-[border-color,transform] duration-150 ease-snappy flex items-center gap-2 bg-accent-red-bg border border-[rgba(239,68,68,0.15)] text-accent-red hover:border-accent-red active:scale-[0.97]"
               onClick={handleLeave}
             >
               Leave
@@ -186,7 +185,7 @@ export function WaitingRoom() {
         </div>
         <div className="h-1.5 bg-border rounded-full overflow-hidden">
           <div
-            className={`h-full bg-gradient-to-r from-accent-green to-accent-green-dark rounded-full transition-[width] duration-500 ease-out ${isReady ? 'progress-shimmer' : ''}`}
+            className={`h-full bg-gradient-to-r from-accent-green to-accent-green-dark rounded-full transition-[width] duration-500 ease-snappy ${isReady ? 'progress-shimmer' : ''}`}
             style={{ width: `${Math.min(fillPercent, 100)}%` }}
           />
         </div>
@@ -207,9 +206,9 @@ export function WaitingRoom() {
       <div className="text-center mt-2.5">
         {isHost ? (
           <button
-            className={`inline-block border-none rounded-card py-4 px-14 font-sans text-[1rem] font-semibold cursor-pointer transition-all duration-200 ${
+            className={`inline-block border-none rounded-card py-4 px-14 font-sans text-[1rem] font-semibold cursor-pointer transition-[transform,box-shadow] duration-150 ease-snappy ${
               canStart
-                ? 'bg-gradient-to-br from-accent-green to-accent-green-dark text-[#0f1210] shadow-glow hover:shadow-glow-lg hover:-translate-y-[0.0625rem] active:translate-y-0 active:shadow-none'
+                ? 'bg-gradient-to-br from-accent-green to-accent-green-dark text-[#0f1210] shadow-glow hover:shadow-glow-lg hover:-translate-y-[0.0625rem] active:scale-[0.98] active:translate-y-0 active:shadow-none'
                 : 'bg-border text-text-muted cursor-default'
             }`}
             onClick={handleStart}
@@ -218,7 +217,7 @@ export function WaitingRoom() {
             {canStart ? 'Start game' : `Need ${minPlayers - players.length} more player${minPlayers - players.length === 1 ? '' : 's'}`}
           </button>
         ) : (
-          <p className="text-[0.9375rem] text-text-muted animate-pulse-soft m-0">Waiting for host to start...</p>
+          <p className="text-[0.9375rem] text-text-muted m-0">Waiting for host to start...</p>
         )}
       </div>
     </section>

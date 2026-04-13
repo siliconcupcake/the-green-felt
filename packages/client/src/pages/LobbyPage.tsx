@@ -167,7 +167,7 @@ export function LobbyPage() {
             ref={nameInputRef}
             type="text"
             maxLength={24}
-            className={`w-full bg-surface border rounded-card py-3 px-4 text-text-primary font-sans text-[0.875rem] outline-none transition-all duration-200 placeholder:text-text-muted focus:border-accent-green focus:shadow-[0_0_0_0.1875rem_rgba(52,211,153,0.1)] ${nameError ? 'border-accent-red animate-shake' : 'border-border'}`}
+            className={`w-full bg-surface border rounded-card py-3 px-4 text-text-primary font-sans text-[0.875rem] outline-none transition-[border-color,box-shadow] duration-150 ease-snappy placeholder:text-text-muted focus:border-accent-green focus:shadow-[0_0_0_0.1875rem_rgba(52,211,153,0.1)] ${nameError ? 'border-accent-red animate-shake' : 'border-border'}`}
             placeholder="who art thou?"
             value={playerName}
             onChange={(e) => {

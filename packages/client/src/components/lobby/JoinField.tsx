@@ -38,7 +38,7 @@ export function JoinField({ initialCode = '', onJoin, disabled, error }: JoinFie
       <div className="flex gap-3 max-w-[25rem] mx-auto max-md:max-w-full md:max-w-[27.5rem]">
         <input
           type="text"
-          className={`flex-1 bg-surface border rounded-card py-3 px-4 text-text-primary font-sans text-[0.875rem] outline-none transition-all duration-200 placeholder:text-text-muted placeholder:normal-case focus:border-accent-green focus:shadow-[0_0_0_0.1875rem_rgba(52,211,153,0.1)] font-mono tracking-wider uppercase ${error ? 'border-accent-red' : 'border-border'}`}
+          className={`flex-1 bg-surface border rounded-card py-3 px-4 text-text-primary font-sans text-[0.875rem] outline-none transition-[border-color,box-shadow] duration-150 ease-snappy placeholder:text-text-muted placeholder:normal-case focus:border-accent-green focus:shadow-[0_0_0_0.1875rem_rgba(52,211,153,0.1)] font-mono tracking-wider uppercase ${error ? 'border-accent-red' : 'border-border'}`}
           placeholder="the code please"
           value={code}
           onChange={(e) => setCode(e.target.value.toUpperCase())}
@@ -48,7 +48,7 @@ export function JoinField({ initialCode = '', onJoin, disabled, error }: JoinFie
           aria-describedby={error ? 'join-error' : undefined}
         />
         <button
-          className="bg-elevated border border-accent-green-border rounded-card py-3 px-6 text-accent-green font-sans text-[0.875rem] font-semibold transition-all duration-200 whitespace-nowrap enabled:cursor-pointer enabled:hover:bg-accent-green-bg enabled:hover:border-accent-green enabled:active:scale-[0.98] disabled:opacity-40 disabled:cursor-default disabled:border-border disabled:text-text-muted"
+          className="bg-elevated border border-accent-green-border rounded-card py-3 px-6 text-accent-green font-sans text-[0.875rem] font-semibold transition-[background-color,border-color,transform,opacity] duration-150 ease-snappy whitespace-nowrap enabled:cursor-pointer enabled:hover:bg-accent-green-bg enabled:hover:border-accent-green enabled:active:scale-[0.98] disabled:opacity-40 disabled:cursor-default disabled:border-border disabled:text-text-muted"
           onClick={handleSubmit}
           disabled={disabled || !code.trim()}
         >

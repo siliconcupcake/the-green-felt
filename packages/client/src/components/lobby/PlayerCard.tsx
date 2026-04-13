@@ -48,7 +48,7 @@ export function PlayerCard(props: PlayerCardProps) {
 
   return (
     <div
-      className={`flex items-center gap-3 bg-surface border rounded-card p-3.5 relative transition-all duration-200 ${
+      className={`flex items-center gap-3 bg-surface border rounded-card p-3.5 relative transition-[border-color,background-color] duration-150 ease-snappy ${
         isSelf
           ? 'bg-accent-green-bg border-accent-green-border shadow-[inset_0_0_0_0.0625rem_rgba(52,211,153,0.06)]'
           : 'border-border hover:border-border-subtle hover:bg-elevated'
@@ -75,7 +75,7 @@ export function PlayerCard(props: PlayerCardProps) {
       {/* Kick button */}
       {canKick && (
         <button
-          className="ml-auto w-[1.75rem] h-[1.75rem] rounded-full border-none bg-accent-red-bg text-accent-red text-[0.72rem] cursor-pointer flex items-center justify-center p-0 shrink-0 transition-all duration-200 hover:bg-accent-red hover:text-white active:scale-[0.9]"
+          className="ml-auto w-[1.75rem] h-[1.75rem] rounded-full border-none bg-accent-red-bg text-accent-red text-[0.72rem] cursor-pointer flex items-center justify-center p-0 shrink-0 transition-[background-color,color,transform] duration-150 ease-snappy hover:bg-accent-red hover:text-white active:scale-[0.97]"
           onClick={onKick}
           aria-label={`Remove ${name}`}
         >
