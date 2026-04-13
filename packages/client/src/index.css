@@ -42,7 +42,7 @@
     -webkit-appearance: none;
     appearance: none;
     height: 0.25rem;
-    background: #2a2a3e;
+    background: #2a2a2a;
     border-radius: 0.125rem;
     outline: none;
   }
@@ -52,38 +52,38 @@
     appearance: none;
     width: 0.875rem;
     height: 0.875rem;
-    background: #54a0ff;
+    background: #34d399;
     border-radius: 50%;
-    border: 2px solid #0f0f1a;
+    border: 2px solid #121212;
     cursor: pointer;
-    box-shadow: 0 0 0.5rem rgba(84, 160, 255, 0.3);
+    box-shadow: 0 0 0.5rem rgba(52, 211, 153, 0.3);
     transition: box-shadow 0.15s ease, transform 0.15s ease;
   }
 
   .admin-range::-webkit-slider-thumb:hover {
-    box-shadow: 0 0 0.75rem rgba(84, 160, 255, 0.5);
+    box-shadow: 0 0 0.75rem rgba(52, 211, 153, 0.5);
     transform: scale(1.15);
   }
 
   .admin-range::-moz-range-thumb {
     width: 0.875rem;
     height: 0.875rem;
-    background: #54a0ff;
+    background: #34d399;
     border-radius: 50%;
-    border: 2px solid #0f0f1a;
+    border: 2px solid #121212;
     cursor: pointer;
-    box-shadow: 0 0 0.5rem rgba(84, 160, 255, 0.3);
+    box-shadow: 0 0 0.5rem rgba(52, 211, 153, 0.3);
     transition: box-shadow 0.15s ease, transform 0.15s ease;
   }
 
   .admin-range::-moz-range-thumb:hover {
-    box-shadow: 0 0 0.75rem rgba(84, 160, 255, 0.5);
+    box-shadow: 0 0 0.75rem rgba(52, 211, 153, 0.5);
     transform: scale(1.15);
   }
 
   .admin-range::-moz-range-track {
     height: 0.25rem;
-    background: #2a2a3e;
+    background: #2a2a2a;
     border-radius: 0.125rem;
   }
 

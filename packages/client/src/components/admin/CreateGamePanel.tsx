@@ -41,7 +41,7 @@ export function CreateGamePanel() {
         <h2 className="text-admin-text-muted font-normal text-base">No active game</h2>
         <p className="text-admin-text-dim text-xs">Create a test game to get started</p>
       </div>
-      <div className="flex flex-col items-center gap-4 p-6 bg-admin-bg-surface rounded-card border border-admin-border-subtle shadow-[0_0_1.5rem_rgba(84,160,255,0.04)]">
+      <div className="flex flex-col items-center gap-4 p-6 bg-admin-bg-surface rounded-card border border-admin-border-subtle shadow-[0_0_1.5rem_rgba(52,211,153,0.04)]">
         <div className="flex gap-4 items-center">
           <div className="flex flex-col gap-1.5">
             <span className="text-[0.6875rem] uppercase tracking-wider text-admin-text-muted font-semibold">Players</span>
@@ -49,9 +49,9 @@ export function CreateGamePanel() {
               {[2, 3, 4, 5, 6, 7, 8].map((n) => (
                 <button
                   key={n}
-                  className={`px-2 py-1 text-xs font-[inherit] border border-admin-border cursor-pointer transition-all duration-150 first:rounded-l-badge last:rounded-r-badge -ml-px first:ml-0 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-admin-blue/50 focus-visible:z-10 ${
+                  className={`px-2 py-1 text-xs font-[inherit] border border-admin-border cursor-pointer transition-all duration-150 first:rounded-l-badge last:rounded-r-badge -ml-px first:ml-0 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-admin-accent/50 focus-visible:z-10 ${
                     playerCount === n
-                      ? 'bg-admin-btn-primary text-admin-blue border-admin-blue/30 z-10'
+                      ? 'bg-admin-btn-primary text-admin-accent border-admin-accent/30 z-10'
                       : 'bg-admin-btn-neutral text-admin-text-muted hover:bg-admin-btn-neutral-hover hover:text-admin-text'
                   }`}
                   onClick={() => setPlayerCount(n)}
@@ -68,12 +68,12 @@ export function CreateGamePanel() {
               value={seed}
               onChange={(e) => setSeed(e.target.value)}
               placeholder="Random"
-              className="px-1.5 py-1 border border-admin-input-border bg-admin-input-bg text-admin-text rounded-badge font-[inherit] text-xs transition-colors duration-150 focus:border-admin-blue/50 focus:outline-none focus-visible:ring-1 focus-visible:ring-admin-blue/50"
+              className="px-1.5 py-1 border border-admin-input-border bg-admin-input-bg text-admin-text rounded-badge font-[inherit] text-xs transition-colors duration-150 focus:border-admin-accent/50 focus:outline-none focus-visible:ring-1 focus-visible:ring-admin-accent/50"
             />
           </div>
         </div>
         <button
-          className="px-4 py-1.5 border border-admin-blue/30 bg-admin-btn-primary text-admin-blue cursor-pointer rounded-badge font-[inherit] text-xs transition-all duration-150 hover:enabled:bg-admin-btn-primary-hover active:enabled:scale-[0.97] disabled:opacity-50 disabled:cursor-not-allowed focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-admin-blue/50"
+          className="px-4 py-1.5 border border-admin-accent/30 bg-admin-btn-primary text-admin-accent cursor-pointer rounded-badge font-[inherit] text-xs transition-all duration-150 hover:enabled:bg-admin-btn-primary-hover active:enabled:scale-[0.97] disabled:opacity-50 disabled:cursor-not-allowed focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-admin-accent/50"
           onClick={handleCreate}
           disabled={creating}
         >

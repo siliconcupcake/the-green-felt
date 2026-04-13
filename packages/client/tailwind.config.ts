@@ -43,35 +43,37 @@ export default {
         gold: '#ffd700',
         teammate: '#64b5f6',
         myturn: '#4caf50',
-        // Admin console — semantic surface tiers
+        // Admin console — mirrors lobby palette, no gradients
         admin: {
-          // Surfaces (3-tier elevation)
-          bg: { DEFAULT: '#0f0f1a', surface: '#16162a', elevated: '#1e1e38' },
-          // Text hierarchy
-          text: { DEFAULT: '#e0e0e0', muted: '#888888', dim: '#555555', key: '#c0c0c0' },
-          // Borders
-          border: { DEFAULT: '#2a2a3e', subtle: '#222233' },
+          // Surfaces (same as lobby: base → surface → elevated)
+          bg: { DEFAULT: '#121212', surface: '#1a1a1a', elevated: '#1e1e1e' },
+          // Text hierarchy (same as lobby)
+          text: { DEFAULT: '#f5f5f5', muted: '#888888', dim: '#555555', key: '#b0b0b0' },
+          // Borders (same as lobby)
+          border: { DEFAULT: '#2a2a2a', subtle: '#222222' },
           // Inputs
-          input: { bg: '#111118', border: '#3a3a4e' },
-          // Accent colors
-          blue: '#54a0ff',
-          orange: '#ff9f43',
-          green: '#10ac84',
-          purple: '#5f27cd',
-          red: '#ee5253',
-          // Semantic button backgrounds
-          'btn-primary': { DEFAULT: 'rgba(84,160,255,0.10)', hover: 'rgba(84,160,255,0.20)' },
-          'btn-danger': { DEFAULT: 'rgba(238,82,83,0.10)', hover: 'rgba(238,82,83,0.20)' },
-          'btn-success': { DEFAULT: 'rgba(16,172,132,0.10)', hover: 'rgba(16,172,132,0.20)' },
-          'btn-neutral': { DEFAULT: 'rgba(255,255,255,0.05)', hover: 'rgba(255,255,255,0.10)' },
+          input: { bg: '#161616', border: '#333333' },
+          // Single primary accent (lobby green)
+          accent: '#34d399',
+          // Label/section accent (warm muted — for headers only)
+          label: '#d4a574',
+          // Destructive (lobby red)
+          red: '#ef4444',
+          // Lifecycle events (neutral, not a distinct accent)
+          muted: '#888888',
+          // Semantic button backgrounds (green-tinted, matching lobby)
+          'btn-primary': { DEFAULT: 'rgba(52,211,153,0.08)', hover: 'rgba(52,211,153,0.15)' },
+          'btn-danger': { DEFAULT: 'rgba(239,68,68,0.08)', hover: 'rgba(239,68,68,0.15)' },
+          'btn-success': { DEFAULT: 'rgba(52,211,153,0.08)', hover: 'rgba(52,211,153,0.15)' },
+          'btn-neutral': { DEFAULT: 'rgba(255,255,255,0.04)', hover: 'rgba(255,255,255,0.08)' },
           // Semantic status backgrounds
-          'status-success': 'rgba(16,172,132,0.08)',
-          'status-error': 'rgba(238,82,83,0.08)',
-          'status-warning': 'rgba(255,159,67,0.08)',
-          'status-highlight': 'rgba(84,160,255,0.08)',
+          'status-success': 'rgba(52,211,153,0.06)',
+          'status-error': 'rgba(239,68,68,0.08)',
+          'status-warning': 'rgba(212,165,116,0.08)',
+          'status-highlight': 'rgba(52,211,153,0.06)',
           // JSON syntax
-          'json-string': '#6ab04c',
-          'json-match': 'rgba(42,58,26,0.6)',
+          'json-string': '#34d399',
+          'json-match': 'rgba(52,211,153,0.1)',
         },
       },
       borderRadius: {

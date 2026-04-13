@@ -95,7 +95,7 @@ export function Timeline() {
         <span className="text-[0.6875rem] uppercase tracking-wider text-admin-text-muted font-semibold">Timeline</span>
         {timelineIndex !== null && (
           <button
-            className="bg-transparent border-none text-admin-blue cursor-pointer underline p-0 font-[inherit] text-xs transition-colors duration-150 hover:text-admin-blue/80 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-admin-blue/50"
+            className="bg-transparent border-none text-admin-accent cursor-pointer underline p-0 font-[inherit] text-xs transition-colors duration-150 hover:text-admin-accent/80 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-admin-accent/50"
             onClick={handleBackToLive}
           >
             Back to live
@@ -127,7 +127,7 @@ export function Timeline() {
       )}
       <div className="flex gap-2 items-center">
         <button
-          className="px-2.5 py-1 border border-admin-border bg-admin-btn-neutral text-admin-text cursor-pointer rounded-badge font-[inherit] text-xs transition-all duration-150 hover:enabled:bg-admin-btn-neutral-hover active:enabled:scale-[0.97] disabled:opacity-50 disabled:cursor-not-allowed focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-admin-blue/50"
+          className="px-2.5 py-1 border border-admin-border bg-admin-btn-neutral text-admin-text cursor-pointer rounded-badge font-[inherit] text-xs transition-all duration-150 hover:enabled:bg-admin-btn-neutral-hover active:enabled:scale-[0.97] disabled:opacity-50 disabled:cursor-not-allowed focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-admin-accent/50"
           onClick={handleViewState}
           disabled={loading || timelineIndex === null}
         >
@@ -137,14 +137,14 @@ export function Timeline() {
           <div className="flex items-center gap-2">
             <span className="text-admin-red text-xs">Rewind to action {(timelineIndex ?? 0) + 1}? This is destructive.</span>
             <button
-              className="px-2.5 py-1 border border-admin-red/40 bg-admin-btn-danger text-admin-red cursor-pointer rounded-badge font-[inherit] text-xs transition-all duration-150 hover:enabled:bg-admin-btn-danger-hover active:enabled:scale-[0.97] disabled:opacity-50 disabled:cursor-not-allowed focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-admin-blue/50"
+              className="px-2.5 py-1 border border-admin-red/40 bg-admin-btn-danger text-admin-red cursor-pointer rounded-badge font-[inherit] text-xs transition-all duration-150 hover:enabled:bg-admin-btn-danger-hover active:enabled:scale-[0.97] disabled:opacity-50 disabled:cursor-not-allowed focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-admin-accent/50"
               onClick={handleRewind}
               disabled={loading}
             >
               Confirm rewind
             </button>
             <button
-              className="px-2.5 py-1 border border-admin-border bg-admin-btn-neutral text-admin-text cursor-pointer rounded-badge font-[inherit] text-xs transition-all duration-150 hover:enabled:bg-admin-btn-neutral-hover active:enabled:scale-[0.97] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-admin-blue/50"
+              className="px-2.5 py-1 border border-admin-border bg-admin-btn-neutral text-admin-text cursor-pointer rounded-badge font-[inherit] text-xs transition-all duration-150 hover:enabled:bg-admin-btn-neutral-hover active:enabled:scale-[0.97] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-admin-accent/50"
               onClick={() => setConfirmRewind(false)}
             >
               Cancel
@@ -152,7 +152,7 @@ export function Timeline() {
           </div>
         ) : (
           <button
-            className="px-2.5 py-1 border border-admin-red/30 bg-admin-btn-danger text-admin-red cursor-pointer rounded-badge font-[inherit] text-xs transition-all duration-150 hover:enabled:bg-admin-btn-danger-hover active:enabled:scale-[0.97] disabled:opacity-50 disabled:cursor-not-allowed focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-admin-blue/50"
+            className="px-2.5 py-1 border border-admin-red/30 bg-admin-btn-danger text-admin-red cursor-pointer rounded-badge font-[inherit] text-xs transition-all duration-150 hover:enabled:bg-admin-btn-danger-hover active:enabled:scale-[0.97] disabled:opacity-50 disabled:cursor-not-allowed focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-admin-accent/50"
             onClick={() => setConfirmRewind(true)}
             disabled={loading || timelineIndex === null}
           >

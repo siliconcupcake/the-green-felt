@@ -122,7 +122,7 @@ export function ActionPanel() {
       {/* Suggest Move */}
       <div className="mb-3">
         <button
-          className="px-2.5 py-1 border border-admin-blue/30 bg-admin-btn-primary text-admin-blue cursor-pointer rounded-badge font-[inherit] text-xs transition-all duration-150 hover:enabled:bg-admin-btn-primary-hover active:enabled:scale-[0.97] disabled:opacity-50 disabled:cursor-not-allowed focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-admin-blue/50"
+          className="px-2.5 py-1 border border-admin-accent/30 bg-admin-btn-primary text-admin-accent cursor-pointer rounded-badge font-[inherit] text-xs transition-all duration-150 hover:enabled:bg-admin-btn-primary-hover active:enabled:scale-[0.97] disabled:opacity-50 disabled:cursor-not-allowed focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-admin-accent/50"
           onClick={handleSuggest}
           disabled={loading || !activePlayer}
         >
@@ -131,13 +131,13 @@ export function ActionPanel() {
         {suggestedMove && (
           <div className="mt-2 flex flex-col gap-1.5">
             <textarea
-              className="w-full p-1.5 border border-admin-input-border bg-admin-input-bg text-admin-text rounded-badge font-[inherit] text-xs resize-y transition-colors duration-150 focus:border-admin-blue/50 focus:outline-none focus-visible:ring-1 focus-visible:ring-admin-blue/50"
+              className="w-full p-1.5 border border-admin-input-border bg-admin-input-bg text-admin-text rounded-badge font-[inherit] text-xs resize-y transition-colors duration-150 focus:border-admin-accent/50 focus:outline-none focus-visible:ring-1 focus-visible:ring-admin-accent/50"
               value={actionJson}
               onChange={(e) => setActionJson(e.target.value)}
               rows={4}
             />
             <button
-              className="px-2.5 py-1 border border-admin-green/30 bg-admin-btn-success text-admin-green cursor-pointer rounded-badge font-[inherit] text-xs transition-all duration-150 hover:enabled:bg-admin-btn-success-hover active:enabled:scale-[0.97] disabled:opacity-50 disabled:cursor-not-allowed focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-admin-blue/50"
+              className="px-2.5 py-1 border border-admin-accent/30 bg-admin-btn-success text-admin-accent cursor-pointer rounded-badge font-[inherit] text-xs transition-all duration-150 hover:enabled:bg-admin-btn-success-hover active:enabled:scale-[0.97] disabled:opacity-50 disabled:cursor-not-allowed focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-admin-accent/50"
               onClick={handleApprove}
               disabled={loading}
             >
@@ -151,7 +151,7 @@ export function ActionPanel() {
       <div className="mb-3">
         <div className="flex items-center gap-2 mb-1">
           <span className="text-[0.6875rem] uppercase tracking-wider text-admin-text-muted font-semibold">Manual</span>
-          <select className="focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-admin-blue/50" value={actionType} onChange={(e) => setActionType(e.target.value)}>
+          <select className="focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-admin-accent/50" value={actionType} onChange={(e) => setActionType(e.target.value)}>
             {ACTION_TYPES.map((t) => (
               <option key={t} value={t}>
                 {t}
@@ -160,14 +160,14 @@ export function ActionPanel() {
           </select>
         </div>
         <textarea
-          className="w-full p-1.5 border border-admin-input-border bg-admin-input-bg text-admin-text rounded-badge font-[inherit] text-xs resize-y transition-colors duration-150 focus:border-admin-blue/50 focus:outline-none focus-visible:ring-1 focus-visible:ring-admin-blue/50"
+          className="w-full p-1.5 border border-admin-input-border bg-admin-input-bg text-admin-text rounded-badge font-[inherit] text-xs resize-y transition-colors duration-150 focus:border-admin-accent/50 focus:outline-none focus-visible:ring-1 focus-visible:ring-admin-accent/50"
           value={actionJson}
           onChange={(e) => setActionJson(e.target.value)}
           placeholder={`{ "type": "${actionType}", ... }`}
           rows={4}
         />
         <button
-          className="px-2.5 py-1 border border-admin-border bg-admin-btn-neutral text-admin-text cursor-pointer rounded-badge font-[inherit] text-xs transition-all duration-150 hover:enabled:bg-admin-btn-neutral-hover active:enabled:scale-[0.97] disabled:opacity-50 disabled:cursor-not-allowed focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-admin-blue/50"
+          className="px-2.5 py-1 border border-admin-border bg-admin-btn-neutral text-admin-text cursor-pointer rounded-badge font-[inherit] text-xs transition-all duration-150 hover:enabled:bg-admin-btn-neutral-hover active:enabled:scale-[0.97] disabled:opacity-50 disabled:cursor-not-allowed focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-admin-accent/50"
           onClick={handleManualDispatch}
           disabled={loading || !activePlayer}
         >
@@ -180,7 +180,7 @@ export function ActionPanel() {
         <div
           className={`px-2.5 py-1.5 rounded-badge mt-2 transition-colors duration-200 ${
             lastActionResult.success
-              ? 'text-admin-green bg-admin-status-success'
+              ? 'text-admin-accent bg-admin-status-success'
               : 'text-admin-red bg-admin-status-error'
           }`}
         >

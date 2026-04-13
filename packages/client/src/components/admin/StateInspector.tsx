@@ -51,10 +51,10 @@ export function StateInspector() {
   return (
     <div className="flex-1 flex flex-col overflow-hidden">
       {isHistorical && (
-        <div className="px-3 py-1.5 text-center bg-admin-status-warning text-admin-orange border-b border-admin-orange/30 text-xs">
+        <div className="px-3 py-1.5 text-center bg-admin-status-warning text-admin-label border-b border-admin-label/30 text-xs">
           Viewing historical state at action {timelineIndex! + 1} &mdash;{' '}
           <button
-            className="bg-transparent border-none text-admin-blue cursor-pointer underline p-0 font-[inherit] text-[inherit] transition-colors duration-150 hover:text-admin-blue/80 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-admin-blue/50"
+            className="bg-transparent border-none text-admin-accent cursor-pointer underline p-0 font-[inherit] text-[inherit] transition-colors duration-150 hover:text-admin-accent/80 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-admin-accent/50"
             onClick={() => {
               useAdminStore.getState().setTimelineIndex(null);
               useAdminStore.getState().setHistoricalState(null, null);
@@ -73,7 +73,7 @@ export function StateInspector() {
             <span className="text-[0.6875rem] uppercase tracking-wider text-admin-text-muted font-semibold">Player view</span>
             <select
               id="admin-player-select"
-              className="focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-admin-blue/50"
+              className="focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-admin-accent/50"
               value={selectedPlayerId ?? ''}
               onChange={(e) => selectPlayer(e.target.value || null)}
             >

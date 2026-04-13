@@ -9,19 +9,19 @@ const EVENT_CATEGORIES: Record<string, string[]> = {
 };
 
 const EVENT_TYPE_COLORS: Record<string, string> = {
-  action: 'text-admin-orange',
-  state: 'text-admin-blue',
-  game: 'text-admin-purple',
+  action: 'text-admin-label',
+  state: 'text-admin-accent',
+  game: 'text-admin-muted',
   subscription: 'text-admin-text-dim',
-  view: 'text-admin-green',
+  view: 'text-admin-accent',
 };
 
 const EVENT_DOT_COLORS: Record<string, string> = {
-  action: 'bg-admin-orange',
-  state: 'bg-admin-blue',
-  game: 'bg-admin-purple',
+  action: 'bg-admin-label',
+  state: 'bg-admin-accent',
+  game: 'bg-admin-muted',
   subscription: 'bg-admin-text-dim',
-  view: 'bg-admin-green',
+  view: 'bg-admin-accent',
 };
 
 function formatTime(ts: number): string {
@@ -116,8 +116,8 @@ export function EventLog() {
           return (
             <div
               key={eventIdx}
-              className={`flex flex-wrap items-start gap-1.5 px-2 py-1 border-b border-admin-border-subtle cursor-pointer text-xs transition-colors duration-100 hover:bg-admin-bg-surface odd:bg-white/[0.02] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-inset focus-visible:ring-admin-blue/50 ${
-                isPlayerEvent ? 'bg-admin-status-highlight border-l-[0.1875rem] border-l-admin-blue' : ''
+              className={`flex flex-wrap items-start gap-1.5 px-2 py-1 border-b border-admin-border-subtle cursor-pointer text-xs transition-colors duration-100 hover:bg-admin-bg-surface odd:bg-white/[0.02] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-inset focus-visible:ring-admin-accent/50 ${
+                isPlayerEvent ? 'bg-admin-status-highlight border-l-[0.1875rem] border-l-admin-accent' : ''
               }`}
               role="button"
               tabIndex={0}
