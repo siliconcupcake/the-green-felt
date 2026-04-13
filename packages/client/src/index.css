@@ -133,23 +133,25 @@
     z-index: 0;
   }
 
-  /* Phase transitions */
+  /* Phase transitions — driven by data-phase-state attribute */
   .lobby-phase {
     transition: opacity 0.25s cubic-bezier(0.23, 1, 0.32, 1),
                 transform 0.25s cubic-bezier(0.23, 1, 0.32, 1);
+    opacity: 1;
+    transform: translateY(0);
   }
 
-  .lobby-phase--exit {
+  .lobby-phase[data-phase-state="exit"] {
     opacity: 0;
     transform: translateY(-0.5rem);
   }
 
-  .lobby-phase--enter {
+  .lobby-phase[data-phase-state="enter"] {
     opacity: 0;
     transform: translateY(0.5rem);
   }
 
-  .lobby-phase--active {
+  .lobby-phase[data-phase-state="active"] {
     opacity: 1;
     transform: translateY(0);
   }
@@ -214,7 +216,7 @@
     }
   }
 
-  /* Staggered child animation */
+  /* Staggered child animation — used by PlayerGrid */
   .stagger-children > * {
     animation: fade-in-up 0.35s cubic-bezier(0.23, 1, 0.32, 1) both;
   }
@@ -245,11 +247,8 @@
       transition: opacity 0.2s ease;
     }
 
-    .lobby-phase--exit {
-      transform: none;
-    }
-
-    .lobby-phase--enter {
+    .lobby-phase[data-phase-state="exit"],
+    .lobby-phase[data-phase-state="enter"] {
       transform: none;
     }
 
@@ -266,7 +265,6 @@
       display: none;
     }
 
-    /* Disable hover lifts and active scales */
     *,
     *::before,
     *::after {

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
+import { Link2, Check } from 'lucide-react';
 import { GAME_CATALOG } from '@the-green-felt/shared';
 import { trpc } from '../../trpc';
 import { useLobbyStore } from '../../stores/lobby-store';
@@ -24,6 +25,7 @@ export function WaitingRoom() {
   const isReady = players.length >= minPlayers;
   const currentPlayerId = getPlayerId();
   const hostPlayerId = players.length > 0 ? players[0] : null;
+  const isHostAlone = isHost && players.length === 1;
 
   // Subscribe to lobby updates
   useEffect(() => {
@@ -118,7 +120,7 @@ export function WaitingRoom() {
   return (
     <section>
       {/* Header */}
-      <div className="flex justify-between items-start mb-8 gap-5">
+      <div className="flex justify-between items-start mb-8 gap-5 animate-fade-in-up">
         <div className="flex flex-col gap-2 min-w-0">
           <h2 className="text-[1.4375rem] font-bold tracking-[-0.02em] text-text-primary m-0 leading-tight">
             {gameInfo?.displayName ?? 'Game'}
@@ -141,19 +143,19 @@ export function WaitingRoom() {
             className="rounded-button py-2.5 px-4 font-sans text-[0.8125rem] font-medium cursor-pointer transition-[border-color,color,transform] duration-150 ease-snappy flex items-center gap-2 bg-elevated border border-border text-text-secondary hover:border-accent-green-border hover:text-text-primary active:scale-[0.97]"
             onClick={handleCopyInvite}
           >
-            {copied ? (
-              <>
-                <span className="text-accent-green">✓</span> Copied
-              </>
-            ) : (
-              <>
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                  <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
-                  <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
-                </svg>
-                Copy invite
-              </>
-            )}
+            <span className="flex items-center gap-2 transition-opacity duration-100">
+              {copied ? (
+                <>
+                  <Check size={16} className="text-accent-green" />
+                  Copied
+                </>
+              ) : (
+                <>
+                  <Link2 size={16} />
+                  Copy invite
+                </>
+              )}
+            </span>
           </button>
           {isHost ? (
             <button
@@ -174,7 +176,7 @@ export function WaitingRoom() {
       </div>
 
       {/* Progress indicator */}
-      <div className="mb-8">
+      <div className="mb-8 animate-fade-in-up" style={{ animationDelay: '50ms' }}>
         <div className="flex justify-between mb-2.5 text-[0.8125rem] font-medium">
           <span className={isReady ? 'text-accent-green' : 'text-text-secondary'}>
             Players
@@ -185,25 +187,34 @@ export function WaitingRoom() {
         </div>
         <div className="h-1.5 bg-border rounded-full overflow-hidden">
           <div
-            className={`h-full bg-gradient-to-r from-accent-green to-accent-green-dark rounded-full transition-[width] duration-500 ease-snappy ${isReady ? 'progress-shimmer' : ''}`}
-            style={{ width: `${Math.min(fillPercent, 100)}%` }}
+            className={`h-full bg-gradient-to-r from-accent-green to-accent-green-dark rounded-full origin-left w-full transition-transform duration-500 ease-snappy ${isReady ? 'progress-shimmer' : ''}`}
+            style={{ transform: `scaleX(${fillPercent / 100})` }}
           />
         </div>
       </div>
 
       {/* Player Grid */}
-      <PlayerGrid
-        players={players}
-        playerNames={playerNames}
-        currentPlayerId={currentPlayerId}
-        hostPlayerId={hostPlayerId}
-        isHost={isHost}
-        totalSlots={totalSlots}
-        onKick={isHost ? handleKick : undefined}
-      />
+      <div className="animate-fade-in-up" style={{ animationDelay: '100ms' }}>
+        <PlayerGrid
+          players={players}
+          playerNames={playerNames}
+          currentPlayerId={currentPlayerId}
+          hostPlayerId={hostPlayerId}
+          isHost={isHost}
+          totalSlots={totalSlots}
+          onKick={isHost ? handleKick : undefined}
+        />
+
+        {/* Empty state hint */}
+        {isHostAlone && (
+          <p className="text-center text-[0.8125rem] text-text-muted -mt-4 mb-6">
+            Share the invite link to get your friends in
+          </p>
+        )}
+      </div>
 
       {/* Start / Waiting */}
-      <div className="text-center mt-2.5">
+      <div className="text-center mt-2.5 animate-fade-in-up" style={{ animationDelay: '150ms' }}>
         {isHost ? (
           <button
             className={`inline-block border-none rounded-card py-4 px-14 font-sans text-[1rem] font-semibold cursor-pointer transition-[transform,box-shadow] duration-150 ease-snappy ${

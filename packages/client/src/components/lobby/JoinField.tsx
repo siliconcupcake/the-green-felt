@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Loader2 } from 'lucide-react';
 
 interface JoinFieldProps {
   initialCode?: string;
@@ -9,6 +10,7 @@ interface JoinFieldProps {
 
 export function JoinField({ initialCode = '', onJoin, disabled, error }: JoinFieldProps) {
   const [code, setCode] = useState(initialCode);
+  const isJoining = disabled && !!code.trim();
 
   const handleSubmit = () => {
     const trimmed = code.trim();
@@ -52,12 +54,16 @@ export function JoinField({ initialCode = '', onJoin, disabled, error }: JoinFie
           onClick={handleSubmit}
           disabled={disabled || !code.trim()}
         >
-          Join
+          {isJoining ? <Loader2 size={16} className="animate-spin" /> : 'Join'}
         </button>
       </div>
       {error && (
-        <div id="join-error" className="text-accent-red text-[0.8125rem] mt-3 text-center" role="alert">
-          {error}
+        <div
+          id="join-error"
+          className="bg-accent-red-bg border border-[rgba(239,68,68,0.15)] rounded-card px-3 py-2 mt-3 max-w-[25rem] mx-auto max-md:max-w-full md:max-w-[27.5rem] text-center"
+          role="alert"
+        >
+          <span className="text-accent-red text-[0.8125rem]">{error}</span>
         </div>
       )}
     </section>
