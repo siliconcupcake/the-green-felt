@@ -76,7 +76,7 @@ function ValueDisplay({ value }: { value: unknown }) {
 
   switch (type) {
     case 'string':
-      colorClass = 'text-[#6ab04c]';
+      colorClass = 'text-admin-json-string';
       display = `"${value}"`;
       break;
     case 'number':
@@ -88,7 +88,7 @@ function ValueDisplay({ value }: { value: unknown }) {
       display = String(value);
       break;
     case 'null':
-      colorClass = 'text-[#666] italic';
+      colorClass = 'text-admin-text-dim italic';
       display = 'null';
       break;
     default:
@@ -116,14 +116,14 @@ function TreeNode({ keyName, value, path, depth, maxDepth, searchTerm, forceExpa
   const isMatch = matchesSearch(keyName, value, searchTerm);
   const hasDimming = searchTerm && !isMatch && !containsSearchMatch(value, searchTerm);
 
-  const nodeClass = `leading-[1.6] group/leaf${isMatch ? ' bg-[#2a3a1a]' : ''}${hasDimming ? ' opacity-30' : ''}`;
+  const nodeClass = `leading-[1.6] group/leaf${isMatch ? ' bg-admin-json-match' : ''}${hasDimming ? ' opacity-30' : ''}`;
 
   if (!isExpandable) {
     return (
       <div className={nodeClass}>
         {keyName !== null && (
           <span
-            className="text-[#c0c0c0] cursor-pointer hover:underline hover:text-admin-blue"
+            className="text-admin-text-key cursor-pointer transition-colors duration-100 hover:underline hover:text-admin-blue"
             role="button"
             tabIndex={0}
             onClick={() => copyToClipboard(path)}
@@ -142,7 +142,7 @@ function TreeNode({ keyName, value, path, depth, maxDepth, searchTerm, forceExpa
         )}
         <ValueDisplay value={value} />
         <button
-          className="bg-transparent border-none text-[#555] cursor-pointer text-[0.625rem] px-1 opacity-0 group-hover/leaf:opacity-100 hover:text-admin-blue"
+          className="bg-transparent border-none text-admin-text-dim cursor-pointer text-[0.625rem] px-1 opacity-0 group-hover/leaf:opacity-100 transition-opacity duration-100 hover:text-admin-blue"
           onClick={() => copyToClipboard(JSON.stringify(value))}
           title="Copy value"
         >
@@ -160,7 +160,7 @@ function TreeNode({ keyName, value, path, depth, maxDepth, searchTerm, forceExpa
     <div className={nodeClass}>
       <div className="flex items-baseline">
         <span
-          className="cursor-pointer select-none w-3.5 inline-block text-[#666] shrink-0 hover:text-[#aaa]"
+          className="cursor-pointer select-none w-3.5 inline-block text-admin-text-dim shrink-0 transition-colors duration-100 hover:text-admin-text-muted"
           role="button"
           tabIndex={0}
           aria-expanded={isExpanded}
@@ -178,7 +178,7 @@ function TreeNode({ keyName, value, path, depth, maxDepth, searchTerm, forceExpa
         </span>
         {keyName !== null && (
           <span
-            className="text-[#c0c0c0] cursor-pointer hover:underline hover:text-admin-blue"
+            className="text-admin-text-key cursor-pointer transition-colors duration-100 hover:underline hover:text-admin-blue"
             role="button"
             tabIndex={0}
             onClick={() => copyToClipboard(path)}
@@ -195,13 +195,13 @@ function TreeNode({ keyName, value, path, depth, maxDepth, searchTerm, forceExpa
             {keyName}:&nbsp;
           </span>
         )}
-        {!isExpanded && <span className="text-[#666] italic">{getPreview(value)}</span>}
+        {!isExpanded && <span className="text-admin-text-dim italic">{getPreview(value)}</span>}
         {isExpanded && (
-          <span className="text-[#888]">{type === 'array' ? `[` : `{`}</span>
+          <span className="text-admin-text-muted">{type === 'array' ? `[` : `{`}</span>
         )}
       </div>
       {isExpanded && (
-        <div className="pl-[1.125rem] border-l border-[#333] ml-1.5">
+        <div className="pl-[1.125rem] border-l border-admin-border-subtle ml-1.5">
           {entries.map(([k, v]) => {
             const childPath = type === 'array' ? `${path}[${k}]` : path ? `${path}.${k}` : k;
             return (
@@ -220,7 +220,7 @@ function TreeNode({ keyName, value, path, depth, maxDepth, searchTerm, forceExpa
         </div>
       )}
       {isExpanded && (
-        <span className="text-[#888]">{type === 'array' ? ']' : '}'}</span>
+        <span className="text-admin-text-muted">{type === 'array' ? ']' : '}'}</span>
       )}
     </div>
   );
@@ -235,53 +235,55 @@ export function JsonTree({ data, label }: JsonTreeProps) {
 
   return (
     <div className="flex flex-col overflow-hidden h-full">
-      <div className="flex items-center gap-1.5 p-1.5 border-b border-[#333] shrink-0 flex-wrap">
+      <div className="flex items-center gap-1.5 p-1.5 border-b border-admin-border-subtle shrink-0 flex-wrap">
         {label && <span className="font-bold text-admin-orange mr-2">{label}</span>}
         <input
-          className="px-1.5 py-0.5 border border-[#444] bg-[#111] text-[#ddd] rounded-[0.1875rem] font-[inherit] text-xs w-[8.75rem]"
+          className="px-1.5 py-0.5 border border-admin-input-border bg-admin-input-bg text-admin-text rounded-badge font-[inherit] text-xs w-[8.75rem] transition-colors duration-150 focus:border-admin-blue/50 focus:outline-none"
           type="text"
           placeholder="Search keys/values..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />
-        <select
-          className="px-1 py-0.5 border border-[#444] bg-[#222] text-[#ddd] rounded-[0.1875rem] font-[inherit] text-[0.6875rem]"
-          value={maxDepth}
-          onChange={(e) => {
-            setMaxDepth(Number(e.target.value));
-            setForceExpanded(null);
-          }}
-        >
-          {depthOptions.map((d) => (
-            <option key={d} value={d}>
-              Depth {d}
-            </option>
-          ))}
-        </select>
-        <button
-          className="px-1.5 py-0.5 border border-[#444] bg-[#2a2a4a] text-[#ddd] cursor-pointer rounded-[0.1875rem] text-xs hover:bg-[#3a3a5a]"
-          onClick={() => setForceExpanded(true)}
-          title="Expand All"
-          aria-label="Expand All"
-        >
-          <Maximize2 size={14} />
-        </button>
-        <button
-          className="px-1.5 py-0.5 border border-[#444] bg-[#2a2a4a] text-[#ddd] cursor-pointer rounded-[0.1875rem] text-xs hover:bg-[#3a3a5a]"
-          onClick={() => setForceExpanded(false)}
-          title="Collapse All"
-          aria-label="Collapse All"
-        >
-          <Minimize2 size={14} />
-        </button>
-        <button
-          className="px-1.5 py-0.5 border border-[#444] bg-[#2a2a4a] text-[#ddd] cursor-pointer rounded-[0.1875rem] text-xs hover:bg-[#3a3a5a]"
-          onClick={() => copyToClipboard(JSON.stringify(data, null, 2))}
-          title="Copy all as JSON"
-          aria-label="Copy all as JSON"
-        >
-          <Clipboard size={14} />
-        </button>
+        <div className="flex items-center gap-1 ml-auto">
+          <select
+            className="px-1 py-0.5 border border-admin-input-border bg-admin-input-bg text-admin-text rounded-badge font-[inherit] text-[0.6875rem]"
+            value={maxDepth}
+            onChange={(e) => {
+              setMaxDepth(Number(e.target.value));
+              setForceExpanded(null);
+            }}
+          >
+            {depthOptions.map((d) => (
+              <option key={d} value={d}>
+                Depth {d}
+              </option>
+            ))}
+          </select>
+          <button
+            className="p-1 border border-admin-border bg-admin-btn-neutral text-admin-text cursor-pointer rounded-badge transition-all duration-150 hover:bg-admin-btn-neutral-hover active:scale-[0.95]"
+            onClick={() => setForceExpanded(true)}
+            title="Expand All"
+            aria-label="Expand All"
+          >
+            <Maximize2 size={14} />
+          </button>
+          <button
+            className="p-1 border border-admin-border bg-admin-btn-neutral text-admin-text cursor-pointer rounded-badge transition-all duration-150 hover:bg-admin-btn-neutral-hover active:scale-[0.95]"
+            onClick={() => setForceExpanded(false)}
+            title="Collapse All"
+            aria-label="Collapse All"
+          >
+            <Minimize2 size={14} />
+          </button>
+          <button
+            className="p-1 border border-admin-border bg-admin-btn-neutral text-admin-text cursor-pointer rounded-badge transition-all duration-150 hover:bg-admin-btn-neutral-hover active:scale-[0.95]"
+            onClick={() => copyToClipboard(JSON.stringify(data, null, 2))}
+            title="Copy all as JSON"
+            aria-label="Copy all as JSON"
+          >
+            <Clipboard size={14} />
+          </button>
+        </div>
       </div>
       <div className="overflow-y-auto p-1.5 flex-1">
         <TreeNode

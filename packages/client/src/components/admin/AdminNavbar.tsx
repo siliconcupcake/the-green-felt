@@ -9,6 +9,7 @@ export function AdminNavbar() {
   const [seed, setSeed] = useState('');
   const [creating, setCreating] = useState(false);
   const [showCreate, setShowCreate] = useState(false);
+  const [confirmDestroy, setConfirmDestroy] = useState(false);
 
   const handleCreate = async () => {
     setCreating(true);
@@ -42,31 +43,80 @@ export function AdminNavbar() {
     } catch {
       // Game may already be gone
     }
+    setConfirmDestroy(false);
     reset();
   };
 
+  const activePlayerName = gameInfo?.activePlayer
+    ? gameInfo.players.find((p) => p.id === gameInfo.activePlayer)?.name
+    : null;
+
   return (
-    <div className="flex items-center gap-4 px-4 py-2 bg-[#16213e] border-b border-[#333] shrink-0">
-      <span className="font-bold text-[0.9375rem] text-admin-orange">Admin Console</span>
+    <nav className="flex items-center gap-4 px-4 py-2.5 bg-admin-bg-elevated border-b border-admin-border shrink-0">
+      <span className="font-bold text-[0.9375rem] text-admin-orange tracking-tight">Admin Console</span>
 
       {gameId && gameInfo ? (
-        <div className="flex items-center gap-3">
-          <span className="text-admin-blue font-bold">{gameId}</span>
-          <span className="text-[#888]">
-            {gameInfo.players.length} players | {gameInfo.actionCount} actions
+        <div className="flex items-center gap-3 flex-1 min-w-0">
+          {/* Live indicator + game ID */}
+          <div className="flex items-center gap-2">
+            <span className="relative flex h-2 w-2 shrink-0">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-admin-green opacity-75" />
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-admin-green" />
+            </span>
+            <span className="text-admin-blue font-bold truncate">{gameId}</span>
+          </div>
+
+          {/* Game type badge */}
+          {gameInfo.gameTypeId && (
+            <span className="px-2 py-0.5 rounded-badge text-[0.625rem] uppercase tracking-wider font-semibold bg-admin-btn-primary text-admin-blue border border-admin-blue/20">
+              {gameInfo.gameTypeId}
+            </span>
+          )}
+
+          {/* Stats */}
+          <span className="text-admin-text-muted text-xs">
+            {gameInfo.players.length} players · {gameInfo.actionCount} actions
           </span>
-          <button
-            className="px-2.5 py-1 border border-[#ee5a24] bg-[#4a1a1a] text-[#ee5a24] cursor-pointer rounded-[0.1875rem] font-[inherit] text-xs hover:enabled:bg-[#5a2a2a] disabled:opacity-50 disabled:cursor-not-allowed"
-            onClick={handleDestroy}
-          >
-            Destroy
-          </button>
+
+          {/* Active player */}
+          {activePlayerName && (
+            <div className="flex items-center gap-1.5 ml-auto mr-2">
+              <span className="text-admin-text-dim text-xs">Turn:</span>
+              <span className="text-admin-green font-semibold text-xs">{activePlayerName}</span>
+            </div>
+          )}
+
+          {/* Destroy (with confirmation) */}
+          {confirmDestroy ? (
+            <div className="flex items-center gap-2 shrink-0">
+              <span className="text-admin-red text-xs">Destroy this game?</span>
+              <button
+                className="px-2.5 py-1 border border-admin-red/40 bg-admin-btn-danger text-admin-red cursor-pointer rounded-badge font-[inherit] text-xs transition-all duration-150 hover:enabled:bg-admin-btn-danger-hover active:enabled:scale-[0.97] disabled:opacity-50 disabled:cursor-not-allowed"
+                onClick={handleDestroy}
+              >
+                Confirm
+              </button>
+              <button
+                className="px-2.5 py-1 border border-admin-border bg-admin-btn-neutral text-admin-text cursor-pointer rounded-badge font-[inherit] text-xs transition-all duration-150 hover:enabled:bg-admin-btn-neutral-hover active:enabled:scale-[0.97]"
+                onClick={() => setConfirmDestroy(false)}
+              >
+                Cancel
+              </button>
+            </div>
+          ) : (
+            <button
+              className="px-2.5 py-1 border border-admin-red/30 bg-admin-btn-danger text-admin-red cursor-pointer rounded-badge font-[inherit] text-xs transition-all duration-150 hover:enabled:bg-admin-btn-danger-hover active:enabled:scale-[0.97] disabled:opacity-50 disabled:cursor-not-allowed shrink-0"
+              onClick={() => setConfirmDestroy(true)}
+            >
+              Destroy
+            </button>
+          )}
         </div>
       ) : (
         <div className="flex items-center">
           {showCreate ? (
             <div className="flex items-center gap-2">
-              <label className="flex items-center gap-1 text-[#aaa]">
+              <label className="flex items-center gap-1 text-admin-text-muted">
                 Players:
                 <select value={playerCount} onChange={(e) => setPlayerCount(Number(e.target.value))}>
                   {[2, 3, 4, 5, 6, 7, 8].map((n) => (
@@ -76,25 +126,25 @@ export function AdminNavbar() {
                   ))}
                 </select>
               </label>
-              <label className="flex items-center gap-1 text-[#aaa]">
+              <label className="flex items-center gap-1 text-admin-text-muted">
                 Seed:
                 <input
                   type="number"
                   placeholder="optional"
                   value={seed}
                   onChange={(e) => setSeed(e.target.value)}
-                  className="w-20 px-1.5 py-[0.1875rem] border border-[#444] bg-[#111] text-[#ddd] rounded-[0.1875rem] font-[inherit] text-xs"
+                  className="w-20 px-1.5 py-[0.1875rem] border border-admin-input-border bg-admin-input-bg text-admin-text rounded-badge font-[inherit] text-xs transition-colors duration-150 focus:border-admin-blue/50 focus:outline-none"
                 />
               </label>
               <button
-                className="px-2.5 py-1 border border-[#1e90ff] bg-[#0a3d62] text-admin-blue cursor-pointer rounded-[0.1875rem] font-[inherit] text-xs hover:enabled:bg-[#0c4d7a] disabled:opacity-50 disabled:cursor-not-allowed"
+                className="px-2.5 py-1 border border-admin-blue/30 bg-admin-btn-primary text-admin-blue cursor-pointer rounded-badge font-[inherit] text-xs transition-all duration-150 hover:enabled:bg-admin-btn-primary-hover active:enabled:scale-[0.97] disabled:opacity-50 disabled:cursor-not-allowed"
                 onClick={handleCreate}
                 disabled={creating}
               >
                 {creating ? 'Creating...' : 'Create'}
               </button>
               <button
-                className="px-2.5 py-1 border border-[#444] bg-[#2a2a4a] text-[#ddd] cursor-pointer rounded-[0.1875rem] font-[inherit] text-xs hover:enabled:bg-[#3a3a5a] disabled:opacity-50 disabled:cursor-not-allowed"
+                className="px-2.5 py-1 border border-admin-border bg-admin-btn-neutral text-admin-text cursor-pointer rounded-badge font-[inherit] text-xs transition-all duration-150 hover:enabled:bg-admin-btn-neutral-hover active:enabled:scale-[0.97] disabled:opacity-50 disabled:cursor-not-allowed"
                 onClick={() => setShowCreate(false)}
               >
                 Cancel
@@ -102,7 +152,7 @@ export function AdminNavbar() {
             </div>
           ) : (
             <button
-              className="px-2.5 py-1 border border-[#1e90ff] bg-[#0a3d62] text-admin-blue cursor-pointer rounded-[0.1875rem] font-[inherit] text-xs hover:enabled:bg-[#0c4d7a] disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-2.5 py-1 border border-admin-blue/30 bg-admin-btn-primary text-admin-blue cursor-pointer rounded-badge font-[inherit] text-xs transition-all duration-150 hover:enabled:bg-admin-btn-primary-hover active:enabled:scale-[0.97] disabled:opacity-50 disabled:cursor-not-allowed"
               onClick={() => setShowCreate(true)}
             >
               Create Test Game
@@ -110,6 +160,6 @@ export function AdminNavbar() {
           )}
         </div>
       )}
-    </div>
+    </nav>
   );
 }

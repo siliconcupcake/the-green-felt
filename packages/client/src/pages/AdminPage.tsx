@@ -56,17 +56,17 @@ export function AdminPage() {
   }, [gameId, appendEvent]);
 
   return (
-    <div className="flex flex-col h-screen bg-admin-bg text-[#e0e0e0] font-mono text-[0.8125rem]">
+    <div className="flex flex-col h-screen bg-admin-bg text-admin-text font-mono text-[0.8125rem]">
       <AdminNavbar />
       {!gameId ? (
         <CreateGamePanel />
       ) : (
-        <div className="flex flex-1 overflow-hidden">
-          <div className="flex-1 flex flex-col overflow-y-auto border-r border-[#333]">
+        <div className="flex flex-1 overflow-hidden gap-px bg-admin-border-subtle">
+          <div className="flex-1 flex flex-col overflow-y-auto bg-admin-bg">
             <StateInspector />
             <ActionPanel />
           </div>
-          <div className="w-[26.25rem] flex flex-col overflow-hidden">
+          <div className="w-[28rem] flex flex-col overflow-hidden bg-admin-bg">
             <EventLog />
             <Timeline />
           </div>
